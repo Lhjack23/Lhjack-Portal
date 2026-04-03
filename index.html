@@ -119,6 +119,26 @@
 .phase-ctrl-btn.set-active{background:rgba(193,84,28,.2);color:#e07040;border:1px solid #c1541c}
 .phase-ctrl-btn.set-complete{background:#1a4a10;color:#6adf40;border:1px solid #3a8a20}
 .phase-ctrl-btn.set-upcoming{background:#1a2a6c;color:#8a9fcf;border:1px solid #3a50a0}
+/* ── Documents Vault ── */
+.doc-category{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px}
+.doc-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.doc-info{flex:1;min-width:0}
+.doc-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:#ffffff;margin-bottom:2px}
+.doc-status{font-size:11px}
+.doc-action{flex-shrink:0}
+.doc-view-btn{display:inline-block;background:#c1541c;color:#ffffff;border:none;border-radius:7px;padding:8px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.04em;cursor:pointer;text-decoration:none;white-space:nowrap}
+.doc-unavailable{font-size:11px;color:#5a6a9a;font-style:italic}
+.doc-vault-header{font-size:12px;color:#8a9fcf;margin-bottom:14px;line-height:1.5}
+/* Admin doc form */
+.admin-doc-row{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.admin-doc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.admin-doc-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.admin-doc-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:#ffffff;flex:1}
+.admin-doc-saved{font-size:10px;color:#4aaf30;font-family:'Montserrat',sans-serif;font-weight:700}
+.admin-doc-input-row{display:flex;gap:8px;align-items:center}
+.admin-doc-input-row input{margin-bottom:0;flex:1;font-size:12px;padding:9px 10px}
+.admin-doc-save-btn{background:#c1541c;color:#fff;border:none;border-radius:7px;padding:9px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.admin-doc-remove-btn{background:transparent;border:1px solid #e05050;color:#e05050;border-radius:7px;padding:9px 10px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;flex-shrink:0}
 ```
 
   </style>
@@ -176,8 +196,9 @@
       <div class="card card-hl" style="margin-bottom:16px" id="client-job-header"></div>
       <!-- Tab bar -->
       <div class="tab-bar">
-        <button class="tab-btn on" id="ctab-tracker" onclick="setClientTab('tracker')">Project Tracker</button>
+        <button class="tab-btn on" id="ctab-tracker" onclick="setClientTab('tracker')">Tracker</button>
         <button class="tab-btn" id="ctab-materials" onclick="setClientTab('materials')">Materials</button>
+        <button class="tab-btn" id="ctab-docs" onclick="setClientTab('docs')">Documents</button>
       </div>
       <!-- Tracker tab -->
       <div id="client-tab-tracker">
@@ -192,6 +213,10 @@
           <button class="fbtn" id="cf-purchased" onclick="setFilter('purchased')">Purchased</button>
         </div>
         <div id="client-items-list"></div>
+      </div>
+      <!-- Documents tab -->
+      <div id="client-tab-docs" style="display:none">
+        <div id="client-docs-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
     </div>
   </div>
@@ -214,8 +239,9 @@
       <div class="card card-hl" id="admin-detail-header" style="margin-bottom:16px"></div>
       <!-- Admin tab bar -->
       <div class="tab-bar">
-        <button class="tab-btn on" id="atab-tracker" onclick="setAdminTab('tracker')">Project Tracker</button>
+        <button class="tab-btn on" id="atab-tracker" onclick="setAdminTab('tracker')">Tracker</button>
         <button class="tab-btn" id="atab-materials" onclick="setAdminTab('materials')">Materials</button>
+        <button class="tab-btn" id="atab-docs" onclick="setAdminTab('docs')">Documents</button>
       </div>
       <!-- Admin tracker tab -->
       <div id="admin-tab-tracker">
@@ -225,6 +251,10 @@
       <div id="admin-tab-materials" style="display:none">
         <div class="stats" id="admin-detail-stats"></div>
         <div id="admin-detail-items"></div>
+      </div>
+      <!-- Admin documents tab -->
+      <div id="admin-tab-docs" style="display:none">
+        <div id="admin-docs-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
     </div>
   </div>
@@ -379,18 +409,18 @@ function show(s) {
 // ── Tab switching ──────────────────────────────────────────────────────────
 function setClientTab(tab) {
   clientTab=tab;
-  document.getElementById('ctab-tracker').classList.toggle('on',tab==='tracker');
-  document.getElementById('ctab-materials').classList.toggle('on',tab==='materials');
-  document.getElementById('client-tab-tracker').style.display=tab==='tracker'?'block':'none';
-  document.getElementById('client-tab-materials').style.display=tab==='materials'?'block':'none';
+  ['tracker','materials','docs'].forEach(t=>{
+    document.getElementById('ctab-'+t).classList.toggle('on',t===tab);
+    document.getElementById('client-tab-'+t).style.display=t===tab?'block':'none';
+  });
 }
 
 function setAdminTab(tab) {
   adminTab=tab;
-  document.getElementById('atab-tracker').classList.toggle('on',tab==='tracker');
-  document.getElementById('atab-materials').classList.toggle('on',tab==='materials');
-  document.getElementById('admin-tab-tracker').style.display=tab==='tracker'?'block':'none';
-  document.getElementById('admin-tab-materials').style.display=tab==='materials'?'block':'none';
+  ['tracker','materials','docs'].forEach(t=>{
+    document.getElementById('atab-'+t).classList.toggle('on',t===tab);
+    document.getElementById('admin-tab-'+t).style.display=t===tab?'block':'none';
+  });
 }
 
 // ── Admin auth ─────────────────────────────────────────────────────────────
@@ -464,6 +494,7 @@ async function openJobDetail(jobId) {
   unsubAdminTracker=db.collection('jobs').doc(jobId).onSnapshot(snap=>{
     const data=snap.data()||{};
     renderAdminTracker(jobId, data.phases||defaultPhases());
+    renderAdminDocs(jobId, data.documents||{});
   });
 
   // Subscribe to items
@@ -684,6 +715,7 @@ function subscribeClientTracker(){
   unsubClientTracker=db.collection('jobs').doc(currentJob.id).onSnapshot(snap=>{
     const data=snap.data()||{};
     renderClientTracker(data.phases||defaultPhases());
+    renderClientDocs(data.documents||{});
   });
 }
 
@@ -784,6 +816,92 @@ async function toggleStatus(jobId,itemId,cur){
 }
 async function delItem(jobId,itemId){
   await db.collection('jobs').doc(jobId).collection('items').doc(itemId).delete();
+}
+
+// ── Document categories ────────────────────────────────────────────────────
+const DOC_CATS = [
+  {key:'proposal',   label:'Proposal',                icon:'📋', color:'#1a3a6a'},
+  {key:'nextsteps',  label:'Next Steps',              icon:'📌', color:'#1a4a2a'},
+  {key:'clientprep', label:'Client Prep Guidelines',  icon:'📝', color:'#3a2a6a'},
+  {key:'contract',   label:'Contract',                icon:'📄', color:'#4a1a1a'},
+  {key:'permits',    label:'Permits',                 icon:'🏛️', color:'#1a3a4a'},
+  {key:'license',    label:'License & Insurance',     icon:'🛡️', color:'#3a3a1a'},
+  {key:'drawings',   label:'Drawings & Plans',        icon:'📐', color:'#1a2a5a'},
+  {key:'warranty',   label:'Warranty Info',           icon:'🔒', color:'#2a1a4a'},
+];
+
+function renderClientDocs(docs) {
+  const el=document.getElementById('client-docs-content');
+  const available=DOC_CATS.filter(c=>docs&&docs[c.key]&&docs[c.key].url);
+  let html=`<div class="doc-vault-header">Your project documents are stored here by your contractor. Tap any document to view or download.</div>`;
+  if(!available.length){
+    html+='<div class="empty" style="padding:40px 20px">No documents uploaded yet.<br>Check back as your project progresses.</div>';
+    el.innerHTML=html; return;
+  }
+  html+=DOC_CATS.map(cat=>{
+    const doc=docs&&docs[cat.key];
+    const hasDoc=doc&&doc.url;
+    return `<div class="doc-category">
+      <div class="doc-icon" style="background:${cat.color}">${cat.icon}</div>
+      <div class="doc-info">
+        <div class="doc-name">${cat.label}</div>
+        ${hasDoc
+          ?`<div class="doc-status" style="color:#4aaf30;font-size:11px">Available</div>`
+          :`<div class="doc-status doc-unavailable">Not yet uploaded</div>`}
+      </div>
+      <div class="doc-action">
+        ${hasDoc
+          ?`<a class="doc-view-btn" href="${doc.url}" target="_blank" rel="noopener noreferrer">View</a>`
+          :`<span style="font-size:11px;color:#3a4a6a">Pending</span>`}
+      </div>
+    </div>`;
+  }).join('');
+  el.innerHTML=html;
+}
+
+function renderAdminDocs(jobId, docs) {
+  const el=document.getElementById('admin-docs-content');
+  let html=`<div class="doc-vault-header" style="color:#8a9fcf">Paste a shareable link (Google Drive, Dropbox, etc.) for each document. Clients will see a View button once a link is saved.</div>`;
+  html+=DOC_CATS.map(cat=>{
+    const doc=docs&&docs[cat.key];
+    const savedUrl=doc&&doc.url?doc.url:'';
+    return `<div class="admin-doc-row">
+      <div class="admin-doc-top">
+        <div class="admin-doc-icon" style="background:${cat.color}">${cat.icon}</div>
+        <div class="admin-doc-name">${cat.label}</div>
+        ${savedUrl?`<span class="admin-doc-saved">✓ Saved</span>`:''}
+      </div>
+      <div class="admin-doc-input-row">
+        <input type="text" id="doc-input-${cat.key}" placeholder="Paste shareable link…" value="${esc(savedUrl)}" />
+        <button class="admin-doc-save-btn" onclick="saveDocLink('${jobId}','${cat.key}')">Save</button>
+        ${savedUrl?`<button class="admin-doc-remove-btn" onclick="removeDocLink('${jobId}','${cat.key}')">✕</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  el.innerHTML=html;
+}
+
+async function saveDocLink(jobId, catKey) {
+  const url=document.getElementById('doc-input-'+catKey).value.trim();
+  if(!url) return;
+  const docRef=db.collection('jobs').doc(jobId);
+  const snap=await docRef.get();
+  const docs=(snap.data().documents)||{};
+  docs[catKey]={url, savedAt:new Date().toISOString()};
+  await docRef.update({documents:docs});
+}
+
+async function removeDocLink(jobId, catKey) {
+  const docRef=db.collection('jobs').doc(jobId);
+  const snap=await docRef.get();
+  const docs=(snap.data().documents)||{};
+  delete docs[catKey];
+  await docRef.update({documents:docs});
+}
+
+function subscribeClientDocs() {
+  // Reuse the existing job snapshot (unsubClientTracker covers the job doc)
+  // renderClientDocs is called from job doc snapshot
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
