@@ -1,76 +1,130 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LHJack Material Portal</title>
+  <title>LHJack Client Portal</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Open Sans',sans-serif;background:#1a2a6c;min-height:100vh;color:#fff;-webkit-font-smoothing:antialiased}
+    html{background:#1a2a6c !important;min-height:100%}
+    body{font-family:'Open Sans',sans-serif;background:#1a2a6c !important;min-height:100vh;color:#ffffff;-webkit-font-smoothing:antialiased}
     .header{background:#131f52;border-bottom:3px solid #c1541c;padding:16px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
-    .logo{width:36px;height:36px;background:#c1541c;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;letter-spacing:1px;flex-shrink:0}
-    .head-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:15px;text-transform:uppercase;letter-spacing:.05em}
-    .head-sub{color:#7a8cba;font-size:11px;margin-top:2px}
+    .logo{width:36px;height:36px;background:#c1541c;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;letter-spacing:1px;flex-shrink:0;color:#ffffff}
+    .head-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:15px;text-transform:uppercase;letter-spacing:.05em;color:#ffffff}
+    .head-sub{color:#8a9fcf;font-size:11px;margin-top:2px}
     .body{max-width:660px;margin:0 auto;padding:22px 14px 60px}
     .screen{display:none}.screen.active{display:block}
-    h2.sec{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
-    .lbl{color:#7a8cba;font-size:11px;font-family:'Montserrat',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;display:block}
-    input,textarea{width:100%;background:#131f52;border:1px solid #1e3580;border-radius:8px;padding:11px 12px;color:#fff;font-family:'Open Sans',sans-serif;font-size:14px;margin-bottom:12px;outline:none;-webkit-appearance:none;appearance:none}
+    h2.sec{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;color:#ffffff}
+    .lbl{color:#8a9fcf;font-size:11px;font-family:'Montserrat',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;display:block}
+    .muted{color:#8a9fcf}
+    .err{color:#ff5555;font-size:12px;text-align:center;margin-bottom:8px;display:none;font-weight:600}
+    .empty{color:#8a9fcf;text-align:center;padding:36px 20px;font-size:13px}
+    .loading{color:#8a9fcf;text-align:center;padding:50px 20px;font-size:13px}
+    input,textarea{width:100%;background:#0a1230;border:1px solid #2a4090;border-radius:8px;padding:11px 12px;color:#ffffff;font-family:'Open Sans',sans-serif;font-size:14px;margin-bottom:12px;outline:none;-webkit-appearance:none;appearance:none}
     input[type=number]{-moz-appearance:textfield}
-    input::placeholder{color:#4a5a8a}
-    .btn{display:block;width:100%;background:#c1541c;color:#fff;border:none;border-radius:8px;padding:13px 20px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;margin-bottom:10px;text-align:center}
-    .btn-dark{background:#131f52;border:1px solid #1e3580}
+    input::placeholder{color:#5a6a9a}
+    input:focus{border-color:#c1541c}
+    .btn{display:block;width:100%;background:#c1541c;color:#ffffff;border:none;border-radius:8px;padding:13px 20px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;margin-bottom:10px;text-align:center}
+    .btn-dark{background:#1a2a6c;border:1px solid #3a50a0;color:#ffffff}
     .btn-row{display:flex;gap:10px}.btn-row .btn{margin-bottom:0;flex:1}
     .btn-row .btn-cancel{flex:0 0 auto;width:auto;padding:13px 18px}
-    .obtn{display:inline-block;background:transparent;border:1px solid #7a8cba;color:#7a8cba;border-radius:8px;padding:8px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.05em;cursor:pointer;white-space:nowrap}
+    .obtn{display:inline-block;background:transparent;border:1px solid #8a9fcf;color:#c8d8f0;border-radius:8px;padding:8px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.05em;cursor:pointer;white-space:nowrap}
     .obtn-blue{border-color:#6a9fd8;color:#6a9fd8}
-    .obtn-red{border-color:#c04040;color:#c04040}
-    .obtn-orange{border-color:#c1541c;color:#c1541c;background:transparent}
-    .seg-wrap{display:flex;border-radius:8px;overflow:hidden;border:1px solid #1e3580;margin-bottom:12px}
-    .seg{flex:1;padding:10px 4px;background:#1a2a6c;color:#7a8cba;border:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:all .15s}
-    .seg.on{background:#c1541c;color:#fff}
-    .card{background:#0f1940;border:1px solid #1e3580;border-radius:12px;padding:16px;margin-bottom:10px}
+    .obtn-red{border-color:#e05050;color:#e05050}
+    .obtn-orange{border-color:#c1541c;color:#e07040;background:transparent}
+    .seg-wrap{display:flex;border-radius:8px;overflow:hidden;border:1px solid #2a4090;margin-bottom:12px}
+    .seg{flex:1;padding:10px 4px;background:#0a1230;color:#8a9fcf;border:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:all .15s}
+    .seg.on{background:#c1541c;color:#ffffff}
+    .card{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;padding:16px;margin-bottom:10px}
     .card-hl{border-left:4px solid #c1541c}
-    .progress-bg{background:#0a1230;border-radius:4px;height:6px;overflow:hidden;margin:8px 0 6px}
+    .progress-bg{background:#060e28;border-radius:4px;height:6px;overflow:hidden;margin:8px 0 6px}
     .progress-fill{height:100%;background:linear-gradient(90deg,#c1541c,#e07040);border-radius:4px;transition:width .4s}
-    .pill{font-size:10px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.04em;display:inline-block;margin:2px 2px 0 0}
+    .pill{font-size:10px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.04em;display:inline-block;margin:2px 2px 0 0;color:#ffffff}
     .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:18px}
-    .stat{background:#131f52;border-radius:10px;padding:12px 10px;text-align:center}
-    .stat-n{font-family:'Montserrat',sans-serif;font-weight:900;font-size:22px}
-    .stat-l{color:#7a8cba;font-size:10px;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+    .stat{background:#131f52;border:1px solid #2a3f80;border-radius:10px;padding:12px 10px;text-align:center}
+    .stat-n{font-family:'Montserrat',sans-serif;font-weight:900;font-size:22px;color:#ffffff}
+    .stat-l{color:#8a9fcf;font-size:10px;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
     .item-top{display:flex;gap:12px;align-items:flex-start}
-    .chk{width:24px;height:24px;border-radius:6px;border:2px solid #1e3580;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:2px;transition:all .2s}
+    .chk{width:24px;height:24px;border-radius:6px;border:2px solid #3a50a0;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:2px;transition:all .2s}
     .chk.on{background:#c1541c;border-color:#c1541c}
-    .chk svg{display:none}.chk.on svg{display:block}
+    .chk.green{background:#2a7a20;border-color:#2a7a20}
+    .chk svg{display:none}.chk.on svg,.chk.green svg{display:block}
     .item-body{flex:1}
-    .item-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;margin-bottom:4px}
-    .item-name.done{text-decoration:line-through;opacity:.55}
+    .item-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;margin-bottom:4px;color:#ffffff}
+    .item-name.done{text-decoration:line-through;opacity:.5}
     .item-link{display:flex;align-items:center;gap:5px;margin-bottom:5px}
     .item-link img{width:13px;height:13px;border-radius:2px}
-    .item-link a{color:#6a9fd8;font-size:11px;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px}
-    .item-notes{color:#6a7a9a;font-size:11px;margin-top:5px;font-style:italic}
+    .item-link a{color:#7ab8f0;font-size:11px;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px}
+    .item-notes{color:#9aaac8;font-size:11px;margin-top:5px;font-style:italic}
     .item-actions{display:flex;gap:8px;margin-top:10px}
-    .overlay{display:none;position:fixed;inset:0;background:rgba(5,10,30,.88);align-items:flex-end;justify-content:center;z-index:100}
+    .overlay{display:none;position:fixed;inset:0;background:rgba(3,7,22,.92);align-items:flex-end;justify-content:center;z-index:100}
     .overlay.open{display:flex}
-    .sheet{background:#131f52;border-radius:18px 18px 0 0;padding:24px 18px 36px;width:100%;max-width:660px;box-shadow:0 -8px 40px rgba(0,0,0,.6);max-height:88vh;overflow-y:auto}
+    .sheet{background:#131f52;border-top:2px solid #c1541c;border-radius:18px 18px 0 0;padding:24px 18px 36px;width:100%;max-width:660px;box-shadow:0 -8px 40px rgba(0,0,0,.7);max-height:88vh;overflow-y:auto}
     .top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
     .top-actions{display:flex;gap:8px;align-items:center}
     .filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-    .fbtn{background:#131f52;border:none;border-radius:20px;padding:7px 14px;color:#7a8cba;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;letter-spacing:.04em}
-    .fbtn.on{background:#c1541c;color:#fff}
+    .fbtn{background:#0f1940;border:1px solid #2a3f80;border-radius:20px;padding:7px 14px;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;letter-spacing:.04em}
+    .fbtn.on{background:#c1541c;color:#ffffff;border-color:#c1541c}
     .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .muted{color:#7a8cba}
-    .err{color:#e04040;font-size:12px;text-align:center;margin-bottom:8px;display:none}
-    .empty{color:#7a8cba;text-align:center;padding:36px 20px;font-size:13px}
     .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
     @keyframes spin{to{transform:rotate(360deg)}}
-    .loading{color:#7a8cba;text-align:center;padding:50px 20px;font-size:13px}
+
+```
+/* ── Tab bar ── */
+.tab-bar{display:flex;background:#0a1230;border-radius:10px;padding:4px;margin-bottom:18px;gap:4px}
+.tab-btn{flex:1;padding:10px 8px;background:transparent;border:none;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border-radius:7px;transition:all .15s}
+.tab-btn.on{background:#c1541c;color:#ffffff}
+
+/* ── Project Tracker ── */
+.phase-card{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.phase-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+.phase-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;flex-shrink:0}
+.phase-dot.upcoming{background:#1a2a6c;border:2px solid #3a50a0;color:#8a9fcf}
+.phase-dot.active{background:#c1541c;border:2px solid #c1541c;color:#ffffff}
+.phase-dot.complete{background:#2a7a20;border:2px solid #2a7a20;color:#ffffff}
+.phase-info{flex:1}
+.phase-name{font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#ffffff}
+.phase-meta{font-size:11px;color:#8a9fcf;margin-top:2px}
+.phase-badge{font-size:10px;font-family:'Montserrat',sans-serif;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.04em;white-space:nowrap}
+.phase-badge.upcoming{background:#1a2a6c;border:1px solid #3a50a0;color:#8a9fcf}
+.phase-badge.active{background:rgba(193,84,28,.2);border:1px solid #c1541c;color:#e07040}
+.phase-badge.complete{background:#1a4a10;border:1px solid #3a8a20;color:#6adf40}
+.phase-body{padding:0 16px 14px;border-top:1px solid #1a2f60;margin-top:0;display:none}
+.phase-body.open{display:block}
+.scope-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #151e45}
+.scope-item:last-child{border-bottom:none}
+.scope-chk{width:20px;height:20px;border-radius:5px;border:2px solid #3a50a0;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.scope-chk.done{background:#2a7a20;border-color:#2a7a20}
+.scope-chk svg{display:none}.scope-chk.done svg{display:block}
+.scope-chk.clickable{cursor:pointer}
+.scope-label{font-size:12px;color:#c8d8f0;flex:1}
+.scope-label.done{text-decoration:line-through;color:#6a7a9a}
+.phase-connector{width:2px;height:12px;background:#2a3f80;margin:0 auto 0 30px}
+.payment-banner{background:#0a1230;border:1px solid #c1541c;border-radius:10px;padding:12px 14px;margin:12px 0 0}
+.payment-banner-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.payment-label{font-size:11px;color:#8a9fcf;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em}
+.payment-pct{font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;color:#e07040}
+.payment-trigger{font-size:11px;color:#c8d8f0;font-style:italic;border-top:1px solid #1a2f60;padding-top:7px;margin-top:4px}
+.tracker-overall{background:#0a1230;border-radius:10px;padding:14px 16px;margin-bottom:16px}
+.tracker-overall-label{font-size:11px;color:#8a9fcf;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.tracker-phase-stat{font-family:'Montserrat',sans-serif;font-weight:900;font-size:11px;color:#ffffff;margin-top:4px}
+
+/* ── Admin tracker controls ── */
+.admin-phase-ctrl{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.phase-ctrl-btn{padding:5px 10px;border-radius:6px;border:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase}
+.phase-ctrl-btn.set-active{background:rgba(193,84,28,.2);color:#e07040;border:1px solid #c1541c}
+.phase-ctrl-btn.set-complete{background:#1a4a10;color:#6adf40;border:1px solid #3a8a20}
+.phase-ctrl-btn.set-upcoming{background:#1a2a6c;color:#8a9fcf;border:1px solid #3a50a0}
+```
+
   </style>
 </head>
 <body>
+<div style="background:#1a2a6c;min-height:100vh;color:#ffffff">
 
 <div class="header">
   <div class="logo">LHJ</div>
@@ -83,17 +137,19 @@
 <div class="body">
 
   <!-- LANDING -->
+
   <div class="screen active" id="screen-landing" style="padding-top:48px;text-align:center">
-    <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:22px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Material Portal</div>
-    <div class="muted" style="font-size:13px;margin-bottom:36px">LHJack Contractors — Princeton, NJ</div>
+    <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:22px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;color:#ffffff">Client Portal</div>
+    <div style="font-size:13px;margin-bottom:36px;color:#a0b4d8">Your project hub — powered by LHJack Contractors</div>
     <div style="display:flex;flex-direction:column;gap:14px">
-      <button class="btn" style="padding:18px;font-size:15px;border-radius:12px" onclick="show('client')">I'm a Homeowner — View My List</button>
+      <button class="btn" style="padding:18px;font-size:15px;border-radius:12px" onclick="show('client')">Client Login</button>
       <button class="btn btn-dark" style="padding:18px;font-size:15px;border-radius:12px" onclick="show('adminlogin')">Contractor Login</button>
     </div>
-    <div class="muted" style="font-size:11px;margin-top:40px">LHJack Contractors · Licensed General Contractor · NJ</div>
+    <div style="font-size:11px;margin-top:40px;color:#7a8cba">LHJack Contractors · Licensed General Contractor · NJ</div>
   </div>
 
   <!-- ADMIN LOGIN -->
+
   <div class="screen" id="screen-adminlogin" style="padding-top:40px">
     <button class="obtn" style="margin-bottom:22px" onclick="show('landing')">← Back</button>
     <h2 class="sec">Contractor Login</h2>
@@ -104,30 +160,44 @@
   </div>
 
   <!-- CLIENT PORTAL -->
+
   <div class="screen" id="screen-client" style="padding-top:32px">
     <div id="client-lookup">
       <button class="obtn" style="margin-bottom:22px" onclick="show('landing')">← Back</button>
-      <h2 class="sec">Enter Your Job Code</h2>
-      <p class="muted" style="font-size:13px;margin-bottom:18px">Your contractor gave you a job code when your project was set up.</p>
+      <h2 class="sec">Client Login</h2>
+      <p class="muted" style="font-size:13px;margin-bottom:18px">Enter the job code your contractor provided to access your project hub.</p>
       <label class="lbl">Job Code</label>
       <input id="job-code-input" type="text" placeholder="e.g. 225-542" style="letter-spacing:.15em;font-size:18px;text-align:center;text-transform:uppercase" onkeydown="if(event.key==='Enter')clientLookup()" />
       <div class="err" id="code-err">Job code not found. Check with your contractor.</div>
-      <button class="btn" onclick="clientLookup()"><span id="lookup-spin" class="spin" style="display:none"></span>Find My Job</button>
+      <button class="btn" onclick="clientLookup()"><span id="lookup-spin" class="spin" style="display:none"></span>Find My Project</button>
     </div>
     <div id="client-job" style="display:none">
       <button class="obtn" style="margin-bottom:18px" onclick="clientReset(false)">← Change Job</button>
-      <div class="card card-hl" style="margin-bottom:18px" id="client-job-header"></div>
-      <button class="btn" style="margin-bottom:16px" onclick="openItemForm(null)">+ Add Material Item</button>
-      <div class="filter-row">
-        <button class="fbtn on" id="cf-all" onclick="setFilter('all')">All</button>
-        <button class="fbtn" id="cf-pending" onclick="setFilter('pending')">Not Purchased</button>
-        <button class="fbtn" id="cf-purchased" onclick="setFilter('purchased')">Purchased</button>
+      <div class="card card-hl" style="margin-bottom:16px" id="client-job-header"></div>
+      <!-- Tab bar -->
+      <div class="tab-bar">
+        <button class="tab-btn on" id="ctab-tracker" onclick="setClientTab('tracker')">Project Tracker</button>
+        <button class="tab-btn" id="ctab-materials" onclick="setClientTab('materials')">Materials</button>
       </div>
-      <div id="client-items-list"></div>
+      <!-- Tracker tab -->
+      <div id="client-tab-tracker">
+        <div id="client-tracker-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
+      </div>
+      <!-- Materials tab -->
+      <div id="client-tab-materials" style="display:none">
+        <button class="btn" style="margin-bottom:16px" onclick="openItemForm(null)">+ Add Material Item</button>
+        <div class="filter-row">
+          <button class="fbtn on" id="cf-all" onclick="setFilter('all')">All</button>
+          <button class="fbtn" id="cf-pending" onclick="setFilter('pending')">Not Purchased</button>
+          <button class="fbtn" id="cf-purchased" onclick="setFilter('purchased')">Purchased</button>
+        </div>
+        <div id="client-items-list"></div>
+      </div>
     </div>
   </div>
 
   <!-- ADMIN DASHBOARD -->
+
   <div class="screen" id="screen-admin">
     <div id="admin-jobs-view">
       <div class="top-row" style="margin-top:22px">
@@ -141,15 +211,28 @@
     </div>
     <div id="admin-detail-view" style="display:none">
       <button class="obtn" style="margin:22px 0 18px" onclick="closeJobDetail()">← All Jobs</button>
-      <div class="card card-hl" id="admin-detail-header" style="margin-bottom:18px"></div>
-      <div class="stats" id="admin-detail-stats"></div>
-      <div id="admin-detail-items"></div>
+      <div class="card card-hl" id="admin-detail-header" style="margin-bottom:16px"></div>
+      <!-- Admin tab bar -->
+      <div class="tab-bar">
+        <button class="tab-btn on" id="atab-tracker" onclick="setAdminTab('tracker')">Project Tracker</button>
+        <button class="tab-btn" id="atab-materials" onclick="setAdminTab('materials')">Materials</button>
+      </div>
+      <!-- Admin tracker tab -->
+      <div id="admin-tab-tracker">
+        <div id="admin-tracker-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
+      </div>
+      <!-- Admin materials tab -->
+      <div id="admin-tab-materials" style="display:none">
+        <div class="stats" id="admin-detail-stats"></div>
+        <div id="admin-detail-items"></div>
+      </div>
     </div>
   </div>
 
-</div>
+</div><!-- /body -->
 
 <!-- ITEM FORM SHEET -->
+
 <div class="overlay" id="item-overlay">
   <div class="sheet">
     <h2 class="sec" id="item-form-title">Add Material Item</h2>
@@ -182,6 +265,7 @@
 </div>
 
 <!-- NEW JOB SHEET -->
+
 <div class="overlay" id="newjob-overlay">
   <div class="sheet">
     <h2 class="sec">Create New Job</h2>
@@ -211,37 +295,115 @@ firebase.initializeApp({
 });
 const db = firebase.firestore();
 
+// ── Phase definitions ──────────────────────────────────────────────────────
+const PHASE_DEFS = [
+  { id:0, num:1, name:'Contract & Mobilization', payment:'10%', payLabel:'Payment 1 of 5 — initiates project & permitting',
+    items:[
+      {key:'contract',    label:'Contract signed & deposit received'},
+      {key:'arch_drawings',label:'Architectural drawings & measurements reviewed'},
+      {key:'design_review',label:'Designs & selections reviewed with client'},
+      {key:'design_approval',label:'Design approval meeting held & signed off'},
+      {key:'permits_app', label:'Permits applied for'},
+      {key:'preconstruct',label:'Pre-construction meeting held'},
+      {key:'schedule',    label:'Project schedule delivered to client'},
+    ]},
+  { id:1, num:2, name:'Demo & Site Prep', payment:'15%', payLabel:'Payment 2 of 5 — initiates demolition & site work',
+    items:[
+      {key:'permits_ok',  label:'Permits approved & posted on site'},
+      {key:'protection',  label:'Site & property protection in place'},
+      {key:'demo',        label:'Demolition complete'},
+      {key:'debris',      label:'Debris removed from site'},
+      {key:'framing_start',label:'Rough framing underway'},
+    ]},
+  { id:2, num:3, name:'Rough Work', payment:'35%', payLabel:'Payment 3 of 5 — initiates rough trades & framing',
+    items:[
+      {key:'framing',     label:'Framing complete'},
+      {key:'rough_elec',  label:'Rough electrical complete'},
+      {key:'rough_plumb', label:'Rough plumbing complete'},
+      {key:'rough_hvac',  label:'Rough HVAC complete'},
+      {key:'rough_insp',  label:'Rough inspection passed & approved'},
+    ]},
+  { id:3, num:4, name:'Finishes', payment:'35%', payLabel:'Payment 4 of 5 — initiates all finish work',
+    items:[
+      {key:'insulation',  label:'Insulation installed'},
+      {key:'drywall',     label:'Drywall hung & finished'},
+      {key:'paint',       label:'Paint complete'},
+      {key:'flooring',    label:'Flooring installed'},
+      {key:'cabinets',    label:'Cabinets & millwork installed'},
+      {key:'fixtures',    label:'Fixtures & hardware installed'},
+      {key:'tile',        label:'Tile work complete'},
+    ]},
+  { id:4, num:5, name:'Final & Closeout', payment:'5%', payLabel:'Payment 5 of 5 — final payment at project completion',
+    items:[
+      {key:'final_insp',  label:'Final inspection passed'},
+      {key:'punch',       label:'Punch list complete'},
+      {key:'walkthrough', label:'Final walkthrough with client'},
+      {key:'warranty',    label:'Warranty & closeout docs delivered'},
+      {key:'closeout',    label:'Project officially closed out'},
+    ]},
+];
+
+function defaultPhases() {
+  return PHASE_DEFS.map(p=>({
+    id:p.id, status:'upcoming',
+    items: Object.fromEntries(p.items.map(i=>[i.key, false]))
+  }));
+}
+
 // ── State ──────────────────────────────────────────────────────────────────
 const PIN = "lhjack2025";
 let currentJob = null;
 let clientFilter = 'all';
+let clientTab = 'tracker';
+let adminTab = 'tracker';
+let currentAdminJobId = null;
 let fFulfillment = 'Delivery';
 let fStatus = 'Not Purchased';
 let unsubClient = null;
+let unsubClientTracker = null;
 let unsubAdmin = null;
 let unsubDetail = null;
+let unsubAdminTracker = null;
 let allClientItems = [];
 
 // ── Routing ────────────────────────────────────────────────────────────────
 function show(s) {
-  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
   document.getElementById('screen-'+s).classList.add('active');
-  const subs = {landing:'Client & Contractor Portal',adminlogin:'Contractor Access',admin:'Contractor Dashboard',client:'Homeowner Portal'};
-  document.getElementById('head-sub').textContent = subs[s] || '';
-  if (s === 'admin') startAdminListener();
-  if (s !== 'client') clientReset(true);
+  const subs={landing:'Client & Contractor Portal',adminlogin:'Contractor Access',admin:'Contractor Dashboard',client:'Client Portal'};
+  document.getElementById('head-sub').textContent=subs[s]||'';
+  if(s==='admin') startAdminListener();
+  if(s!=='client') clientReset(true);
 }
 
-// ── Admin ──────────────────────────────────────────────────────────────────
+// ── Tab switching ──────────────────────────────────────────────────────────
+function setClientTab(tab) {
+  clientTab=tab;
+  document.getElementById('ctab-tracker').classList.toggle('on',tab==='tracker');
+  document.getElementById('ctab-materials').classList.toggle('on',tab==='materials');
+  document.getElementById('client-tab-tracker').style.display=tab==='tracker'?'block':'none';
+  document.getElementById('client-tab-materials').style.display=tab==='materials'?'block':'none';
+}
+
+function setAdminTab(tab) {
+  adminTab=tab;
+  document.getElementById('atab-tracker').classList.toggle('on',tab==='tracker');
+  document.getElementById('atab-materials').classList.toggle('on',tab==='materials');
+  document.getElementById('admin-tab-tracker').style.display=tab==='tracker'?'block':'none';
+  document.getElementById('admin-tab-materials').style.display=tab==='materials'?'block':'none';
+}
+
+// ── Admin auth ─────────────────────────────────────────────────────────────
 function adminLogin() {
-  const pin = document.getElementById('pin-input').value;
-  const err = document.getElementById('pin-err');
-  if (pin === PIN) { err.style.display='none'; document.getElementById('pin-input').value=''; show('admin'); }
-  else { err.style.display='block'; setTimeout(()=>err.style.display='none',1800); }
+  const pin=document.getElementById('pin-input').value;
+  const err=document.getElementById('pin-err');
+  if(pin===PIN){err.style.display='none';document.getElementById('pin-input').value='';show('admin');}
+  else{err.style.display='block';setTimeout(()=>err.style.display='none',1800);}
 }
 function adminLogout() {
-  if (unsubAdmin) { unsubAdmin(); unsubAdmin=null; }
-  if (unsubDetail) { unsubDetail(); unsubDetail=null; }
+  if(unsubAdmin){unsubAdmin();unsubAdmin=null;}
+  if(unsubDetail){unsubDetail();unsubDetail=null;}
+  if(unsubAdminTracker){unsubAdminTracker();unsubAdminTracker=null;}
   show('landing');
 }
 
@@ -249,174 +411,316 @@ function adminLogout() {
 function startAdminListener() {
   document.getElementById('admin-detail-view').style.display='none';
   document.getElementById('admin-jobs-view').style.display='block';
-  if (unsubAdmin) unsubAdmin();
-  unsubAdmin = db.collection('jobs').orderBy('createdAt','desc').onSnapshot(snap => {
-    const jobs = snap.docs.map(d=>({id:d.id,...d.data()}));
-    renderAdminList(jobs);
+  if(unsubAdmin) unsubAdmin();
+  unsubAdmin=db.collection('jobs').orderBy('createdAt','desc').onSnapshot(snap=>{
+    renderAdminList(snap.docs.map(d=>({id:d.id,...d.data()})));
   });
 }
 
 async function renderAdminList(jobs) {
-  const list = document.getElementById('admin-jobs-list');
-  if (!jobs.length) { list.innerHTML='<div class="empty">No jobs yet — tap + New Job to create one.</div>'; return; }
-  const rows = await Promise.all(jobs.map(async job => {
-    const snap = await db.collection('jobs').doc(job.id).collection('items').get();
-    const items = snap.docs.map(d=>d.data());
-    const done = items.filter(i=>i.status==='Purchased').length;
-    const total = items.length;
-    const pct = total ? Math.round(done/total*100) : 0;
-    const allDone = total>0 && done===total;
+  const list=document.getElementById('admin-jobs-list');
+  if(!jobs.length){list.innerHTML='<div class="empty">No jobs yet — tap + New Job to create one.</div>';return;}
+  const rows=await Promise.all(jobs.map(async job=>{
+    const snap=await db.collection('jobs').doc(job.id).collection('items').get();
+    const items=snap.docs.map(d=>d.data());
+    const done=items.filter(i=>i.status==='Purchased').length;
+    const total=items.length;
+    const phases=job.phases||defaultPhases();
+    const activePhase=phases.find(p=>p.status==='active');
+    const completedCount=phases.filter(p=>p.status==='complete').length;
+    const phaseName=activePhase?PHASE_DEFS[activePhase.id].name:(completedCount===5?'All Phases Complete':'Not Started');
     return `<div class="card" style="cursor:pointer" onclick="openJobDetail('${job.id}')">
       <div style="display:flex;gap:10px;align-items:flex-start;justify-content:space-between">
         <div style="flex:1;min-width:0">
-          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px">${esc(job.clientName)}</div>
-          <div class="muted" style="font-size:11px;margin-top:2px">Job #${esc(job.code)}${job.description?' · '+esc(job.description):''}</div>
-          <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
-          <div class="muted" style="font-size:11px">${total===0?'No items yet':`${done}/${total} purchased`}</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;color:#ffffff">${esc(job.clientName)}</div>
+          <div style="color:#8a9fcf;font-size:11px;margin-top:2px">Job #${esc(job.code)}${job.description?' · '+esc(job.description):''}</div>
+          <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+            <span class="pill" style="background:${completedCount===5?'#1a4a10':'rgba(193,84,28,.2)'};color:${completedCount===5?'#6adf40':'#e07040'}">Phase ${completedCount}/5 Complete</span>
+            ${activePhase?`<span class="pill" style="background:#1a2a5c;color:#8ab8f0">Active: ${esc(phaseName)}</span>`:''}
+          </div>
+          <div style="color:#8a9fcf;font-size:11px;margin-top:6px">${total===0?'No materials yet':`Materials: ${done}/${total} purchased`}</div>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
-          <span class="pill" style="background:${allDone?'#2a5a20':'rgba(193,84,28,.18)'};color:${allDone?'#6adf40':'#c1541c'}">${allDone?'All Purchased':(total-done)+' Pending'}</span>
-          <button class="obtn obtn-red" style="font-size:10px;padding:4px 10px" onclick="event.stopPropagation();deleteJob('${job.id}')">Remove</button>
-        </div>
+        <button class="obtn obtn-red" style="font-size:10px;padding:4px 10px;flex-shrink:0" onclick="event.stopPropagation();deleteJob('${job.id}')">Remove</button>
       </div>
     </div>`;
   }));
-  list.innerHTML = rows.join('');
+  list.innerHTML=rows.join('');
 }
 
 async function openJobDetail(jobId) {
-  const doc = await db.collection('jobs').doc(jobId).get();
-  const job = {id:doc.id,...doc.data()};
+  currentAdminJobId=jobId;
+  const doc=await db.collection('jobs').doc(jobId).get();
+  const job={id:doc.id,...doc.data()};
   document.getElementById('admin-jobs-view').style.display='none';
   document.getElementById('admin-detail-view').style.display='block';
-  if (unsubDetail) unsubDetail();
-  unsubDetail = db.collection('jobs').doc(jobId).collection('items').orderBy('createdAt','asc').onSnapshot(snap=>{
-    const items = snap.docs.map(d=>({id:d.id,...d.data()}));
-    const done = items.filter(i=>i.status==='Purchased').length;
-    const total = items.length;
-    const pct = total ? Math.round(done/total*100) : 0;
-    document.getElementById('admin-detail-header').innerHTML=`
-      <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:15px">${esc(job.clientName)}</div>
-      <div class="muted" style="font-size:12px;margin-top:2px">Job #${esc(job.code)}${job.description?' · '+esc(job.description):''}</div>
-      <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
-      <div class="muted" style="font-size:11px">${done} of ${total} items purchased · ${total-done} remaining</div>`;
+  setAdminTab('tracker');
+
+  document.getElementById('admin-detail-header').innerHTML=`
+    <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:15px;color:#ffffff">${esc(job.clientName)}</div>
+    <div style="color:#8a9fcf;font-size:12px;margin-top:2px">Job #${esc(job.code)}${job.description?' · '+esc(job.description):''}</div>`;
+
+  // Subscribe to tracker (job doc)
+  if(unsubAdminTracker){unsubAdminTracker();unsubAdminTracker=null;}
+  unsubAdminTracker=db.collection('jobs').doc(jobId).onSnapshot(snap=>{
+    const data=snap.data()||{};
+    renderAdminTracker(jobId, data.phases||defaultPhases());
+  });
+
+  // Subscribe to items
+  if(unsubDetail){unsubDetail();unsubDetail=null;}
+  unsubDetail=db.collection('jobs').doc(jobId).collection('items').orderBy('createdAt','asc').onSnapshot(snap=>{
+    const items=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const done=items.filter(i=>i.status==='Purchased').length;
+    const total=items.length;
     document.getElementById('admin-detail-stats').innerHTML=`
       <div class="stat"><div class="stat-n">${total}</div><div class="stat-l">Total</div></div>
       <div class="stat"><div class="stat-n" style="color:#4aaf30">${done}</div><div class="stat-l">Purchased</div></div>
       <div class="stat"><div class="stat-n" style="color:#c1541c">${total-done}</div><div class="stat-l">Pending</div></div>`;
-    const el = document.getElementById('admin-detail-items');
-    el.innerHTML = total===0 ? '<div class="empty">Client hasn\'t added any items yet.</div>'
-      : items.map(item=>renderItemCard(item, jobId, true)).join('');
+    const el=document.getElementById('admin-detail-items');
+    el.innerHTML=total===0?'<div class="empty">No materials added yet.</div>'
+      :items.map(item=>renderItemCard(item,jobId,true)).join('');
   });
 }
 
 function closeJobDetail() {
-  if (unsubDetail) { unsubDetail(); unsubDetail=null; }
+  if(unsubDetail){unsubDetail();unsubDetail=null;}
+  if(unsubAdminTracker){unsubAdminTracker();unsubAdminTracker=null;}
+  currentAdminJobId=null;
   document.getElementById('admin-detail-view').style.display='none';
   document.getElementById('admin-jobs-view').style.display='block';
 }
 
-async function deleteJob(jobId) {
-  if (!confirm('Remove this job and all its items? This cannot be undone.')) return;
-  const snap = await db.collection('jobs').doc(jobId).collection('items').get();
-  const batch = db.batch();
+// ── Admin tracker render ───────────────────────────────────────────────────
+function renderAdminTracker(jobId, phases) {
+  const el=document.getElementById('admin-tracker-content');
+  const completedCount=phases.filter(p=>p.status==='complete').length;
+  let html=`<div class="tracker-overall">
+    <div class="tracker-overall-label">Overall Progress</div>
+    <div class="progress-bg"><div class="progress-fill" style="width:${Math.round(completedCount/5*100)}%"></div></div>
+    <div class="tracker-phase-stat">${completedCount} of 5 phases complete</div>
+  </div>`;
+
+  phases.forEach((phase,idx)=>{
+    const def=PHASE_DEFS[idx];
+    const doneItems=def.items.filter(i=>phase.items&&phase.items[i.key]).length;
+    const totalItems=def.items.length;
+    html+=`<div class="phase-card">
+      <div class="phase-header" onclick="togglePhaseExpand('admin',${idx})">
+        <div class="phase-dot ${phase.status}">${phase.status==='complete'?'✓':def.num}</div>
+        <div class="phase-info">
+          <div class="phase-name">${def.name}</div>
+          <div class="phase-meta">${doneItems}/${totalItems} items · Payment: ${def.payment}</div>
+        </div>
+        <span class="phase-badge ${phase.status}">${phase.status==='upcoming'?'Upcoming':phase.status==='active'?'In Progress':'Complete'}</span>
+      </div>
+      <div class="phase-body" id="admin-phase-body-${idx}">
+        <div class="payment-banner">
+          <div class="payment-banner-top">
+            <div class="payment-label">${def.payLabel}</div>
+            <div class="payment-pct">${def.payment}</div>
+          </div>
+          <div class="payment-trigger">⚡ Receipt of this payment initiates the next phase of work</div>
+        </div>
+        <div style="margin-top:12px">
+          ${def.items.map(item=>{
+            const done=phase.items&&phase.items[item.key];
+            return `<div class="scope-item">
+              <div class="scope-chk ${done?'done':''} clickable" onclick="toggleScopeItem('${jobId}',${idx},'${item.key}',${!done})">
+                <svg width="11" height="8" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L11.5 1" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="scope-label ${done?'done':''}">${esc(item.label)}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="admin-phase-ctrl">
+          <button class="phase-ctrl-btn set-active" onclick="setPhaseStatus('${jobId}',${idx},'active')">Set In Progress</button>
+          <button class="phase-ctrl-btn set-complete" onclick="setPhaseStatus('${jobId}',${idx},'complete')">Mark Complete</button>
+          <button class="phase-ctrl-btn set-upcoming" onclick="setPhaseStatus('${jobId}',${idx},'upcoming')">Reset</button>
+        </div>
+      </div>
+    </div>
+    ${idx<4?'<div class="phase-connector"></div>':''}`;
+  });
+  el.innerHTML=html;
+}
+
+// ── Client tracker render ──────────────────────────────────────────────────
+function renderClientTracker(phases) {
+  const el=document.getElementById('client-tracker-content');
+  const completedCount=phases.filter(p=>p.status==='complete').length;
+  let html=`<div class="tracker-overall">
+    <div class="tracker-overall-label">Overall Progress</div>
+    <div class="progress-bg"><div class="progress-fill" style="width:${Math.round(completedCount/5*100)}%"></div></div>
+    <div class="tracker-phase-stat">${completedCount} of 5 phases complete</div>
+  </div>`;
+
+  phases.forEach((phase,idx)=>{
+    const def=PHASE_DEFS[idx];
+    const doneItems=def.items.filter(i=>phase.items&&phase.items[i.key]).length;
+    const totalItems=def.items.length;
+    html+=`<div class="phase-card">
+      <div class="phase-header" onclick="togglePhaseExpand('client',${idx})">
+        <div class="phase-dot ${phase.status}">${phase.status==='complete'?'✓':def.num}</div>
+        <div class="phase-info">
+          <div class="phase-name">${def.name}</div>
+          <div class="phase-meta">${doneItems}/${totalItems} items complete</div>
+        </div>
+        <span class="phase-badge ${phase.status}">${phase.status==='upcoming'?'Upcoming':phase.status==='active'?'In Progress':'Complete'}</span>
+      </div>
+      <div class="phase-body" id="client-phase-body-${idx}">
+        <div class="payment-banner">
+          <div class="payment-banner-top">
+            <div class="payment-label">${def.payLabel}</div>
+            <div class="payment-pct">${def.payment}</div>
+          </div>
+          <div class="payment-trigger">⚡ Receipt of this payment initiates the next phase of work</div>
+        </div>
+        <div style="margin-top:12px">
+          ${def.items.map(item=>{
+            const done=phase.items&&phase.items[item.key];
+            return `<div class="scope-item">
+              <div class="scope-chk ${done?'done':''}">
+                <svg width="11" height="8" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L11.5 1" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="scope-label ${done?'done':''}">${esc(item.label)}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+    ${idx<4?'<div class="phase-connector"></div>':''}`;
+  });
+  el.innerHTML=html;
+  // Auto-expand active phase
+  const activeIdx=phases.findIndex(p=>p.status==='active');
+  if(activeIdx>=0) togglePhaseExpand('client',activeIdx,true);
+}
+
+function togglePhaseExpand(prefix,idx,forceOpen) {
+  const body=document.getElementById(`${prefix}-phase-body-${idx}`);
+  if(!body) return;
+  if(forceOpen) body.classList.add('open');
+  else body.classList.toggle('open');
+}
+
+// ── Tracker Firestore ops ──────────────────────────────────────────────────
+async function setPhaseStatus(jobId, phaseIdx, status) {
+  const doc=await db.collection('jobs').doc(jobId).get();
+  const phases=(doc.data().phases)||defaultPhases();
+  phases[phaseIdx].status=status;
+  await db.collection('jobs').doc(jobId).update({phases});
+}
+
+async function toggleScopeItem(jobId, phaseIdx, itemKey, value) {
+  const doc=await db.collection('jobs').doc(jobId).get();
+  const phases=(doc.data().phases)||defaultPhases();
+  if(!phases[phaseIdx].items) phases[phaseIdx].items={};
+  phases[phaseIdx].items[itemKey]=value;
+  await db.collection('jobs').doc(jobId).update({phases});
+}
+
+// ── Job CRUD ───────────────────────────────────────────────────────────────
+function openNewJobSheet(){document.getElementById('nj-client').value='';document.getElementById('nj-code').value='';document.getElementById('nj-desc').value='';document.getElementById('newjob-overlay').classList.add('open');}
+function closeNewJobSheet(){document.getElementById('newjob-overlay').classList.remove('open');}
+async function createJob(){
+  const clientName=document.getElementById('nj-client').value.trim();
+  const code=document.getElementById('nj-code').value.trim().toUpperCase();
+  const description=document.getElementById('nj-desc').value.trim();
+  if(!clientName||!code) return;
+  const sp=document.getElementById('save-job-spin');sp.style.display='inline-block';
+  await db.collection('jobs').add({clientName,code,description,phases:defaultPhases(),createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+  sp.style.display='none';
+  closeNewJobSheet();
+}
+async function deleteJob(jobId){
+  if(!confirm('Remove this job and all its data? This cannot be undone.')) return;
+  const snap=await db.collection('jobs').doc(jobId).collection('items').get();
+  const batch=db.batch();
   snap.docs.forEach(d=>batch.delete(d.ref));
   batch.delete(db.collection('jobs').doc(jobId));
   await batch.commit();
 }
 
-// ── New job ────────────────────────────────────────────────────────────────
-function openNewJobSheet() { document.getElementById('nj-client').value=''; document.getElementById('nj-code').value=''; document.getElementById('nj-desc').value=''; document.getElementById('newjob-overlay').classList.add('open'); }
-function closeNewJobSheet() { document.getElementById('newjob-overlay').classList.remove('open'); }
-async function createJob() {
-  const clientName=document.getElementById('nj-client').value.trim();
-  const code=document.getElementById('nj-code').value.trim().toUpperCase();
-  const description=document.getElementById('nj-desc').value.trim();
-  if (!clientName||!code) return;
-  const sp=document.getElementById('save-job-spin'); sp.style.display='inline-block';
-  await db.collection('jobs').add({clientName,code,description,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-  sp.style.display='none';
-  closeNewJobSheet();
-}
-
 // ── Client portal ──────────────────────────────────────────────────────────
-async function clientLookup() {
+async function clientLookup(){
   const code=document.getElementById('job-code-input').value.trim().toUpperCase();
   const err=document.getElementById('code-err');
   const sp=document.getElementById('lookup-spin');
-  if (!code) return;
-  sp.style.display='inline-block'; err.style.display='none';
-  try {
+  if(!code) return;
+  sp.style.display='inline-block';err.style.display='none';
+  try{
     const snap=await db.collection('jobs').where('code','==',code).limit(1).get();
-    if (snap.empty) { err.style.display='block'; sp.style.display='none'; return; }
+    if(snap.empty){err.style.display='block';sp.style.display='none';return;}
     currentJob={id:snap.docs[0].id,...snap.docs[0].data()};
     document.getElementById('client-lookup').style.display='none';
     document.getElementById('client-job').style.display='block';
     renderClientHeader();
+    subscribeClientTracker();
     subscribeClientItems();
-  } catch(e) { err.textContent='Connection error — please try again.'; err.style.display='block'; }
+    setClientTab('tracker');
+  }catch(e){err.textContent='Connection error — please try again.';err.style.display='block';}
   sp.style.display='none';
 }
 
-function clientReset(silent) {
-  if (unsubClient) { unsubClient(); unsubClient=null; }
-  currentJob=null; clientFilter='all'; allClientItems=[];
+function clientReset(silent){
+  if(unsubClient){unsubClient();unsubClient=null;}
+  if(unsubClientTracker){unsubClientTracker();unsubClientTracker=null;}
+  currentJob=null;clientFilter='all';allClientItems=[];
   document.getElementById('client-lookup').style.display='block';
   document.getElementById('client-job').style.display='none';
   document.getElementById('job-code-input').value='';
   document.getElementById('code-err').style.display='none';
-  if (!silent) show('client');
+  if(!silent) show('client');
 }
 
-function renderClientHeader() {
+function renderClientHeader(){
   document.getElementById('client-job-header').innerHTML=`
-    <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:15px">${esc(currentJob.clientName)}</div>
-    <div class="muted" style="font-size:12px;margin-top:2px">Job #${esc(currentJob.code)}${currentJob.description?' · '+esc(currentJob.description):''}</div>
-    <div class="progress-bg"><div class="progress-fill" id="cpf" style="width:0%"></div></div>
-    <div class="muted" style="font-size:11px" id="cpl">Loading…</div>`;
+    <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:15px;color:#ffffff">${esc(currentJob.clientName)}</div>
+    <div style="color:#8a9fcf;font-size:12px;margin-top:2px">Job #${esc(currentJob.code)}${currentJob.description?' · '+esc(currentJob.description):''}</div>`;
 }
 
-function subscribeClientItems() {
-  if (unsubClient) unsubClient();
-  unsubClient = db.collection('jobs').doc(currentJob.id).collection('items').orderBy('createdAt','asc').onSnapshot(snap=>{
-    allClientItems = snap.docs.map(d=>({id:d.id,...d.data()}));
-    const done=allClientItems.filter(i=>i.status==='Purchased').length;
-    const pct=allClientItems.length?Math.round(done/allClientItems.length*100):0;
-    const pf=document.getElementById('cpf'); if(pf) pf.style.width=pct+'%';
-    const pl=document.getElementById('cpl'); if(pl) pl.textContent=`${done} of ${allClientItems.length} items purchased`;
+function subscribeClientTracker(){
+  if(unsubClientTracker){unsubClientTracker();unsubClientTracker=null;}
+  unsubClientTracker=db.collection('jobs').doc(currentJob.id).onSnapshot(snap=>{
+    const data=snap.data()||{};
+    renderClientTracker(data.phases||defaultPhases());
+  });
+}
+
+function subscribeClientItems(){
+  if(unsubClient) unsubClient();
+  unsubClient=db.collection('jobs').doc(currentJob.id).collection('items').orderBy('createdAt','asc').onSnapshot(snap=>{
+    allClientItems=snap.docs.map(d=>({id:d.id,...d.data()}));
     renderClientItems();
   });
 }
 
-function setFilter(f) {
+function setFilter(f){
   clientFilter=f;
   ['all','pending','purchased'].forEach(x=>document.getElementById('cf-'+x).classList.toggle('on',x===f));
   renderClientItems();
 }
 
-function renderClientItems() {
+function renderClientItems(){
   const list=document.getElementById('client-items-list');
   let items=allClientItems;
-  if (clientFilter==='pending') items=allClientItems.filter(i=>i.status!=='Purchased');
-  if (clientFilter==='purchased') items=allClientItems.filter(i=>i.status==='Purchased');
-  if (!items.length) { list.innerHTML=`<div class="empty">${allClientItems.length===0?'No items yet — tap Add Material Item to get started.':'No items match this filter.'}</div>`; return; }
-  list.innerHTML=items.map(item=>renderItemCard(item, currentJob.id, false)).join('');
+  if(clientFilter==='pending') items=allClientItems.filter(i=>i.status!=='Purchased');
+  if(clientFilter==='purchased') items=allClientItems.filter(i=>i.status==='Purchased');
+  if(!items.length){list.innerHTML=`<div class="empty">${allClientItems.length===0?'No materials added yet.':'No items match this filter.'}</div>`;return;}
+  list.innerHTML=items.map(item=>renderItemCard(item,currentJob.id,false)).join('');
 }
 
 // ── Item card ──────────────────────────────────────────────────────────────
-function renderItemCard(item, jobId, adminView) {
+function renderItemCard(item,jobId,adminView){
   const bought=item.status==='Purchased';
   const domain=getDomain(item.link);
   let faviconHTML='';
-  if (item.link) {
-    try { const host=new URL(item.link.startsWith('http')?item.link:'https://'+item.link).hostname; faviconHTML=`<img src="https://www.google.com/s2/favicons?sz=32&domain=${host}" onerror="this.style.display='none'" />`; } catch{}
-  }
+  if(item.link){try{const host=new URL(item.link.startsWith('http')?item.link:'https://'+item.link).hostname;faviconHTML=`<img src="https://www.google.com/s2/favicons?sz=32&domain=${host}" onerror="this.style.display='none'" />`;}catch{}}
   const itemJson=adminView?'':JSON.stringify(item).replace(/\\/g,'\\\\').replace(/"/g,'&quot;');
-  const actions=adminView?'':`
-    <div class="item-actions">
-      <button class="obtn obtn-blue" style="font-size:11px;padding:5px 12px" onclick='openItemForm(${itemJson})'>Edit</button>
-      <button class="obtn obtn-red" style="font-size:11px;padding:5px 12px" onclick="delItem('${jobId}','${item.id}')">Remove</button>
-    </div>`;
+  const actions=adminView?'':`<div class="item-actions">
+    <button class="obtn obtn-blue" style="font-size:11px;padding:5px 12px" onclick='openItemForm(${itemJson})'>Edit</button>
+    <button class="obtn obtn-red" style="font-size:11px;padding:5px 12px" onclick="delItem('${jobId}','${item.id}')">Remove</button>
+  </div>`;
   const chkClick=adminView?'':`onclick="toggleStatus('${jobId}','${item.id}','${item.status}')"`;
   return `<div class="card" style="opacity:${bought?.72:1};border-left:3px solid ${bought?'#3a7a20':'#c1541c'}">
     <div class="item-top">
@@ -440,7 +744,7 @@ function renderItemCard(item, jobId, adminView) {
 }
 
 // ── Item form ──────────────────────────────────────────────────────────────
-function openItemForm(item) {
+function openItemForm(item){
   document.getElementById('item-form-title').textContent=item?'Edit Item':'Add Material Item';
   document.getElementById('edit-item-id').value=item?item.id:'';
   document.getElementById('f-link').value=item?(item.link||''):'';
@@ -453,50 +757,48 @@ function openItemForm(item) {
   refreshSegs();
   document.getElementById('item-overlay').classList.add('open');
 }
-function closeItemForm() { document.getElementById('item-overlay').classList.remove('open'); }
-function setSeg(field,val) { if(field==='fulfillment')fFulfillment=val; if(field==='status')fStatus=val; refreshSegs(); }
-function refreshSegs() {
+function closeItemForm(){document.getElementById('item-overlay').classList.remove('open');}
+function setSeg(field,val){if(field==='fulfillment')fFulfillment=val;if(field==='status')fStatus=val;refreshSegs();}
+function refreshSegs(){
   document.getElementById('seg-delivery').classList.toggle('on',fFulfillment==='Delivery');
   document.getElementById('seg-pickup').classList.toggle('on',fFulfillment==='Pickup');
   document.getElementById('seg-pending').classList.toggle('on',fStatus==='Not Purchased');
   document.getElementById('seg-purchased').classList.toggle('on',fStatus==='Purchased');
 }
-
-async function saveItem() {
-  if (!currentJob) return;
+async function saveItem(){
+  if(!currentJob) return;
   const link=document.getElementById('f-link').value.trim();
   const itemName=document.getElementById('f-name').value.trim();
-  if (!link&&!itemName) return;
-  const sp=document.getElementById('save-item-spin'); sp.style.display='inline-block';
+  if(!link&&!itemName) return;
+  const sp=document.getElementById('save-item-spin');sp.style.display='inline-block';
   const data={link,itemName,qty:parseInt(document.getElementById('f-qty').value)||1,date:document.getElementById('f-date').value,notes:document.getElementById('f-notes').value.trim(),fulfillment:fFulfillment,status:fStatus};
   const editId=document.getElementById('edit-item-id').value;
   const ref=db.collection('jobs').doc(currentJob.id).collection('items');
-  if (editId) await ref.doc(editId).update(data);
-  else { data.createdAt=firebase.firestore.FieldValue.serverTimestamp(); await ref.add(data); }
+  if(editId) await ref.doc(editId).update(data);
+  else{data.createdAt=firebase.firestore.FieldValue.serverTimestamp();await ref.add(data);}
   sp.style.display='none';
   closeItemForm();
 }
-
-async function toggleStatus(jobId,itemId,cur) {
+async function toggleStatus(jobId,itemId,cur){
   await db.collection('jobs').doc(jobId).collection('items').doc(itemId).update({status:cur==='Purchased'?'Not Purchased':'Purchased'});
 }
-async function delItem(jobId,itemId) {
+async function delItem(jobId,itemId){
   await db.collection('jobs').doc(jobId).collection('items').doc(itemId).delete();
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
-function getDomain(url) {
-  if (!url) return '';
-  try { return new URL(url.startsWith('http')?url:'https://'+url).hostname.replace('www.',''); } catch { return url; }
+function getDomain(url){
+  if(!url) return '';
+  try{return new URL(url.startsWith('http')?url:'https://'+url).hostname.replace('www.','');}catch{return url;}
 }
-function esc(s) {
-  if (!s) return '';
+function esc(s){
+  if(!s) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
-// Close overlays on outside tap
 document.getElementById('item-overlay').addEventListener('click',function(e){if(e.target===this)closeItemForm();});
 document.getElementById('newjob-overlay').addEventListener('click',function(e){if(e.target===this)closeNewJobSheet();});
 </script>
+
+</div>
 </body>
 </html>
