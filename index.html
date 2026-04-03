@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -458,7 +459,11 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <input id="f-name" type="text" placeholder="e.g. Matte Black Cabinet Pulls" />
     <div class="grid2" style="margin-bottom:0">
       <div><label class="lbl">Qty</label><input id="f-qty" type="number" min="1" value="1" /></div>
-      <div><label class="lbl">Date</label><input id="f-date" type="date" /></div>
+      <div><label class="lbl">Unit Price ($)</label><input id="f-price" type="number" min="0" step="0.01" placeholder="0.00" /></div>
+    </div>
+    <div class="grid2" style="margin-bottom:0">
+      <div style="margin-top:0"><label class="lbl">Delivery / Pickup Date</label><input id="f-date" type="date" /></div>
+      <div></div>
     </div>
     <label class="lbl">How Are You Getting It?</label>
     <div class="seg-wrap">
@@ -1088,8 +1093,35 @@ function renderClientItems(){
   let items=allClientItems;
   if(clientFilter==='pending') items=allClientItems.filter(i=>i.status!=='Purchased');
   if(clientFilter==='purchased') items=allClientItems.filter(i=>i.status==='Purchased');
-  if(!items.length){list.innerHTML=`<div class="empty">${allClientItems.length===0?'No materials added yet.':'No items match this filter.'}</div>`;return;}
-  list.innerHTML=items.map(item=>renderItemCard(item,currentJob.id,false)).join('');
+
+  // Budget calc from ALL items (not filtered)
+  const totalBudget=allClientItems.reduce((sum,i)=>sum+(i.price?(i.price*(i.qty||1)):0),0);
+  const spentBudget=allClientItems.filter(i=>i.status==='Purchased').reduce((sum,i)=>sum+(i.price?(i.price*(i.qty||1)):0),0);
+  const remaining=totalBudget-spentBudget;
+  const spentPct=totalBudget?Math.round(spentBudget/totalBudget*100):0;
+
+  let budgetHtml='';
+  if(totalBudget>0){
+    budgetHtml=`<div style="background:#0a1230;border:1px solid #2a3f80;border-radius:12px;padding:14px 16px;margin-bottom:14px">
+      <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#8a9fcf;margin-bottom:10px">Decor Budget Summary</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <div><div style="font-size:9px;color:#8a9fcf;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px">Total Estimated</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:18px;color:#ffffff">$${totalBudget.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div>
+        <div style="text-align:right"><div style="font-size:9px;color:#8a9fcf;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px">Remaining</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:18px;color:${remaining>0?'#e07040':'#6adf40'}">$${remaining.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div>
+      </div>
+      <div style="background:#060e28;border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px">
+        <div style="width:${spentPct}%;height:100%;background:linear-gradient(90deg,#3a8a20,#6adf40);border-radius:6px;transition:width .5s"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <div style="font-size:11px;color:#6adf40;font-family:'Montserrat',sans-serif;font-weight:700">Purchased: $${spentBudget.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})} (${spentPct}%)</div>
+        <div style="font-size:11px;color:#8a9fcf">${allClientItems.length} items</div>
+      </div>
+    </div>`;
+  }
+
+  if(!items.length){list.innerHTML=budgetHtml+`<div class="empty">${allClientItems.length===0?'No materials added yet.':'No items match this filter.'}</div>`;return;}
+  list.innerHTML=budgetHtml+items.map(item=>renderItemCard(item,currentJob.id,false)).join('');
 }
 
 // ── Item card ──────────────────────────────────────────────────────────────
@@ -1114,6 +1146,7 @@ function renderItemCard(item,jobId,adminView){
         ${item.link?`<div class="item-link">${faviconHTML}<a href="${item.link}" target="_blank" rel="noopener noreferrer">${esc(domain)}</a></div>`:''}
         <div>
           <span class="pill" style="background:#1e3a80">Qty ${item.qty||1}</span>
+          ${item.price?`<span class="pill" style="background:#2a3a6a">$${(item.price*(item.qty||1)).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>`:''}
           <span class="pill" style="background:${item.fulfillment==='Delivery'?'#1a4a6a':'#1a5a3a'}">${esc(item.fulfillment||'Delivery')}</span>
           ${item.date?`<span class="pill" style="background:#3a1a6a">${esc(item.date)}</span>`:''}
           <span class="pill" style="background:${bought?'#2a5a20':'#5a2a10'}">${esc(item.status||'Not Purchased')}</span>
@@ -1132,6 +1165,7 @@ function openItemForm(item){
   document.getElementById('f-link').value=item?(item.link||''):'';
   document.getElementById('f-name').value=item?(item.itemName||''):'';
   document.getElementById('f-qty').value=item?(item.qty||1):1;
+  document.getElementById('f-price').value=item?(item.price||''):'';
   document.getElementById('f-date').value=item?(item.date||''):'';
   document.getElementById('f-notes').value=item?(item.notes||''):'';
   fFulfillment=item?(item.fulfillment||'Delivery'):'Delivery';
@@ -1153,7 +1187,7 @@ async function saveItem(){
   const itemName=document.getElementById('f-name').value.trim();
   if(!link&&!itemName) return;
   const sp=document.getElementById('save-item-spin');sp.style.display='inline-block';
-  const data={link,itemName,qty:parseInt(document.getElementById('f-qty').value)||1,date:document.getElementById('f-date').value,notes:document.getElementById('f-notes').value.trim(),fulfillment:fFulfillment,status:fStatus};
+  const data={link,itemName,qty:parseInt(document.getElementById('f-qty').value)||1,price:parseFloat(document.getElementById('f-price').value)||0,date:document.getElementById('f-date').value,notes:document.getElementById('f-notes').value.trim(),fulfillment:fFulfillment,status:fStatus};
   const editId=document.getElementById('edit-item-id').value;
   const ref=db.collection('jobs').doc(currentJob.id).collection('items');
   if(editId) await ref.doc(editId).update(data);
