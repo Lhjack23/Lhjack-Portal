@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
@@ -199,6 +198,25 @@
 textarea{resize:vertical;min-height:70px;line-height:1.5}
 .photo-inputs{display:flex;flex-direction:column;gap:6px}
 .photo-inputs input{margin-bottom:0}
+/* ── Inspection & Permit Tracker ── */
+.insp-section{margin-top:14px;padding-top:14px;border-top:1px solid #1a2f60}
+.insp-section-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#6a9fd8;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.insp-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #0e1838}
+.insp-row:last-child{border-bottom:none}
+.insp-icon{font-size:14px;flex-shrink:0;width:22px;text-align:center}
+.insp-label{flex:1;font-size:12px;color:#c8d8f0;line-height:1.3}
+.insp-status-wrap{flex-shrink:0}
+/* Client read-only badge */
+.insp-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:4px 9px;border-radius:12px;letter-spacing:.04em;white-space:nowrap}
+.insp-pending{background:#1a2a6c;color:#8a9fcf;border:1px solid #3a50a0}
+.insp-submitted{background:rgba(193,84,28,.2);color:#e07040;border:1px solid #c1541c}
+.insp-scheduled{background:#1a3a6a;color:#6a9fd8;border:1px solid #3a6090}
+.insp-passed{background:#1a4a10;color:#6adf40;border:1px solid #3a8a20}
+.insp-na{background:#1e1e2a;color:#5a6a8a;border:1px solid #3a3a5a}
+/* Admin select */
+.insp-select{background:#0a1230;border:1px solid #2a4090;border-radius:7px;color:#fff;font-family:'Open Sans',sans-serif;font-size:11px;padding:6px 8px;outline:none;cursor:pointer;max-width:110px}
+.insp-na-reason{background:#0a1230;border:1px solid #2a4090;border-radius:7px;color:#8a9fcf;font-family:'Open Sans',sans-serif;font-size:10px;padding:5px 7px;outline:none;cursor:pointer;width:100%;margin-top:5px}
+.insp-na-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:0}
 /* ── Scope of Work ── */
 .scope-section-card{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;margin-bottom:12px;overflow:hidden}
 .scope-section-header{padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a2f60}
@@ -563,11 +581,80 @@ const PHASE_DEFS = [
     ]},
 ];
 
+// ── Inspection & Permit definitions per phase ─────────────────────────────
+const INSP_DEFS = [
+  // Phase 1 — Contract & Mobilization
+  [
+    {key:'permit_submitted', label:'Permit Application Submitted',  icon:'📋'},
+    {key:'permit_approved',  label:'Permit Approved & Issued',      icon:'✅'},
+  ],
+  // Phase 2 — Demo & Site Prep
+  [
+    {key:'demo_permit',      label:'Demo Permit (if required)',     icon:'🏗️'},
+    {key:'site_inspection',  label:'Site / Zoning Inspection',      icon:'📐'},
+  ],
+  // Phase 3 — Rough Work
+  [
+    {key:'rough_frame_sched',label:'Rough Framing Inspection Scheduled', icon:'📅'},
+    {key:'rough_frame_pass', label:'Rough Framing Inspection Passed',    icon:'🏠'},
+    {key:'rough_elec_sched', label:'Rough Electrical Inspection Scheduled', icon:'📅'},
+    {key:'rough_elec_pass',  label:'Rough Electrical Inspection Passed',    icon:'⚡'},
+    {key:'rough_plumb_sched',label:'Rough Plumbing Inspection Scheduled', icon:'📅'},
+    {key:'rough_plumb_pass', label:'Rough Plumbing Inspection Passed',    icon:'🔧'},
+  ],
+  // Phase 4 — Finishes
+  [
+    {key:'insulation_insp',  label:'Insulation Inspection (if required)', icon:'🧱'},
+  ],
+  // Phase 5 — Final & Closeout
+  [
+    {key:'final_sched',      label:'Final Inspection Scheduled',    icon:'📅'},
+    {key:'final_passed',     label:'Final Inspection Passed',       icon:'🎉'},
+    {key:'co_issued',        label:'Certificate of Occupancy Issued', icon:'📜'},
+  ],
+];
+
+const INSP_STATUSES = [
+  {val:'pending',   label:'Pending',   cls:'insp-pending'},
+  {val:'submitted', label:'Submitted', cls:'insp-submitted'},
+  {val:'scheduled', label:'Scheduled', cls:'insp-scheduled'},
+  {val:'passed',    label:'Passed ✓',  cls:'insp-passed'},
+  {val:'na',        label:'N/A',       cls:'insp-na'},
+];
+
+const NA_REASONS = [
+  'Not required for this project',
+  'Already permitted / approved',
+  'Jurisdiction does not require',
+  'Owner / client handles directly',
+  'Included in another inspection',
+  'Waived by inspector',
+  'Other',
+];
+
+function defaultInspections() {
+  return INSP_DEFS.map(phaseInsps=>
+    Object.fromEntries(phaseInsps.map(i=>[i.key,{status:'pending',naReason:''}]))
+  );
+}
+
 function defaultPhases() {
   return PHASE_DEFS.map(p=>({
     id:p.id, status:'upcoming',
     items: Object.fromEntries(p.items.map(i=>[i.key, false]))
   }));
+}
+
+function mergeInspections(savedPhases) {
+  const defaults=defaultInspections();
+  return defaults.map((def,idx)=>{
+    const saved=(savedPhases[idx]&&savedPhases[idx].inspections)||{};
+    const merged={};
+    Object.keys(def).forEach(k=>{
+      merged[k]={status:(saved[k]&&saved[k].status)||'pending', naReason:(saved[k]&&saved[k].naReason)||''};
+    });
+    return merged;
+  });
 }
 
 // ── State ──────────────────────────────────────────────────────────────────
@@ -796,6 +883,7 @@ function renderAdminTracker(jobId, phases) {
               onchange="savePhaseDates('${jobId}',${idx})" />
           </div>
         </div>
+        ${renderAdminInspections(jobId, idx, phase.inspections||{})}
       </div>
     </div>
     ${idx<4?'<div class="phase-connector"></div>':''}`;
@@ -949,6 +1037,7 @@ function renderClientTracker(phases) {
             </div>`;
           }).join('')}
         </div>
+        ${renderClientInspections(idx, phase.inspections||{})}
       </div>
     </div>
     ${idx<4?'<div class="phase-connector"></div>':''}`;
@@ -982,6 +1071,80 @@ async function savePhaseDates(jobId, phaseIdx) {
   const phases=(doc.data().phases)||defaultPhases();
   if(startEl) phases[phaseIdx].startDate=startEl.value;
   if(endEl) phases[phaseIdx].endDate=endEl.value;
+  await db.collection('jobs').doc(jobId).update({phases});
+}
+
+// ── Inspection render helpers ──────────────────────────────────────────────
+function inspBadge(status) {
+  const s=INSP_STATUSES.find(x=>x.val===status)||INSP_STATUSES[0];
+  return `<span class="insp-badge ${s.cls}">${s.label}</span>`;
+}
+
+function renderClientInspections(phaseIdx, savedInsps) {
+  const defs=INSP_DEFS[phaseIdx];
+  if(!defs||!defs.length) return '';
+  let html=`<div class="insp-section">
+    <div class="insp-section-title">🔍 Inspections &amp; Permits</div>`;
+  defs.forEach(insp=>{
+    const data=(savedInsps&&savedInsps[insp.key])||{status:'pending',naReason:''};
+    const naNote=data.status==='na'&&data.naReason?`<div style="font-size:10px;color:#5a6a8a;margin-top:3px;font-style:italic">${esc(data.naReason)}</div>`:'';
+    html+=`<div class="insp-row">
+      <div class="insp-icon">${insp.icon}</div>
+      <div class="insp-label">
+        ${esc(insp.label)}
+        ${naNote}
+      </div>
+      <div class="insp-status-wrap">${inspBadge(data.status)}</div>
+    </div>`;
+  });
+  html+='</div>';
+  return html;
+}
+
+function renderAdminInspections(jobId, phaseIdx, savedInsps) {
+  const defs=INSP_DEFS[phaseIdx];
+  if(!defs||!defs.length) return '';
+  let html=`<div class="insp-section">
+    <div class="insp-section-title">🔍 Inspections &amp; Permits</div>`;
+  defs.forEach(insp=>{
+    const data=(savedInsps&&savedInsps[insp.key])||{status:'pending',naReason:''};
+    const isNA=data.status==='na';
+    html+=`<div class="insp-row" style="flex-wrap:wrap">
+      <div class="insp-icon">${insp.icon}</div>
+      <div class="insp-label" style="min-width:120px">${esc(insp.label)}</div>
+      <div class="insp-na-wrap">
+        <select class="insp-select" onchange="saveInspStatus('${jobId}',${phaseIdx},'${insp.key}',this.value,document.getElementById('na-reason-${phaseIdx}-${insp.key}'))">
+          ${INSP_STATUSES.map(s=>`<option value="${s.val}" ${data.status===s.val?'selected':''}>${s.label}</option>`).join('')}
+        </select>
+        ${isNA?`<select id="na-reason-${phaseIdx}-${insp.key}" class="insp-na-reason" onchange="saveInspReason('${jobId}',${phaseIdx},'${insp.key}',this.value)">
+          ${NA_REASONS.map(r=>`<option value="${r}" ${data.naReason===r?'selected':''}>${r}</option>`).join('')}
+        </select>`:`<select id="na-reason-${phaseIdx}-${insp.key}" class="insp-na-reason" style="display:none" onchange="saveInspReason('${jobId}',${phaseIdx},'${insp.key}',this.value)">
+          ${NA_REASONS.map(r=>`<option value="${r}" ${data.naReason===r?'selected':''}>${r}</option>`).join('')}
+        </select>`}
+      </div>
+    </div>`;
+  });
+  html+='</div>';
+  return html;
+}
+
+async function saveInspStatus(jobId, phaseIdx, inspKey, status, reasonEl) {
+  if(reasonEl) reasonEl.style.display=status==='na'?'block':'none';
+  const doc=await db.collection('jobs').doc(jobId).get();
+  const phases=(doc.data().phases)||defaultPhases();
+  if(!phases[phaseIdx].inspections) phases[phaseIdx].inspections={};
+  if(!phases[phaseIdx].inspections[inspKey]) phases[phaseIdx].inspections[inspKey]={status:'pending',naReason:''};
+  phases[phaseIdx].inspections[inspKey].status=status;
+  if(status!=='na') phases[phaseIdx].inspections[inspKey].naReason='';
+  await db.collection('jobs').doc(jobId).update({phases});
+}
+
+async function saveInspReason(jobId, phaseIdx, inspKey, reason) {
+  const doc=await db.collection('jobs').doc(jobId).get();
+  const phases=(doc.data().phases)||defaultPhases();
+  if(!phases[phaseIdx].inspections) phases[phaseIdx].inspections={};
+  if(!phases[phaseIdx].inspections[inspKey]) phases[phaseIdx].inspections[inspKey]={status:'na',naReason:''};
+  phases[phaseIdx].inspections[inspKey].naReason=reason;
   await db.collection('jobs').doc(jobId).update({phases});
 }
 
