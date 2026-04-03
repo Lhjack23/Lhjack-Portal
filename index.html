@@ -547,102 +547,195 @@ firebase.initializeApp({
   measurementId: "G-BYRNJV3D87"
 });
 const db = firebase.firestore();
-const storage = firebase.storage();
 
-// ── File Upload helpers ────────────────────────────────────────────────────
+// ── Firebase Storage — safe init ──────────────────────────────────────────
+let storage = null;
+try {
+  storage = firebase.storage();
+} catch(e) {
+  console.warn('Firebase Storage init failed:', e.message);
+}
+
+function storageErrMsg(e) {
+  const c = e.code || e.message || '';
+  if(c.includes('bucket-not-found') || c.includes('storage/bucket-not-found'))
+    return 'Storage not enabled. Go to Firebase Console → Build → Storage → Get Started.';
+  if(c.includes('unauthorized') || c.includes('storage/unauthorized'))
+    return 'Storage rules are blocking uploads. Go to Firebase Console → Storage → Rules and set: allow read, write: if true;';
+  if(c.includes('unauthenticated'))
+    return 'Storage rules require login. Update rules to allow unauthenticated access.';
+  if(c.includes('quota-exceeded') || c.includes('storage/quota-exceeded'))
+    return 'Firebase free storage quota exceeded.';
+  if(c.includes('cors') || c.includes('CORS') || c.includes('Failed to fetch') || c.includes('NetworkError'))
+    return 'CORS error — Firebase Storage needs CORS rules configured. See setup instructions.';
+  if(c.includes('storage/unknown') || c.includes('XMLHttpRequest'))
+    return 'Network error uploading. Check Storage is enabled and rules allow writes (code: ' + c + ')';
+  return 'Upload failed: ' + (c || 'unknown error. Check Firebase Storage is enabled.');
+}
+
+function setProgress(barEl, labelEl, pct, text) {
+  if(barEl) barEl.style.width = pct + '%';
+  if(labelEl) labelEl.textContent = text;
+}
+
+// ── Photo uploads (Updates tab) ───────────────────────────────────────────
 let uploadedPhotoUrls = [];
 
 function handlePhotoSelect(event) {
-  const files=Array.from(event.target.files).slice(0,6);
+  const input = event.target;
+  const files = Array.from(input.files).slice(0, 6);
   if(!files.length) return;
-  const jobId=document.getElementById('update-job-id').value;
-  uploadPhotos(files, jobId);
+  const jobId = document.getElementById('update-job-id').value;
+  uploadPhotos(files, jobId, input);
 }
 
-async function uploadPhotos(files, jobId) {
-  const prog=document.getElementById('photo-upload-progress');
-  const bar=document.getElementById('photo-upload-bar');
-  const lbl=document.getElementById('photo-upload-label');
-  prog.style.display='block';
-  let done=0;
-  for(const file of files) {
-    lbl.textContent=`Uploading ${file.name}…`;
-    bar.style.width=`${Math.round(done/files.length*100)}%`;
-    try {
-      const path=`updates/${jobId||'general'}/${Date.now()}_${file.name}`;
-      const ref=storage.ref(path);
-      await ref.put(file);
-      const url=await ref.getDownloadURL();
-      uploadedPhotoUrls.push(url);
-      addPhotoPreview(url, uploadedPhotoUrls.length-1);
-      // Also fill URL text inputs for fallback
-      const slots=['u-photo1','u-photo2','u-photo3'];
-      const emptySlot=slots.find(s=>!document.getElementById(s).value);
-      if(emptySlot) document.getElementById(emptySlot).value=url;
-    } catch(e) { lbl.textContent=`Error uploading ${file.name}`; }
-    done++;
-    bar.style.width=`${Math.round(done/files.length*100)}%`;
+async function uploadPhotos(files, jobId, inputEl) {
+  if(!storage) {
+    alert('Firebase Storage is not initialized. Enable it in Firebase Console → Build → Storage.');
+    return;
   }
-  lbl.textContent=`${files.length} photo${files.length>1?'s':''} uploaded ✓`;
-  bar.style.width='100%';
-  setTimeout(()=>{prog.style.display='none';},2000);
-  event.target.value='';
+  const prog = document.getElementById('photo-upload-progress');
+  const bar  = document.getElementById('photo-upload-bar');
+  const lbl  = document.getElementById('photo-upload-label');
+  if(prog) prog.style.display = 'block';
+
+  let uploaded = 0;
+  for(const file of files) {
+    setProgress(bar, lbl, Math.round(uploaded / files.length * 100), `Uploading ${file.name}…`);
+    try {
+      // Sanitize filename — remove spaces and special chars
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const path = `updates/${jobId || 'general'}/${Date.now()}_${safeName}`;
+      const ref = storage.ref(path);
+
+      // Upload with progress
+      await new Promise((resolve, reject) => {
+        const task = ref.put(file);
+        task.on('state_changed',
+          snap => {
+            const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+            setProgress(bar, lbl, pct, `Uploading ${file.name} (${pct}%)…`);
+          },
+          err => reject(err),
+          () => resolve()
+        );
+      });
+
+      const url = await ref.getDownloadURL();
+      uploadedPhotoUrls.push(url);
+      addPhotoPreview(url, uploadedPhotoUrls.length - 1);
+
+      // Fill URL text inputs as backup
+      const slots = ['u-photo1', 'u-photo2', 'u-photo3'];
+      const empty = slots.find(s => !document.getElementById(s).value);
+      if(empty) document.getElementById(empty).value = url;
+
+      uploaded++;
+      setProgress(bar, lbl, Math.round(uploaded / files.length * 100), `${uploaded}/${files.length} uploaded…`);
+
+    } catch(e) {
+      console.error('Photo upload error:', e);
+      setProgress(bar, lbl, 0, storageErrMsg(e));
+      // Show in a more visible way
+      if(prog) {
+        prog.style.background = 'rgba(193,84,28,0.2)';
+        prog.style.border = '1px solid #c1541c';
+        setTimeout(() => {
+          if(prog) { prog.style.background = ''; prog.style.border = ''; }
+        }, 6000);
+      }
+    }
+  }
+
+  if(uploaded > 0) {
+    setProgress(bar, lbl, 100, `✓ ${uploaded} photo${uploaded > 1 ? 's' : ''} uploaded successfully`);
+    setTimeout(() => { if(prog) prog.style.display = 'none'; }, 3000);
+  }
+
+  // Clear the file input so same file can be re-selected
+  if(inputEl) inputEl.value = '';
 }
 
 function addPhotoPreview(url, idx) {
-  const grid=document.getElementById('photo-preview-grid');
+  const grid = document.getElementById('photo-preview-grid');
   if(!grid) return;
-  const wrap=document.createElement('div');
-  wrap.className='photo-thumb-wrap';
-  wrap.id=`photo-thumb-${idx}`;
-  wrap.innerHTML=`<img class="photo-thumb" src="${url}" onerror="this.style.opacity='.3'" />
+  const wrap = document.createElement('div');
+  wrap.className = 'photo-thumb-wrap';
+  wrap.id = `photo-thumb-${idx}`;
+  wrap.innerHTML = `<img class="photo-thumb" src="${url}" onerror="this.style.opacity='.3'" />
     <button class="photo-thumb-remove" onclick="removeUploadedPhoto(${idx})">×</button>`;
   grid.appendChild(wrap);
 }
 
 function removeUploadedPhoto(idx) {
-  uploadedPhotoUrls[idx]=null;
-  const el=document.getElementById(`photo-thumb-${idx}`);
+  uploadedPhotoUrls[idx] = null;
+  const el = document.getElementById(`photo-thumb-${idx}`);
   if(el) el.remove();
-  // Sync back to URL fields
-  const validUrls=uploadedPhotoUrls.filter(Boolean);
-  ['u-photo1','u-photo2','u-photo3'].forEach((s,i)=>{
-    document.getElementById(s).value=validUrls[i]||'';
+  const validUrls = uploadedPhotoUrls.filter(Boolean);
+  ['u-photo1', 'u-photo2', 'u-photo3'].forEach((s, i) => {
+    document.getElementById(s).value = validUrls[i] || '';
   });
 }
 
+// ── Document uploads (Docs tab) ───────────────────────────────────────────
 async function uploadDocFile(event, jobId, catKey) {
-  const file=event.target.files[0];
+  const input = event.target;
+  const file = input.files[0];
   if(!file) return;
-  const prog=document.getElementById(`doc-prog-${catKey}`);
-  const bar=document.getElementById(`doc-prog-bar-${catKey}`);
-  const lbl=document.getElementById(`doc-prog-label-${catKey}`);
-  prog.style.display='block';
-  bar.style.width='10%';
-  lbl.textContent=`Uploading ${file.name}…`;
-  try {
-    const path=`documents/${jobId}/${catKey}/${Date.now()}_${file.name}`;
-    const ref=storage.ref(path);
-    const task=ref.put(file);
-    task.on('state_changed', snap=>{
-      bar.style.width=`${Math.round(snap.bytesTransferred/snap.totalBytes*100)}%`;
-    });
-    await task;
-    const url=await ref.getDownloadURL();
-    // Save to Firestore
-    const docRef=db.collection('jobs').doc(jobId);
-    const snap=await docRef.get();
-    const docs=(snap.data().documents)||{};
-    docs[catKey]={url, name:file.name, savedAt:new Date().toISOString()};
-    await docRef.update({documents:docs});
-    lbl.textContent=`${file.name} uploaded ✓`;
-    bar.style.width='100%';
-    setTimeout(()=>{prog.style.display='none';},2000);
-  } catch(e) {
-    lbl.textContent='Upload failed — check Storage rules';
-    bar.style.width='0%';
+
+  if(!storage) {
+    alert('Firebase Storage is not initialized. Enable it in Firebase Console → Build → Storage.');
+    input.value = '';
+    return;
   }
-  event.target.value='';
+
+  const prog = document.getElementById(`doc-prog-${catKey}`);
+  const bar  = document.getElementById(`doc-prog-bar-${catKey}`);
+  const lbl  = document.getElementById(`doc-prog-label-${catKey}`);
+
+  if(prog) { prog.style.display = 'block'; prog.style.background = ''; prog.style.border = ''; }
+  setProgress(bar, lbl, 5, `Uploading ${file.name}…`);
+
+  try {
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const path = `documents/${jobId}/${catKey}/${Date.now()}_${safeName}`;
+    const ref = storage.ref(path);
+
+    await new Promise((resolve, reject) => {
+      const task = ref.put(file);
+      task.on('state_changed',
+        snap => {
+          const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+          setProgress(bar, lbl, pct, `Uploading ${file.name} (${pct}%)…`);
+        },
+        err => reject(err),
+        () => resolve()
+      );
+    });
+
+    const url = await ref.getDownloadURL();
+
+    // Save URL + filename to Firestore
+    const docRef = db.collection('jobs').doc(jobId);
+    const snap = await docRef.get();
+    const docs = (snap.data().documents) || {};
+    docs[catKey] = { url, name: file.name, savedAt: new Date().toISOString() };
+    await docRef.update({ documents: docs });
+
+    setProgress(bar, lbl, 100, `✓ ${file.name} uploaded`);
+    setTimeout(() => { if(prog) prog.style.display = 'none'; }, 3000);
+
+  } catch(e) {
+    console.error('Doc upload error:', e);
+    const msg = storageErrMsg(e);
+    setProgress(bar, lbl, 0, msg);
+    if(prog) {
+      prog.style.background = 'rgba(193,84,28,0.15)';
+      prog.style.border = '1px solid #c1541c';
+    }
+    // Keep error visible
+  }
+  input.value = '';
 }
 
 // ── Phase definitions ──────────────────────────────────────────────────────
@@ -2105,7 +2198,27 @@ function renderClientDocs(docs) {
 
 function renderAdminDocs(jobId, docs) {
   const el=document.getElementById('admin-docs-content');
-  let html=`<div class="doc-vault-header" style="color:#8a9fcf;margin-bottom:14px">Upload files directly from your device or paste a shareable link. Clients see a View button instantly.</div>`;
+  const storageOK = !!storage;
+  const setupBanner = storageOK ? '' : `<div style="background:rgba(193,84,28,.15);border:1px solid #c1541c;border-radius:10px;padding:14px 16px;margin-bottom:14px">
+    <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:#e07040;margin-bottom:8px">⚠️ Enable Firebase Storage for File Uploads</div>
+    <div style="font-size:11px;color:#c8d8f0;line-height:1.8">
+      1. Go to <strong>console.firebase.google.com</strong> → your project<br>
+      2. Tap <strong>Build → Storage → Get Started</strong><br>
+      3. Choose <strong>Start in test mode</strong> → Done<br>
+      4. Tap <strong>Rules</strong> tab → replace all text with the code below → <strong>Publish</strong><br>
+      5. Refresh this page
+    </div>
+    <div style="background:#0a1230;border-radius:6px;padding:10px 12px;margin-top:10px;font-family:monospace;font-size:10px;color:#6adf40;line-height:1.6;white-space:pre">rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if true;
+    }
+  }
+}</div>
+  </div>`;
+
+  let html=setupBanner+`<div class="doc-vault-header" style="color:#8a9fcf;margin-bottom:14px">Upload files directly from your device or paste a shareable link. Clients see a View button instantly.</div>`;
   html+=DOC_CATS.map(cat=>{
     const doc=docs&&docs[cat.key];
     const savedUrl=doc&&doc.url?doc.url:'';
