@@ -74,10 +74,49 @@
     @keyframes spin{to{transform:rotate(360deg)}}
 
 ```
-/* ── Tab bar ── */
-.tab-bar{display:flex;background:#0a1230;border-radius:10px;padding:4px;margin-bottom:18px;gap:4px}
-.tab-btn{flex:1;padding:10px 8px;background:transparent;border:none;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border-radius:7px;transition:all .15s}
+/* ── Tab bar — scrollable for 5 tabs ── */
+.tab-bar{display:flex;background:#0a1230;border-radius:10px;padding:4px;margin-bottom:18px;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:10px 12px;background:transparent;border:none;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border-radius:7px;transition:all .15s;white-space:nowrap}
 .tab-btn.on{background:#c1541c;color:#ffffff}
+
+/* ── Payment Center ── */
+.pay-summary{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;padding:18px;margin-bottom:12px}
+.pay-due-card{background:#0a1230;border:2px solid #c1541c;border-radius:14px;padding:18px;margin-bottom:14px}
+.pay-due-label{font-size:10px;color:#e07040;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.pay-due-amount{font-family:'Montserrat',sans-serif;font-weight:900;font-size:34px;color:#ffffff;line-height:1;margin-bottom:4px}
+.pay-due-phase{font-size:12px;color:#8a9fcf;margin-bottom:16px}
+.pay-now-btn{display:block;width:100%;background:#c1541c;color:#fff;border:none;border-radius:10px;padding:15px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-align:center;text-decoration:none}
+.pay-instructions{font-size:11px;color:#8a9fcf;text-align:center;margin-top:8px;line-height:1.5}
+.pay-schedule-card{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;padding:4px 16px;margin-bottom:12px}
+.pay-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #151e45}
+.pay-row:last-child{border-bottom:none}
+.pay-row-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:11px;flex-shrink:0}
+.pay-row-info{flex:1;min-width:0}
+.pay-row-name{font-size:12px;color:#ffffff;font-weight:600}
+.pay-row-sub{font-size:10px;color:#8a9fcf;margin-top:2px}
+.pay-row-right{text-align:right;flex-shrink:0}
+.pay-row-amount{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px}
+.pay-row-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 8px;border-radius:10px;display:inline-block;margin-top:3px}
+.pay-hist-card{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;padding:14px 16px;margin-bottom:8px;border-left:3px solid #3a8a20}
+.pay-empty-msg{text-align:center;padding:30px 20px;color:#8a9fcf;font-size:13px}
+/* Admin payment panel */
+.contract-setup{background:#0a1230;border:1px solid #2a4090;border-radius:12px;padding:16px;margin-bottom:14px}
+.contract-setup-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#ffffff;margin-bottom:12px}
+.admin-pay-row{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.admin-pay-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.admin-pay-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;flex-shrink:0}
+.admin-pay-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#ffffff;flex:1}
+.admin-pay-calc{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;color:#e07040}
+.pay-status-btns{display:flex;gap:6px;margin-bottom:10px}
+.psb{padding:7px 12px;border-radius:6px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase;border:1px solid transparent;opacity:.55;transition:all .15s}
+.psb.active{opacity:1}
+.psb-upcoming{background:#1a2a6c;color:#8a9fcf;border-color:#3a50a0}
+.psb-due{background:rgba(193,84,28,.2);color:#e07040;border-color:#c1541c}
+.psb-paid{background:#1a4a10;color:#6adf40;border-color:#3a8a20}
+.admin-pay-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.admin-pay-fields input{margin-bottom:0;font-size:12px;padding:9px 10px}
+.admin-pay-save{width:100%;background:#c1541c;color:#fff;border:none;border-radius:7px;padding:10px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;letter-spacing:.04em;text-transform:uppercase}
 
 /* ── Project Tracker ── */
 .phase-card{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;margin-bottom:12px;overflow:hidden}
@@ -218,6 +257,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <div class="tab-bar">
         <button class="tab-btn on" id="ctab-tracker" onclick="setClientTab('tracker')">Tracker</button>
         <button class="tab-btn" id="ctab-updates" onclick="setClientTab('updates')">Updates</button>
+        <button class="tab-btn" id="ctab-payments" onclick="setClientTab('payments')">Payments</button>
         <button class="tab-btn" id="ctab-materials" onclick="setClientTab('materials')">Materials</button>
         <button class="tab-btn" id="ctab-docs" onclick="setClientTab('docs')">Docs</button>
       </div>
@@ -228,6 +268,10 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <!-- Updates tab -->
       <div id="client-tab-updates" style="display:none">
         <div id="client-updates-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
+      </div>
+      <!-- Payments tab -->
+      <div id="client-tab-payments" style="display:none">
+        <div id="client-payments-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
       <!-- Materials tab -->
       <div id="client-tab-materials" style="display:none">
@@ -266,6 +310,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <div class="tab-bar">
         <button class="tab-btn on" id="atab-tracker" onclick="setAdminTab('tracker')">Tracker</button>
         <button class="tab-btn" id="atab-updates" onclick="setAdminTab('updates')">Updates</button>
+        <button class="tab-btn" id="atab-payments" onclick="setAdminTab('payments')">Payments</button>
         <button class="tab-btn" id="atab-materials" onclick="setAdminTab('materials')">Materials</button>
         <button class="tab-btn" id="atab-docs" onclick="setAdminTab('docs')">Docs</button>
       </div>
@@ -277,6 +322,10 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <div id="admin-tab-updates" style="display:none">
         <button class="btn" style="margin-bottom:16px" id="post-update-btn" onclick="">+ Post Update</button>
         <div id="admin-updates-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
+      </div>
+      <!-- Admin payments tab -->
+      <div id="admin-tab-payments" style="display:none">
+        <div id="admin-payments-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
       <!-- Admin materials tab -->
       <div id="admin-tab-materials" style="display:none">
@@ -473,7 +522,7 @@ function show(s) {
 // ── Tab switching ──────────────────────────────────────────────────────────
 function setClientTab(tab) {
   clientTab=tab;
-  ['tracker','updates','materials','docs'].forEach(t=>{
+  ['tracker','updates','payments','materials','docs'].forEach(t=>{
     document.getElementById('ctab-'+t).classList.toggle('on',t===tab);
     document.getElementById('client-tab-'+t).style.display=t===tab?'block':'none';
   });
@@ -481,7 +530,7 @@ function setClientTab(tab) {
 
 function setAdminTab(tab) {
   adminTab=tab;
-  ['tracker','updates','materials','docs'].forEach(t=>{
+  ['tracker','updates','payments','materials','docs'].forEach(t=>{
     document.getElementById('atab-'+t).classList.toggle('on',t===tab);
     document.getElementById('admin-tab-'+t).style.display=t===tab?'block':'none';
   });
@@ -560,6 +609,7 @@ async function openJobDetail(jobId) {
     const data=snap.data()||{};
     renderAdminTracker(jobId, data.phases||defaultPhases());
     renderAdminDocs(jobId, data.documents||{});
+    renderAdminPayments(jobId, data);
   });
 
   // Subscribe to updates
@@ -896,6 +946,7 @@ function subscribeClientTracker(){
     const data=snap.data()||{};
     renderClientTracker(data.phases||defaultPhases());
     renderClientDocs(data.documents||{});
+    renderClientPayments(data);
   });
 }
 
@@ -1128,6 +1179,239 @@ async function saveUpdate(){
 async function deleteUpdate(jobId,updateId){
   if(!confirm('Delete this update?')) return;
   await db.collection('jobs').doc(jobId).collection('updates').doc(updateId).delete();
+}
+
+// ── Payment Center ─────────────────────────────────────────────────────────
+const PAY_PHASES = [
+  {num:1, pct:.10, label:'Contract & Mobilization'},
+  {num:2, pct:.15, label:'Demo & Site Prep'},
+  {num:3, pct:.35, label:'Rough Work'},
+  {num:4, pct:.35, label:'Finishes'},
+  {num:5, pct:.05, label:'Final & Closeout'},
+];
+
+function defaultPaymentSchedule() {
+  return PAY_PHASES.map((p,i)=>({index:i,status:'upcoming',paidDate:'',invoiceNum:'',note:'',override:''}));
+}
+
+function fmt(n) {
+  if(!n&&n!==0) return '—';
+  return '$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});
+}
+
+function calcAmount(contractAmt, pctDecimal, override) {
+  if(override&&!isNaN(parseFloat(override))) return parseFloat(override);
+  if(contractAmt) return Math.round(contractAmt * pctDecimal);
+  return null;
+}
+
+// ── CLIENT payment render ──────────────────────────────────────────────────
+function renderClientPayments(jobData) {
+  const el=document.getElementById('client-payments-content');
+  const contractAmt=parseFloat(jobData.contractAmount)||0;
+  const payments=jobData.paymentSchedule||defaultPaymentSchedule();
+  const payLink=jobData.paymentLink||'';
+  const payInstructions=jobData.paymentInstructions||'Contact your contractor for payment details.';
+
+  // Calc totals
+  let totalPaid=0, totalDue=0;
+  payments.forEach((p,i)=>{
+    const amt=calcAmount(contractAmt,PAY_PHASES[i].pct,p.override);
+    if(p.status==='paid'&&amt) totalPaid+=amt;
+    if(p.status==='due'&&amt) totalDue+=amt;
+  });
+  const balance=contractAmt?contractAmt-totalPaid:0;
+  const paidPct=contractAmt?Math.round(totalPaid/contractAmt*100):0;
+
+  // Due now
+  const dueIdx=payments.findIndex(p=>p.status==='due');
+  const duePayment=dueIdx>=0?payments[dueIdx]:null;
+  const dueAmt=duePayment?calcAmount(contractAmt,PAY_PHASES[dueIdx].pct,duePayment.override):null;
+
+  // Paid history
+  const paidPayments=payments.filter(p=>p.status==='paid');
+
+  let html='';
+
+  // ── Contract Summary ──
+  if(contractAmt) {
+    html+=`<div class="pay-summary">
+      <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#8a9fcf;margin-bottom:14px">Contract Summary</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <div><div style="font-size:10px;color:#8a9fcf;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Total Contract</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;color:#ffffff">${fmt(contractAmt)}</div></div>
+        <div style="text-align:right"><div style="font-size:10px;color:#8a9fcf;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Balance Remaining</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;color:${balance>0?'#e07040':'#6adf40'}">${fmt(balance)}</div></div>
+      </div>
+      <div style="background:#060e28;border-radius:6px;height:8px;overflow:hidden;margin:10px 0 6px">
+        <div style="width:${paidPct}%;height:100%;background:linear-gradient(90deg,#3a8a20,#6adf40);border-radius:6px;transition:width .5s"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <div style="font-size:11px;color:#6adf40;font-family:'Montserrat',sans-serif;font-weight:700">Paid: ${fmt(totalPaid)} (${paidPct}%)</div>
+        <div style="font-size:11px;color:#8a9fcf">Remaining: ${fmt(balance)}</div>
+      </div>
+    </div>`;
+  } else {
+    html+=`<div class="pay-summary"><div style="color:#8a9fcf;font-size:13px;text-align:center;padding:8px 0">Contract amount not yet set. Your contractor will update this shortly.</div></div>`;
+  }
+
+  // ── Payment Due Now ──
+  if(duePayment) {
+    html+=`<div class="pay-due-card">
+      <div class="pay-due-label">💳 Payment Due Now</div>
+      <div class="pay-due-amount">${dueAmt?fmt(dueAmt):'See below'}</div>
+      <div class="pay-due-phase">Phase ${PAY_PHASES[dueIdx].num} — ${PAY_PHASES[dueIdx].label} · ${Math.round(PAY_PHASES[dueIdx].pct*100)}%</div>
+      ${payLink
+        ?`<a class="pay-now-btn" href="${payLink}" target="_blank" rel="noopener noreferrer">Pay Now →</a>`
+        :`<div class="pay-now-btn" style="background:#3a50a0;cursor:default">Payment Portal Coming Soon</div>`}
+      <div class="pay-instructions">${esc(payInstructions)}</div>
+    </div>`;
+  } else if(paidPayments.length===5) {
+    html+=`<div style="background:#1a4a10;border:1px solid #3a8a20;border-radius:14px;padding:18px;text-align:center;margin-bottom:14px">
+      <div style="font-size:22px;margin-bottom:8px">🎉</div>
+      <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:16px;color:#6adf40">All Payments Received</div>
+      <div style="font-size:12px;color:#8a9fcf;margin-top:4px">Thank you for your business!</div>
+    </div>`;
+  } else {
+    html+=`<div style="background:#0a1230;border:1px solid #2a3f80;border-radius:14px;padding:16px;text-align:center;margin-bottom:14px">
+      <div style="font-size:13px;color:#8a9fcf">No payment currently due. Your contractor will notify you when the next payment is ready.</div>
+    </div>`;
+  }
+
+  // ── Payment Schedule ──
+  html+=`<div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#8a9fcf;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #1a2f60">Payment Schedule</div>
+  <div class="pay-schedule-card">`;
+
+  payments.forEach((p,i)=>{
+    const def=PAY_PHASES[i];
+    const amt=calcAmount(contractAmt,def.pct,p.override);
+    const dotColor=p.status==='paid'?'#2a7a20':p.status==='due'?'#c1541c':'#1a2a6c';
+    const dotBorder=p.status==='paid'?'#3a8a20':p.status==='due'?'#c1541c':'#3a50a0';
+    const dotText=p.status==='paid'?'✓':def.num;
+    const amtColor=p.status==='paid'?'#6adf40':p.status==='due'?'#e07040':'#ffffff';
+    const badge=p.status==='paid'?['#1a4a10','#3a8a20','#6adf40','Paid']:
+                p.status==='due'?['rgba(193,84,28,.2)','#c1541c','#e07040','Due Now']:
+                ['#1a2a6c','#3a50a0','#8a9fcf','Upcoming'];
+    html+=`<div class="pay-row">
+      <div class="pay-row-dot" style="background:${dotColor};border:2px solid ${dotBorder};color:#ffffff">${dotText}</div>
+      <div class="pay-row-info">
+        <div class="pay-row-name">Phase ${def.num} — ${def.label}</div>
+        <div class="pay-row-sub">${Math.round(def.pct*100)}% of contract${p.paidDate?` · Paid ${esc(p.paidDate)}`:''}</div>
+      </div>
+      <div class="pay-row-right">
+        <div class="pay-row-amount" style="color:${amtColor}">${amt?fmt(amt):'TBD'}</div>
+        <div class="pay-row-badge" style="background:${badge[0]};border:1px solid ${badge[1]};color:${badge[2]}">${badge[3]}</div>
+      </div>
+    </div>`;
+  });
+  html+='</div>';
+
+  // ── Invoice & Receipt History ──
+  if(paidPayments.length>0) {
+    html+=`<div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#8a9fcf;margin:16px 0 10px;padding-bottom:8px;border-bottom:1px solid #1a2f60">Invoice &amp; Receipt History</div>`;
+    payments.forEach((p,i)=>{
+      if(p.status!=='paid') return;
+      const def=PAY_PHASES[i];
+      const amt=calcAmount(contractAmt,def.pct,p.override);
+      html+=`<div class="pay-hist-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+          <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:#ffffff">Phase ${def.num} — ${def.label}</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:16px;color:#6adf40">${amt?fmt(amt):''}</div>
+        </div>
+        <div style="font-size:11px;color:#8a9fcf">
+          ${p.paidDate?`Paid: ${esc(p.paidDate)}`:''}
+          ${p.invoiceNum?` · Invoice #${esc(p.invoiceNum)}`:''}
+        </div>
+        ${p.note?`<div style="font-size:11px;color:#9aaac8;margin-top:4px;font-style:italic">${esc(p.note)}</div>`:''}
+        <div style="margin-top:8px;display:inline-block;background:#1a4a10;border:1px solid #3a8a20;color:#6adf40;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;padding:3px 10px;border-radius:10px">✓ Payment Received</div>
+      </div>`;
+    });
+  }
+
+  el.innerHTML=html;
+}
+
+// ── ADMIN payment render ───────────────────────────────────────────────────
+function renderAdminPayments(jobId, jobData) {
+  const el=document.getElementById('admin-payments-content');
+  const contractAmt=parseFloat(jobData.contractAmount)||0;
+  const payments=jobData.paymentSchedule||defaultPaymentSchedule();
+  const payLink=jobData.paymentLink||'';
+  const payInstructions=jobData.paymentInstructions||'';
+
+  let html=`
+  <!-- Contract Setup -->
+  <div class="contract-setup">
+    <div class="contract-setup-title">Contract Settings</div>
+    <label class="lbl">Total Contract Amount ($)</label>
+    <input id="ap-contract" type="number" placeholder="e.g. 85000" value="${contractAmt||''}" style="margin-bottom:10px" />
+    <label class="lbl">Payment Portal Link</label>
+    <input id="ap-paylink" type="text" placeholder="e.g. https://venmo.com/lhjack" value="${esc(payLink)}" style="margin-bottom:10px" />
+    <label class="lbl">Payment Instructions</label>
+    <input id="ap-instructions" type="text" placeholder="e.g. Zelle to 917-750-5180 or Venmo @LHJack" value="${esc(payInstructions)}" style="margin-bottom:10px" />
+    <button onclick="saveContractSettings('${jobId}')" style="width:100%;background:#c1541c;color:#fff;border:none;border-radius:7px;padding:11px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;text-transform:uppercase;letter-spacing:.04em"><span id="contract-save-spin" class="spin" style="display:none"></span>Save Contract Settings</button>
+  </div>
+
+  <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#8a9fcf;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1a2f60">Payment Schedule — Mark &amp; Manage</div>`;
+
+  payments.forEach((p,i)=>{
+    const def=PAY_PHASES[i];
+    const amt=calcAmount(contractAmt,def.pct,p.override);
+    const dotColor=p.status==='paid'?'#2a7a20':p.status==='due'?'#c1541c':'#1a2a6c';
+    const dotBorder=p.status==='paid'?'#3a8a20':p.status==='due'?'#c1541c':'#3a50a0';
+    html+=`<div class="admin-pay-row">
+      <div class="admin-pay-header">
+        <div class="admin-pay-dot" style="background:${dotColor};border:2px solid ${dotBorder};color:#fff">${p.status==='paid'?'✓':def.num}</div>
+        <div class="admin-pay-title">Phase ${def.num} — ${def.label}</div>
+        <div class="admin-pay-calc">${amt?fmt(amt):`${Math.round(def.pct*100)}%`}</div>
+      </div>
+      <div class="pay-status-btns">
+        <button class="psb psb-upcoming ${p.status==='upcoming'?'active':''}" onclick="setPaymentStatus('${jobId}',${i},'upcoming')">Upcoming</button>
+        <button class="psb psb-due ${p.status==='due'?'active':''}" onclick="setPaymentStatus('${jobId}',${i},'due')">Due Now</button>
+        <button class="psb psb-paid ${p.status==='paid'?'active':''}" onclick="setPaymentStatus('${jobId}',${i},'paid')">Paid</button>
+      </div>
+      <div class="admin-pay-fields">
+        <div><label class="lbl" style="font-size:9px">Paid Date</label>
+          <input type="date" id="ap-date-${i}" value="${esc(p.paidDate||'')}" /></div>
+        <div><label class="lbl" style="font-size:9px">Invoice #</label>
+          <input type="text" id="ap-inv-${i}" placeholder="INV-001" value="${esc(p.invoiceNum||'')}" /></div>
+      </div>
+      <div style="margin-bottom:8px"><label class="lbl" style="font-size:9px">Override Amount ($, optional)</label>
+        <input type="number" id="ap-override-${i}" placeholder="${amt?fmt(amt).replace('$',''):'auto'}" value="${esc(p.override||'')}" style="margin-bottom:0" /></div>
+      <div><label class="lbl" style="font-size:9px">Receipt Note</label>
+        <input type="text" id="ap-note-${i}" placeholder="e.g. Check #1042" value="${esc(p.note||'')}" style="margin-bottom:8px" /></div>
+      <button class="admin-pay-save" onclick="savePaymentDetails('${jobId}',${i})">Save Payment ${def.num}</button>
+    </div>`;
+  });
+
+  el.innerHTML=html;
+}
+
+async function saveContractSettings(jobId){
+  const sp=document.getElementById('contract-save-spin');sp.style.display='inline-block';
+  await db.collection('jobs').doc(jobId).update({
+    contractAmount:parseFloat(document.getElementById('ap-contract').value)||0,
+    paymentLink:document.getElementById('ap-paylink').value.trim(),
+    paymentInstructions:document.getElementById('ap-instructions').value.trim(),
+  });
+  sp.style.display='none';
+}
+
+async function setPaymentStatus(jobId,idx,status){
+  const snap=await db.collection('jobs').doc(jobId).get();
+  const payments=(snap.data().paymentSchedule)||defaultPaymentSchedule();
+  payments[idx].status=status;
+  await db.collection('jobs').doc(jobId).update({paymentSchedule:payments});
+}
+
+async function savePaymentDetails(jobId,idx){
+  const snap=await db.collection('jobs').doc(jobId).get();
+  const payments=(snap.data().paymentSchedule)||defaultPaymentSchedule();
+  payments[idx].paidDate=document.getElementById(`ap-date-${idx}`).value;
+  payments[idx].invoiceNum=document.getElementById(`ap-inv-${idx}`).value.trim();
+  payments[idx].override=document.getElementById(`ap-override-${idx}`).value.trim();
+  payments[idx].note=document.getElementById(`ap-note-${idx}`).value.trim();
+  await db.collection('jobs').doc(jobId).update({paymentSchedule:payments});
 }
 
 // ── Document categories ────────────────────────────────────────────────────
