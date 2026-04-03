@@ -198,6 +198,40 @@
 textarea{resize:vertical;min-height:70px;line-height:1.5}
 .photo-inputs{display:flex;flex-direction:column;gap:6px}
 .photo-inputs input{margin-bottom:0}
+/* ── Scope of Work ── */
+.scope-section-card{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;margin-bottom:12px;overflow:hidden}
+.scope-section-header{padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a2f60}
+.scope-section-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.scope-section-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#ffffff;flex:1}
+.scope-count-badge{font-size:10px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 9px;border-radius:12px;color:#ffffff}
+.scope-items-list{padding:6px 16px 12px}
+.scope-line{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid #0e1838}
+.scope-line:last-child{border-bottom:none}
+.scope-bullet{font-size:12px;margin-top:1px;flex-shrink:0}
+.scope-line-text{font-size:12px;color:#c8d8f0;line-height:1.45;flex:1}
+.scope-empty{font-size:12px;color:#4a5a8a;font-style:italic;padding:8px 0}
+/* Admin scope edit */
+.scope-add-row{display:flex;gap:8px;margin-top:8px}
+.scope-add-row input{flex:1;margin-bottom:0;font-size:12px;padding:9px 10px}
+.scope-add-btn{background:#c1541c;color:#fff;border:none;border-radius:7px;padding:9px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.scope-del-btn{background:transparent;border:none;color:#e05050;font-size:14px;cursor:pointer;padding:2px 6px;flex-shrink:0;line-height:1}
+/* Change Orders */
+.co-card{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;margin-bottom:12px;overflow:hidden}
+.co-header{background:#0a1230;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1a2f60}
+.co-num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:#e07040}
+.co-status-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:4px 10px;border-radius:12px;letter-spacing:.04em}
+.co-status-pending{background:rgba(193,84,28,.2);color:#e07040;border:1px solid rgba(193,84,28,.5)}
+.co-status-approved{background:#1a4a10;color:#6adf40;border:1px solid #3a8a20}
+.co-status-rejected{background:#3a0a0a;color:#e05050;border:1px solid #8a2020}
+.co-body{padding:14px 16px}
+.co-desc{font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:#ffffff;margin-bottom:10px;line-height:1.4}
+.co-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.co-meta-item{background:#0a1230;border-radius:8px;padding:10px 12px}
+.co-meta-label{font-size:9px;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.co-meta-val{font-size:13px;color:#ffffff;font-weight:600}
+.co-accept-btn{width:100%;background:#2a7a20;color:#fff;border:none;border-radius:9px;padding:13px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;margin-top:4px}
+.co-reject-btn{width:100%;background:transparent;color:#e05050;border:1px solid #e05050;border-radius:9px;padding:11px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;cursor:pointer;margin-top:6px}
+.co-empty{text-align:center;color:#8a9fcf;padding:30px 20px;font-size:13px}
 ```
 
   </style>
@@ -258,6 +292,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
         <button class="tab-btn on" id="ctab-tracker" onclick="setClientTab('tracker')">Tracker</button>
         <button class="tab-btn" id="ctab-updates" onclick="setClientTab('updates')">Updates</button>
         <button class="tab-btn" id="ctab-payments" onclick="setClientTab('payments')">Payments</button>
+        <button class="tab-btn" id="ctab-scope" onclick="setClientTab('scope')">Scope</button>
         <button class="tab-btn" id="ctab-materials" onclick="setClientTab('materials')">Materials</button>
         <button class="tab-btn" id="ctab-docs" onclick="setClientTab('docs')">Docs</button>
       </div>
@@ -272,6 +307,10 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <!-- Payments tab -->
       <div id="client-tab-payments" style="display:none">
         <div id="client-payments-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
+      </div>
+      <!-- Scope tab -->
+      <div id="client-tab-scope" style="display:none">
+        <div id="client-scope-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
       <!-- Materials tab -->
       <div id="client-tab-materials" style="display:none">
@@ -311,6 +350,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
         <button class="tab-btn on" id="atab-tracker" onclick="setAdminTab('tracker')">Tracker</button>
         <button class="tab-btn" id="atab-updates" onclick="setAdminTab('updates')">Updates</button>
         <button class="tab-btn" id="atab-payments" onclick="setAdminTab('payments')">Payments</button>
+        <button class="tab-btn" id="atab-scope" onclick="setAdminTab('scope')">Scope</button>
         <button class="tab-btn" id="atab-materials" onclick="setAdminTab('materials')">Materials</button>
         <button class="tab-btn" id="atab-docs" onclick="setAdminTab('docs')">Docs</button>
       </div>
@@ -326,6 +366,10 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <!-- Admin payments tab -->
       <div id="admin-tab-payments" style="display:none">
         <div id="admin-payments-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
+      </div>
+      <!-- Admin scope tab -->
+      <div id="admin-tab-scope" style="display:none">
+        <div id="admin-scope-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
       <!-- Admin materials tab -->
       <div id="admin-tab-materials" style="display:none">
@@ -368,6 +412,36 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <div class="btn-row">
       <button class="btn btn-dark btn-cancel" onclick="closeUpdateForm()">Cancel</button>
       <button class="btn" onclick="saveUpdate()"><span id="save-update-spin" class="spin" style="display:none"></span>Post Update</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE ORDER FORM SHEET -->
+
+<div class="overlay" id="co-overlay">
+  <div class="sheet">
+    <h2 class="sec" id="co-form-title">New Change Order</h2>
+    <input type="hidden" id="co-job-id" />
+    <input type="hidden" id="co-edit-id" />
+    <label class="lbl">Description</label>
+    <textarea id="co-desc" placeholder="Describe the change in scope…"></textarea>
+    <div class="grid2" style="margin-bottom:0">
+      <div><label class="lbl">Cost Impact ($)</label>
+        <input id="co-cost" type="number" placeholder="e.g. 2500 or -500" style="margin-bottom:12px" /></div>
+      <div><label class="lbl">Cost Type</label>
+        <div class="seg-wrap" style="margin-top:0">
+          <button class="seg on" id="coseg-add" onclick="setCOType('add')">Added</button>
+          <button class="seg" id="coseg-red" onclick="setCOType('reduce')">Reduced</button>
+        </div>
+      </div>
+    </div>
+    <label class="lbl">Time Impact</label>
+    <input id="co-time" type="text" placeholder="e.g. +3 days, No impact" />
+    <label class="lbl">Notes (Optional)</label>
+    <textarea id="co-notes" placeholder="Additional context, materials, reason for change…" style="min-height:55px"></textarea>
+    <div class="btn-row">
+      <button class="btn btn-dark btn-cancel" onclick="closeCOForm()">Cancel</button>
+      <button class="btn" onclick="saveCO()"><span id="co-save-spin" class="spin" style="display:none"></span>Save Change Order</button>
     </div>
   </div>
 </div>
@@ -507,6 +581,8 @@ let unsubAdmin = null;
 let unsubDetail = null;
 let unsubAdminTracker = null;
 let unsubAdminUpdates = null;
+let unsubAdminCO = null;
+let unsubClientCO = null;
 let allClientItems = [];
 
 // ── Routing ────────────────────────────────────────────────────────────────
@@ -522,7 +598,7 @@ function show(s) {
 // ── Tab switching ──────────────────────────────────────────────────────────
 function setClientTab(tab) {
   clientTab=tab;
-  ['tracker','updates','payments','materials','docs'].forEach(t=>{
+  ['tracker','updates','payments','scope','materials','docs'].forEach(t=>{
     document.getElementById('ctab-'+t).classList.toggle('on',t===tab);
     document.getElementById('client-tab-'+t).style.display=t===tab?'block':'none';
   });
@@ -530,7 +606,7 @@ function setClientTab(tab) {
 
 function setAdminTab(tab) {
   adminTab=tab;
-  ['tracker','updates','payments','materials','docs'].forEach(t=>{
+  ['tracker','updates','payments','scope','materials','docs'].forEach(t=>{
     document.getElementById('atab-'+t).classList.toggle('on',t===tab);
     document.getElementById('admin-tab-'+t).style.display=t===tab?'block':'none';
   });
@@ -610,7 +686,15 @@ async function openJobDetail(jobId) {
     renderAdminTracker(jobId, data.phases||defaultPhases());
     renderAdminDocs(jobId, data.documents||{});
     renderAdminPayments(jobId, data);
+    renderAdminScope(jobId, data.scope||defaultScope());
   });
+
+  // Subscribe to change orders
+  if(unsubAdminCO){unsubAdminCO();unsubAdminCO=null;}
+  unsubAdminCO=db.collection('jobs').doc(jobId).collection('changeOrders')
+    .orderBy('createdAt','desc').onSnapshot(snap=>{
+      renderAdminChangeOrders(jobId, snap.docs.map(d=>({id:d.id,...d.data()})));
+    });
 
   // Subscribe to updates
   if(unsubAdminUpdates){unsubAdminUpdates();unsubAdminUpdates=null;}
@@ -640,6 +724,7 @@ function closeJobDetail() {
   if(unsubDetail){unsubDetail();unsubDetail=null;}
   if(unsubAdminTracker){unsubAdminTracker();unsubAdminTracker=null;}
   if(unsubAdminUpdates){unsubAdminUpdates();unsubAdminUpdates=null;}
+  if(unsubAdminCO){unsubAdminCO();unsubAdminCO=null;}
   currentAdminJobId=null;
   document.getElementById('admin-detail-view').style.display='none';
   document.getElementById('admin-jobs-view').style.display='block';
@@ -664,7 +749,7 @@ function renderAdminTracker(jobId, phases) {
         <div class="phase-dot ${phase.status}">${phase.status==='complete'?'✓':def.num}</div>
         <div class="phase-info">
           <div class="phase-name">${def.name}</div>
-          <div class="phase-meta">${doneItems}/${totalItems} items · Payment: ${def.payment}</div>
+          <div class="phase-meta">${doneItems}/${totalItems} items · Payment: ${def.payment}${phase.startDate?` · Start: ${esc(phase.startDate)}`:''}${phase.endDate?` · End: ${esc(phase.endDate)}`:''}</div>
         </div>
         <span class="phase-badge ${phase.status}">${phase.status==='upcoming'?'Upcoming':phase.status==='active'?'In Progress':'Complete'}</span>
       </div>
@@ -691,6 +776,20 @@ function renderAdminTracker(jobId, phases) {
           <button class="phase-ctrl-btn set-active" onclick="setPhaseStatus('${jobId}',${idx},'active')">Set In Progress</button>
           <button class="phase-ctrl-btn set-complete" onclick="setPhaseStatus('${jobId}',${idx},'complete')">Mark Complete</button>
           <button class="phase-ctrl-btn set-upcoming" onclick="setPhaseStatus('${jobId}',${idx},'upcoming')">Reset</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #1a2f60">
+          <div>
+            <label style="font-size:9px;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">Start Date</label>
+            <input type="date" id="phase-start-${idx}" value="${esc(phase.startDate||'')}"
+              style="width:100%;background:#0a1230;border:1px solid #2a4090;border-radius:7px;padding:8px 10px;color:#fff;font-size:12px;outline:none;margin-bottom:0"
+              onchange="savePhaseDates('${jobId}',${idx})" />
+          </div>
+          <div>
+            <label style="font-size:9px;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">End Date</label>
+            <input type="date" id="phase-end-${idx}" value="${esc(phase.endDate||'')}"
+              style="width:100%;background:#0a1230;border:1px solid #2a4090;border-radius:7px;padding:8px 10px;color:#fff;font-size:12px;outline:none;margin-bottom:0"
+              onchange="savePhaseDates('${jobId}',${idx})" />
+          </div>
         </div>
       </div>
     </div>
@@ -822,7 +921,7 @@ function renderClientTracker(phases) {
         <div class="phase-dot ${phase.status}">${phase.status==='complete'?'✓':def.num}</div>
         <div class="phase-info">
           <div class="phase-name">${def.name}</div>
-          <div class="phase-meta">${doneItems}/${totalItems} items complete &nbsp;·&nbsp; ${def.payment}</div>
+          <div class="phase-meta">${doneItems}/${totalItems} items complete &nbsp;·&nbsp; ${def.payment}${phase.startDate||phase.endDate?`<br><span style="color:#c8d8f0">${phase.startDate?`Start: ${esc(phase.startDate)}`:''}${phase.startDate&&phase.endDate?' &nbsp;·&nbsp; ':''}${phase.endDate?`End: ${esc(phase.endDate)}`:''}</span>`:''}</div>
         </div>
         <span class="phase-badge ${phase.status}">${phase.status==='upcoming'?'Upcoming':phase.status==='active'?'In Progress':'Complete'}</span>
       </div>
@@ -867,6 +966,17 @@ async function setPhaseStatus(jobId, phaseIdx, status) {
   const doc=await db.collection('jobs').doc(jobId).get();
   const phases=(doc.data().phases)||defaultPhases();
   phases[phaseIdx].status=status;
+  await db.collection('jobs').doc(jobId).update({phases});
+}
+
+async function savePhaseDates(jobId, phaseIdx) {
+  const startEl=document.getElementById(`phase-start-${phaseIdx}`);
+  const endEl=document.getElementById(`phase-end-${phaseIdx}`);
+  if(!startEl&&!endEl) return;
+  const doc=await db.collection('jobs').doc(jobId).get();
+  const phases=(doc.data().phases)||defaultPhases();
+  if(startEl) phases[phaseIdx].startDate=startEl.value;
+  if(endEl) phases[phaseIdx].endDate=endEl.value;
   await db.collection('jobs').doc(jobId).update({phases});
 }
 
@@ -926,6 +1036,7 @@ function clientReset(silent){
   if(unsubClient){unsubClient();unsubClient=null;}
   if(unsubClientTracker){unsubClientTracker();unsubClientTracker=null;}
   if(unsubClientUpdates){unsubClientUpdates();unsubClientUpdates=null;}
+  if(unsubClientCO){unsubClientCO();unsubClientCO=null;}
   currentJob=null;clientFilter='all';allClientItems=[];
   document.getElementById('client-lookup').style.display='block';
   document.getElementById('client-job').style.display='none';
@@ -947,7 +1058,15 @@ function subscribeClientTracker(){
     renderClientTracker(data.phases||defaultPhases());
     renderClientDocs(data.documents||{});
     renderClientPayments(data);
+    renderClientScope(data.scope||defaultScope());
   });
+
+  // Subscribe to client change orders
+  if(unsubClientCO){unsubClientCO();unsubClientCO=null;}
+  unsubClientCO=db.collection('jobs').doc(currentJob.id).collection('changeOrders')
+    .orderBy('createdAt','desc').onSnapshot(snap=>{
+      renderClientChangeOrders(currentJob.id, snap.docs.map(d=>({id:d.id,...d.data()})));
+    });
 }
 
 function subscribeClientItems(){
@@ -1414,6 +1533,220 @@ async function savePaymentDetails(jobId,idx){
   await db.collection('jobs').doc(jobId).update({paymentSchedule:payments});
 }
 
+// ── Scope of Work ──────────────────────────────────────────────────────────
+const SCOPE_CATS = [
+  {key:'included',  label:'What Is Included',       icon:'✅', color:'#1a4a10', border:'#3a8a20', bullet:'✓', bulletColor:'#6adf40'},
+  {key:'excluded',  label:'What Is NOT Included',   icon:'🚫', color:'#3a0a0a', border:'#8a2020', bullet:'✕', bulletColor:'#e05050'},
+  {key:'allowances',label:'Allowances',             icon:'💰', color:'#3a2a0a', border:'#8a6020', bullet:'$', bulletColor:'#e0a040'},
+  {key:'client',    label:'Client-Supplied Items',  icon:'📦', color:'#1a2a5a', border:'#3a5090', bullet:'→', bulletColor:'#7ab8f0'},
+];
+
+function defaultScope() {
+  return Object.fromEntries(SCOPE_CATS.map(c=>[c.key,[]]));
+}
+
+// ── CLIENT scope render ────────────────────────────────────────────────────
+function renderClientScope(scope) {
+  const el=document.getElementById('client-scope-content');
+  // Count total change orders pending from client-scope-co-list if present
+  let html=`<div style="font-size:12px;color:#8a9fcf;margin-bottom:16px;line-height:1.5">Your approved project scope is documented here. Any changes to scope require a signed Change Order.</div>`;
+
+  SCOPE_CATS.forEach(cat=>{
+    const items=scope[cat.key]||[];
+    html+=`<div class="scope-section-card">
+      <div class="scope-section-header" style="background:${cat.color}22;border-bottom:1px solid ${cat.border}44">
+        <div class="scope-section-icon" style="background:${cat.color};border:1px solid ${cat.border}">${cat.icon}</div>
+        <div class="scope-section-title">${cat.label}</div>
+        <span class="scope-count-badge" style="background:${cat.color};border:1px solid ${cat.border}">${items.length}</span>
+      </div>
+      <div class="scope-items-list">
+        ${items.length===0
+          ?`<div class="scope-empty">No items listed yet.</div>`
+          :items.map(item=>`<div class="scope-line">
+            <div class="scope-bullet" style="color:${cat.bulletColor}">${cat.bullet}</div>
+            <div class="scope-line-text">${esc(item)}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  });
+
+  html+=`<div id="client-scope-co-list"></div>`;
+  el.innerHTML=html;
+}
+
+// ── ADMIN scope render ─────────────────────────────────────────────────────
+function renderAdminScope(jobId, scope) {
+  const el=document.getElementById('admin-scope-content');
+  let html=`<div style="font-size:12px;color:#8a9fcf;margin-bottom:14px">Add scope items per category — clients see these in real time.</div>`;
+
+  SCOPE_CATS.forEach(cat=>{
+    const items=scope[cat.key]||[];
+    html+=`<div class="scope-section-card" style="margin-bottom:14px">
+      <div class="scope-section-header" style="background:${cat.color}22;border-bottom:1px solid ${cat.border}44">
+        <div class="scope-section-icon" style="background:${cat.color};border:1px solid ${cat.border}">${cat.icon}</div>
+        <div class="scope-section-title">${cat.label}</div>
+        <span class="scope-count-badge" style="background:${cat.color};border:1px solid ${cat.border}">${items.length}</span>
+      </div>
+      <div class="scope-items-list">
+        ${items.length===0?`<div class="scope-empty">No items yet.</div>`:items.map((item,i)=>`<div class="scope-line">
+          <div class="scope-bullet" style="color:${cat.bulletColor}">${cat.bullet}</div>
+          <div class="scope-line-text">${esc(item)}</div>
+          <button class="scope-del-btn" onclick="deleteScopeItem('${jobId}','${cat.key}',${i})">×</button>
+        </div>`).join('')}
+        <div class="scope-add-row">
+          <input type="text" id="scope-input-${cat.key}" placeholder="Add item…" onkeydown="if(event.key==='Enter')addScopeItem('${jobId}','${cat.key}')" />
+          <button class="scope-add-btn" onclick="addScopeItem('${jobId}','${cat.key}')">Add</button>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // Change Orders section header
+  html+=`<div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#8a9fcf;margin:6px 0 12px;padding-bottom:8px;border-bottom:1px solid #1a2f60">Change Orders</div>
+  <button class="btn" style="margin-bottom:14px" onclick="openCOForm('${jobId}')">+ New Change Order</button>
+  <div id="admin-co-list"></div>`;
+
+  el.innerHTML=html;
+}
+
+async function addScopeItem(jobId, catKey) {
+  const input=document.getElementById(`scope-input-${catKey}`);
+  const text=input.value.trim();
+  if(!text) return;
+  const snap=await db.collection('jobs').doc(jobId).get();
+  const scope=(snap.data().scope)||defaultScope();
+  scope[catKey]=[...(scope[catKey]||[]),text];
+  await db.collection('jobs').doc(jobId).update({scope});
+  input.value='';
+}
+
+async function deleteScopeItem(jobId, catKey, idx) {
+  const snap=await db.collection('jobs').doc(jobId).get();
+  const scope=(snap.data().scope)||defaultScope();
+  scope[catKey]=(scope[catKey]||[]).filter((_,i)=>i!==idx);
+  await db.collection('jobs').doc(jobId).update({scope});
+}
+
+// ── Change Orders ──────────────────────────────────────────────────────────
+let coType='add';
+
+function setCOType(t){
+  coType=t;
+  document.getElementById('coseg-add').classList.toggle('on',t==='add');
+  document.getElementById('coseg-red').classList.toggle('on',t==='reduce');
+}
+
+function openCOForm(jobId, coId) {
+  document.getElementById('co-job-id').value=jobId;
+  document.getElementById('co-edit-id').value=coId||'';
+  document.getElementById('co-form-title').textContent=coId?'Edit Change Order':'New Change Order';
+  document.getElementById('co-desc').value='';
+  document.getElementById('co-cost').value='';
+  document.getElementById('co-time').value='';
+  document.getElementById('co-notes').value='';
+  coType='add'; setCOType('add');
+  if(coId){
+    db.collection('jobs').doc(jobId).collection('changeOrders').doc(coId).get().then(doc=>{
+      const d=doc.data();
+      document.getElementById('co-desc').value=d.desc||'';
+      document.getElementById('co-cost').value=d.cost||'';
+      document.getElementById('co-time').value=d.timeImpact||'';
+      document.getElementById('co-notes').value=d.notes||'';
+      coType=d.costType||'add'; setCOType(coType);
+    });
+  }
+  document.getElementById('co-overlay').classList.add('open');
+}
+function closeCOForm(){document.getElementById('co-overlay').classList.remove('open');}
+
+async function saveCO(){
+  const jobId=document.getElementById('co-job-id').value;
+  const editId=document.getElementById('co-edit-id').value;
+  const desc=document.getElementById('co-desc').value.trim();
+  if(!desc) return;
+  const sp=document.getElementById('co-save-spin');sp.style.display='inline-block';
+  const data={
+    desc, cost:document.getElementById('co-cost').value.trim(),
+    costType:coType, timeImpact:document.getElementById('co-time').value.trim(),
+    notes:document.getElementById('co-notes').value.trim(),
+  };
+  const ref=db.collection('jobs').doc(jobId).collection('changeOrders');
+  if(editId) await ref.doc(editId).update(data);
+  else { data.status='pending'; data.createdAt=firebase.firestore.FieldValue.serverTimestamp(); await ref.add(data); }
+  sp.style.display='none';
+  closeCOForm();
+}
+
+async function setCOStatus(jobId, coId, status){
+  await db.collection('jobs').doc(jobId).collection('changeOrders').doc(coId).update({status, approvedAt:new Date().toISOString()});
+}
+
+async function deleteCO(jobId, coId){
+  if(!confirm('Delete this change order?')) return;
+  await db.collection('jobs').doc(jobId).collection('changeOrders').doc(coId).delete();
+}
+
+function coStatusStyle(status){
+  if(status==='approved') return ['co-status-approved','Approved ✓'];
+  if(status==='rejected') return ['co-status-rejected','Declined'];
+  return ['co-status-pending','Pending Approval'];
+}
+
+function coCard(co, jobId, adminView) {
+  const [badgeClass, badgeLabel]=coStatusStyle(co.status);
+  const costNum=parseFloat(co.cost);
+  const costStr=co.cost?`${co.costType==='add'?'+':'-'}$${Math.abs(costNum).toLocaleString()}`:'—';
+  const costColor=co.costType==='add'?'#e07040':'#6adf40';
+  return `<div class="co-card">
+    <div class="co-header">
+      <div class="co-num">${new Date(co.createdAt?.toDate?.()??co.createdAt??Date.now()).toLocaleDateString()}</div>
+      <span class="co-status-badge ${badgeClass}">${badgeLabel}</span>
+    </div>
+    <div class="co-body">
+      <div class="co-desc">${esc(co.desc)}</div>
+      <div class="co-meta-grid">
+        <div class="co-meta-item">
+          <div class="co-meta-label">Cost Impact</div>
+          <div class="co-meta-val" style="color:${costColor};font-family:'Montserrat',sans-serif;font-weight:900;font-size:18px">${costStr}</div>
+        </div>
+        <div class="co-meta-item">
+          <div class="co-meta-label">Time Impact</div>
+          <div class="co-meta-val">${esc(co.timeImpact||'—')}</div>
+        </div>
+      </div>
+      ${co.notes?`<div style="background:#0a1230;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#9aaac8;line-height:1.45">${esc(co.notes)}</div>`:''}
+      ${adminView
+        ?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+            ${co.status!=='approved'?`<button style="padding:7px 12px;background:#1a4a10;color:#6adf40;border:1px solid #3a8a20;border-radius:7px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;cursor:pointer" onclick="setCOStatus('${jobId}','${co.id}','approved')">Approve</button>`:''}
+            ${co.status!=='rejected'?`<button style="padding:7px 12px;background:transparent;color:#e05050;border:1px solid #e05050;border-radius:7px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;cursor:pointer" onclick="setCOStatus('${jobId}','${co.id}','rejected')">Decline</button>`:''}
+            <button style="padding:7px 12px;background:transparent;color:#6a9fd8;border:1px solid #6a9fd8;border-radius:7px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;cursor:pointer" onclick="openCOForm('${jobId}','${co.id}')">Edit</button>
+            <button style="padding:7px 12px;background:transparent;color:#e05050;border:1px solid #e05050;border-radius:7px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;cursor:pointer" onclick="deleteCO('${jobId}','${co.id}')">Delete</button>
+          </div>`
+        :co.status==='pending'
+          ?`<button class="co-accept-btn" onclick="setCOStatus('${jobId}','${co.id}','approved')">Accept Change Order</button>
+             <div style="font-size:11px;color:#8a9fcf;text-align:center;margin-top:6px">By tapping Accept, you approve this change to your project scope and cost</div>`
+          :''}
+    </div>
+  </div>`;
+}
+
+function renderAdminChangeOrders(jobId, orders) {
+  const el=document.getElementById('admin-co-list');
+  if(!el) return;
+  el.innerHTML=orders.length===0?'<div class="co-empty">No change orders yet.</div>'
+    :orders.map(co=>coCard(co,jobId,true)).join('');
+}
+
+function renderClientChangeOrders(jobId, orders) {
+  // Show in scope tab
+  const el=document.getElementById('client-scope-co-list');
+  if(!el) return;
+  if(orders.length===0){el.innerHTML='';return;}
+  let html=`<div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#8a9fcf;margin:18px 0 12px;padding-bottom:8px;border-bottom:1px solid #1a2f60">Change Orders</div>`;
+  html+=orders.map(co=>coCard(co,jobId,false)).join('');
+  el.innerHTML=html;
+}
+
 // ── Document categories ────────────────────────────────────────────────────
 const DOC_CATS = [
   {key:'proposal',   label:'Proposal',                icon:'📋', color:'#1a3a6a'},
@@ -1510,6 +1843,7 @@ function esc(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 document.getElementById('item-overlay').addEventListener('click',function(e){if(e.target===this)closeItemForm();});
+document.getElementById('co-overlay').addEventListener('click',function(e){if(e.target===this)closeCOForm();});
 document.getElementById('update-overlay').addEventListener('click',function(e){if(e.target===this)closeUpdateForm();});
 document.getElementById('newjob-overlay').addEventListener('click',function(e){if(e.target===this)closeNewJobSheet();});
 </script>
