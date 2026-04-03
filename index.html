@@ -139,6 +139,26 @@
 .admin-doc-input-row input{margin-bottom:0;flex:1;font-size:12px;padding:9px 10px}
 .admin-doc-save-btn{background:#c1541c;color:#fff;border:none;border-radius:7px;padding:9px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
 .admin-doc-remove-btn{background:transparent;border:1px solid #e05050;color:#e05050;border-radius:7px;padding:9px 10px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;flex-shrink:0}
+/* ── Updates Feed ── */
+.update-card{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;margin-bottom:14px;overflow:hidden}
+.update-card-header{background:#0a1230;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1a2f60}
+.update-date{font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:#e07040;letter-spacing:.04em}
+.update-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 8px;border-radius:10px;background:rgba(193,84,28,.2);color:#e07040;border:1px solid rgba(193,84,28,.4);letter-spacing:.04em}
+.update-body{padding:14px 16px}
+.update-summary{font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:#ffffff;margin-bottom:12px;line-height:1.4}
+.update-section{margin-bottom:10px}
+.update-section-label{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.update-section-text{font-size:12px;color:#c8d8f0;line-height:1.5}
+.update-blocker{font-size:12px;color:#ff8870;line-height:1.5}
+.update-photos{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.update-photo{width:calc(33.333% - 6px);aspect-ratio:4/3;border-radius:8px;object-fit:cover;background:#0a1230;cursor:pointer;border:1px solid #2a3f80}
+.update-photo-link{width:calc(33.333% - 6px)}
+.update-feed-empty{text-align:center;padding:40px 20px;color:#8a9fcf;font-size:13px}
+/* Update form fields */
+.update-form-section{margin-bottom:4px}
+textarea{resize:vertical;min-height:70px;line-height:1.5}
+.photo-inputs{display:flex;flex-direction:column;gap:6px}
+.photo-inputs input{margin-bottom:0}
 ```
 
   </style>
@@ -197,12 +217,17 @@
       <!-- Tab bar -->
       <div class="tab-bar">
         <button class="tab-btn on" id="ctab-tracker" onclick="setClientTab('tracker')">Tracker</button>
+        <button class="tab-btn" id="ctab-updates" onclick="setClientTab('updates')">Updates</button>
         <button class="tab-btn" id="ctab-materials" onclick="setClientTab('materials')">Materials</button>
-        <button class="tab-btn" id="ctab-docs" onclick="setClientTab('docs')">Documents</button>
+        <button class="tab-btn" id="ctab-docs" onclick="setClientTab('docs')">Docs</button>
       </div>
       <!-- Tracker tab -->
       <div id="client-tab-tracker">
         <div id="client-tracker-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
+      </div>
+      <!-- Updates tab -->
+      <div id="client-tab-updates" style="display:none">
+        <div id="client-updates-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
       <!-- Materials tab -->
       <div id="client-tab-materials" style="display:none">
@@ -240,12 +265,18 @@
       <!-- Admin tab bar -->
       <div class="tab-bar">
         <button class="tab-btn on" id="atab-tracker" onclick="setAdminTab('tracker')">Tracker</button>
+        <button class="tab-btn" id="atab-updates" onclick="setAdminTab('updates')">Updates</button>
         <button class="tab-btn" id="atab-materials" onclick="setAdminTab('materials')">Materials</button>
-        <button class="tab-btn" id="atab-docs" onclick="setAdminTab('docs')">Documents</button>
+        <button class="tab-btn" id="atab-docs" onclick="setAdminTab('docs')">Docs</button>
       </div>
       <!-- Admin tracker tab -->
       <div id="admin-tab-tracker">
         <div id="admin-tracker-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
+      </div>
+      <!-- Admin updates tab -->
+      <div id="admin-tab-updates" style="display:none">
+        <button class="btn" style="margin-bottom:16px" id="post-update-btn" onclick="">+ Post Update</button>
+        <div id="admin-updates-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
       <!-- Admin materials tab -->
       <div id="admin-tab-materials" style="display:none">
@@ -260,6 +291,37 @@
   </div>
 
 </div><!-- /body -->
+
+<!-- UPDATE FORM SHEET -->
+
+<div class="overlay" id="update-overlay">
+  <div class="sheet">
+    <h2 class="sec" id="update-form-title">Post Update</h2>
+    <input type="hidden" id="edit-update-id" />
+    <input type="hidden" id="update-job-id" />
+    <label class="lbl">Date</label>
+    <input id="u-date" type="date" />
+    <label class="lbl">Summary — What happened today?</label>
+    <input id="u-summary" type="text" placeholder="e.g. Framing complete on second floor addition" />
+    <label class="lbl">What Got Done</label>
+    <textarea id="u-done" placeholder="Describe completed work…"></textarea>
+    <label class="lbl">What's Next</label>
+    <textarea id="u-next" placeholder="What's coming up next…"></textarea>
+    <label class="lbl">Road Blockers (Optional)</label>
+    <input id="u-blockers" type="text" placeholder="Any delays, issues, or client actions needed…" />
+    <label class="lbl">Photos — Paste image URLs (optional)</label>
+    <div class="photo-inputs">
+      <input id="u-photo1" type="text" placeholder="Photo 1 URL" />
+      <input id="u-photo2" type="text" placeholder="Photo 2 URL" />
+      <input id="u-photo3" type="text" placeholder="Photo 3 URL" />
+    </div>
+    <div style="margin-top:6px;margin-bottom:14px;font-size:11px;color:#5a6a9a">Tip: Use Google Drive or Dropbox shareable image links</div>
+    <div class="btn-row">
+      <button class="btn btn-dark btn-cancel" onclick="closeUpdateForm()">Cancel</button>
+      <button class="btn" onclick="saveUpdate()"><span id="save-update-spin" class="spin" style="display:none"></span>Post Update</button>
+    </div>
+  </div>
+</div>
 
 <!-- ITEM FORM SHEET -->
 
@@ -391,9 +453,11 @@ let fFulfillment = 'Delivery';
 let fStatus = 'Not Purchased';
 let unsubClient = null;
 let unsubClientTracker = null;
+let unsubClientUpdates = null;
 let unsubAdmin = null;
 let unsubDetail = null;
 let unsubAdminTracker = null;
+let unsubAdminUpdates = null;
 let allClientItems = [];
 
 // ── Routing ────────────────────────────────────────────────────────────────
@@ -409,7 +473,7 @@ function show(s) {
 // ── Tab switching ──────────────────────────────────────────────────────────
 function setClientTab(tab) {
   clientTab=tab;
-  ['tracker','materials','docs'].forEach(t=>{
+  ['tracker','updates','materials','docs'].forEach(t=>{
     document.getElementById('ctab-'+t).classList.toggle('on',t===tab);
     document.getElementById('client-tab-'+t).style.display=t===tab?'block':'none';
   });
@@ -417,7 +481,7 @@ function setClientTab(tab) {
 
 function setAdminTab(tab) {
   adminTab=tab;
-  ['tracker','materials','docs'].forEach(t=>{
+  ['tracker','updates','materials','docs'].forEach(t=>{
     document.getElementById('atab-'+t).classList.toggle('on',t===tab);
     document.getElementById('admin-tab-'+t).style.display=t===tab?'block':'none';
   });
@@ -434,6 +498,7 @@ function adminLogout() {
   if(unsubAdmin){unsubAdmin();unsubAdmin=null;}
   if(unsubDetail){unsubDetail();unsubDetail=null;}
   if(unsubAdminTracker){unsubAdminTracker();unsubAdminTracker=null;}
+  if(unsubAdminUpdates){unsubAdminUpdates();unsubAdminUpdates=null;}
   show('landing');
 }
 
@@ -497,8 +562,16 @@ async function openJobDetail(jobId) {
     renderAdminDocs(jobId, data.documents||{});
   });
 
-  // Subscribe to items
-  if(unsubDetail){unsubDetail();unsubDetail=null;}
+  // Subscribe to updates
+  if(unsubAdminUpdates){unsubAdminUpdates();unsubAdminUpdates=null;}
+  unsubAdminUpdates=db.collection('jobs').doc(jobId).collection('updates')
+    .orderBy('createdAt','desc').onSnapshot(snap=>{
+      const updates=snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderAdminUpdates(jobId,updates);
+    });
+
+  // Set post update button
+  document.getElementById('post-update-btn').onclick=()=>openUpdateForm(jobId);
   unsubDetail=db.collection('jobs').doc(jobId).collection('items').orderBy('createdAt','asc').onSnapshot(snap=>{
     const items=snap.docs.map(d=>({id:d.id,...d.data()}));
     const done=items.filter(i=>i.status==='Purchased').length;
@@ -516,6 +589,7 @@ async function openJobDetail(jobId) {
 function closeJobDetail() {
   if(unsubDetail){unsubDetail();unsubDetail=null;}
   if(unsubAdminTracker){unsubAdminTracker();unsubAdminTracker=null;}
+  if(unsubAdminUpdates){unsubAdminUpdates();unsubAdminUpdates=null;}
   currentAdminJobId=null;
   document.getElementById('admin-detail-view').style.display='none';
   document.getElementById('admin-jobs-view').style.display='block';
@@ -792,6 +866,7 @@ async function clientLookup(){
     renderClientHeader();
     subscribeClientTracker();
     subscribeClientItems();
+    subscribeClientUpdates();
     setClientTab('tracker');
   }catch(e){err.textContent='Connection error — please try again.';err.style.display='block';}
   sp.style.display='none';
@@ -800,6 +875,7 @@ async function clientLookup(){
 function clientReset(silent){
   if(unsubClient){unsubClient();unsubClient=null;}
   if(unsubClientTracker){unsubClientTracker();unsubClientTracker=null;}
+  if(unsubClientUpdates){unsubClientUpdates();unsubClientUpdates=null;}
   currentJob=null;clientFilter='all';allClientItems=[];
   document.getElementById('client-lookup').style.display='block';
   document.getElementById('client-job').style.display='none';
@@ -922,6 +998,138 @@ async function delItem(jobId,itemId){
   await db.collection('jobs').doc(jobId).collection('items').doc(itemId).delete();
 }
 
+// ── Updates feed ──────────────────────────────────────────────────────────
+function subscribeClientUpdates(){
+  if(unsubClientUpdates){unsubClientUpdates();unsubClientUpdates=null;}
+  unsubClientUpdates=db.collection('jobs').doc(currentJob.id).collection('updates')
+    .orderBy('createdAt','desc').onSnapshot(snap=>{
+      renderClientUpdates(snap.docs.map(d=>({id:d.id,...d.data()})));
+    });
+}
+
+function renderClientUpdates(updates){
+  const el=document.getElementById('client-updates-content');
+  if(!updates.length){
+    el.innerHTML='<div class="update-feed-empty">No updates yet.<br>Check back — your contractor will post progress here.</div>';
+    return;
+  }
+  el.innerHTML=updates.map(u=>updateCard(u,false)).join('');
+}
+
+function renderAdminUpdates(jobId,updates){
+  const el=document.getElementById('admin-updates-content');
+  if(!updates.length){
+    el.innerHTML='<div class="update-feed-empty">No updates posted yet. Tap + Post Update to share progress with your client.</div>';
+    return;
+  }
+  el.innerHTML=updates.map(u=>updateCard(u,true,jobId)).join('');
+}
+
+function updateCard(u,adminView,jobId){
+  const photos=[u.photo1,u.photo2,u.photo3].filter(Boolean);
+  const photoHtml=photos.length?`<div class="update-photos">
+    ${photos.map(p=>`<a class="update-photo-link" href="${p}" target="_blank" rel="noopener noreferrer">
+      <img class="update-photo" src="${convertPhotoUrl(p)}" onerror="this.parentElement.style.display='none'" />
+    </a>`).join('')}
+  </div>`:'';
+  return `<div class="update-card">
+    <div class="update-card-header">
+      <div class="update-date">${esc(u.date||'')}</div>
+      <span class="update-badge">Progress Update</span>
+    </div>
+    <div class="update-body">
+      ${u.summary?`<div class="update-summary">${esc(u.summary)}</div>`:''}
+      ${u.done?`<div class="update-section">
+        <div class="update-section-label" style="color:#4aaf30">✅ What Got Done</div>
+        <div class="update-section-text">${esc(u.done).replace(/\n/g,'<br>')}</div>
+      </div>`:''}
+      ${u.next?`<div class="update-section">
+        <div class="update-section-label" style="color:#6a9fd8">➜ What's Next</div>
+        <div class="update-section-text">${esc(u.next).replace(/\n/g,'<br>')}</div>
+      </div>`:''}
+      ${u.blockers?`<div class="update-section">
+        <div class="update-section-label" style="color:#ff8870">⚠️ Road Blockers</div>
+        <div class="update-blocker">${esc(u.blockers).replace(/\n/g,'<br>')}</div>
+      </div>`:''}
+      ${photoHtml}
+      ${adminView?`<div style="display:flex;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid #1a2f60">
+        <button class="obtn obtn-blue" style="font-size:10px;padding:5px 12px" onclick="openUpdateForm('${jobId}','${u.id}')">Edit</button>
+        <button class="obtn obtn-red" style="font-size:10px;padding:5px 12px" onclick="deleteUpdate('${jobId}','${u.id}')">Delete</button>
+      </div>`:''}
+    </div>
+  </div>`;
+}
+
+function convertPhotoUrl(url){
+  if(!url) return url;
+  // Convert Google Drive share link to direct image
+  const match=url.match(/\/file\/d\/([^\/]+)/);
+  if(match) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  return url;
+}
+
+function openUpdateForm(jobId,updateId){
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('update-job-id').value=jobId;
+  document.getElementById('edit-update-id').value=updateId||'';
+  document.getElementById('update-form-title').textContent=updateId?'Edit Update':'Post Update';
+  document.getElementById('u-date').value=today;
+  document.getElementById('u-summary').value='';
+  document.getElementById('u-done').value='';
+  document.getElementById('u-next').value='';
+  document.getElementById('u-blockers').value='';
+  document.getElementById('u-photo1').value='';
+  document.getElementById('u-photo2').value='';
+  document.getElementById('u-photo3').value='';
+
+  // If editing, load existing data
+  if(updateId){
+    db.collection('jobs').doc(jobId).collection('updates').doc(updateId).get().then(doc=>{
+      const d=doc.data();
+      if(d.date) document.getElementById('u-date').value=d.date;
+      if(d.summary) document.getElementById('u-summary').value=d.summary;
+      if(d.done) document.getElementById('u-done').value=d.done;
+      if(d.next) document.getElementById('u-next').value=d.next;
+      if(d.blockers) document.getElementById('u-blockers').value=d.blockers;
+      if(d.photo1) document.getElementById('u-photo1').value=d.photo1;
+      if(d.photo2) document.getElementById('u-photo2').value=d.photo2;
+      if(d.photo3) document.getElementById('u-photo3').value=d.photo3;
+    });
+  }
+  document.getElementById('update-overlay').classList.add('open');
+}
+
+function closeUpdateForm(){document.getElementById('update-overlay').classList.remove('open');}
+
+async function saveUpdate(){
+  const jobId=document.getElementById('update-job-id').value;
+  const editId=document.getElementById('edit-update-id').value;
+  const summary=document.getElementById('u-summary').value.trim();
+  const done=document.getElementById('u-done').value.trim();
+  if(!summary&&!done) return;
+  const sp=document.getElementById('save-update-spin');sp.style.display='inline-block';
+  const data={
+    date:document.getElementById('u-date').value,
+    summary,
+    done,
+    next:document.getElementById('u-next').value.trim(),
+    blockers:document.getElementById('u-blockers').value.trim(),
+    photo1:document.getElementById('u-photo1').value.trim(),
+    photo2:document.getElementById('u-photo2').value.trim(),
+    photo3:document.getElementById('u-photo3').value.trim(),
+  };
+  const ref=db.collection('jobs').doc(jobId).collection('updates');
+  if(editId) await ref.doc(editId).update(data);
+  else{data.createdAt=firebase.firestore.FieldValue.serverTimestamp();await ref.add(data);}
+  sp.style.display='none';
+  closeUpdateForm();
+}
+
+async function deleteUpdate(jobId,updateId){
+  if(!confirm('Delete this update?')) return;
+  await db.collection('jobs').doc(jobId).collection('updates').doc(updateId).delete();
+}
+
 // ── Document categories ────────────────────────────────────────────────────
 const DOC_CATS = [
   {key:'proposal',   label:'Proposal',                icon:'📋', color:'#1a3a6a'},
@@ -1018,6 +1226,7 @@ function esc(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 document.getElementById('item-overlay').addEventListener('click',function(e){if(e.target===this)closeItemForm();});
+document.getElementById('update-overlay').addEventListener('click',function(e){if(e.target===this)closeUpdateForm();});
 document.getElementById('newjob-overlay').addEventListener('click',function(e){if(e.target===this)closeNewJobSheet();});
 </script>
 
