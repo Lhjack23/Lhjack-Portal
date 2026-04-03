@@ -578,13 +578,117 @@ function renderAdminTracker(jobId, phases) {
 // ── Client tracker render ──────────────────────────────────────────────────
 function renderClientTracker(phases) {
   const el=document.getElementById('client-tracker-content');
-  const completedCount=phases.filter(p=>p.status==='complete').length;
-  let html=`<div class="tracker-overall">
-    <div class="tracker-overall-label">Overall Progress</div>
-    <div class="progress-bg"><div class="progress-fill" style="width:${Math.round(completedCount/5*100)}%"></div></div>
-    <div class="tracker-phase-stat">${completedCount} of 5 phases complete</div>
-  </div>`;
 
+  // ── Calculate stats ──
+  const completedCount=phases.filter(p=>p.status==='complete').length;
+  const activePhaseIdx=phases.findIndex(p=>p.status==='active');
+  const activePhase=activePhaseIdx>=0?phases[activePhaseIdx]:null;
+  const activeDef=activePhase?PHASE_DEFS[activePhaseIdx]:null;
+
+  let totalItems=0, doneItems=0;
+  phases.forEach((p,idx)=>{
+    PHASE_DEFS[idx].items.forEach(item=>{
+      totalItems++;
+      if(p.items&&p.items[item.key]) doneItems++;
+    });
+  });
+  const pct=totalItems?Math.round(doneItems/totalItems*100):0;
+
+  // Status
+  let statusLabel,statusColor,statusBg,statusBorder;
+  if(completedCount===5){
+    statusLabel='Complete';statusColor='#6adf40';statusBg='#1a4a10';statusBorder='#3a8a20';
+  } else if(activePhase){
+    statusLabel='In Progress';statusColor='#e07040';statusBg='rgba(193,84,28,.15)';statusBorder='#c1541c';
+  } else {
+    statusLabel='Not Started';statusColor='#8a9fcf';statusBg='#1a2a6c';statusBorder='#3a50a0';
+  }
+
+  // Next milestone
+  let nextMilestone='Awaiting project start';
+  if(activePhase&&activeDef){
+    const nextItem=activeDef.items.find(i=>!activePhase.items||!activePhase.items[i.key]);
+    nextMilestone=nextItem?nextItem.label:`${activeDef.name} wrapping up`;
+  } else if(completedCount===5){
+    nextMilestone='Project complete — great work!';
+  } else {
+    const nextIdx=phases.findIndex(p=>p.status==='upcoming');
+    if(nextIdx>=0) nextMilestone=`Starting ${PHASE_DEFS[nextIdx].name}`;
+  }
+
+  // Upcoming payment — first non-complete phase
+  let upcomingPay=null;
+  const upcomingPayIdx=phases.findIndex(p=>p.status!=='complete');
+  if(upcomingPayIdx>=0) upcomingPay=PHASE_DEFS[upcomingPayIdx];
+
+  // Latest update — last checked scope item scanning backwards
+  let latestUpdate='No updates yet';
+  outer: for(let i=phases.length-1;i>=0;i--){
+    for(let j=PHASE_DEFS[i].items.length-1;j>=0;j--){
+      if(phases[i].items&&phases[i].items[PHASE_DEFS[i].items[j].key]){
+        latestUpdate=PHASE_DEFS[i].items[j].label;
+        break outer;
+      }
+    }
+  }
+
+  let html=`
+  <!-- ── HERO STATUS CARD ── -->
+  <div style="background:#0f1940;border:1px solid #2a3f80;border-radius:16px;padding:20px 18px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#8a9fcf">Project Status</div>
+      <span style="background:${statusBg};color:${statusColor};border:1px solid ${statusBorder};font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;padding:5px 13px;border-radius:20px;letter-spacing:.05em">${statusLabel}</span>
+    </div>
+    <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;color:#ffffff;margin-bottom:3px">${activeDef?activeDef.name:(completedCount===5?'All Phases Complete':'Not Yet Started')}</div>
+    ${activeDef?`<div style="font-size:12px;color:#8a9fcf;margin-bottom:16px">Phase ${activePhaseIdx+1} of 5 &nbsp;·&nbsp; ${activeDef.payment} payment phase</div>`:`<div style="margin-bottom:16px"></div>`}
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+      <div style="font-size:11px;color:#8a9fcf">Overall Completion</div>
+      <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:16px;color:#e07040">${pct}%</div>
+    </div>
+    <div style="background:#060e28;border-radius:8px;height:12px;overflow:hidden;margin-bottom:8px">
+      <div style="width:${pct}%;height:100%;background:linear-gradient(90deg,#c1541c,#e07040);border-radius:8px;transition:width .5s"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between">
+      ${[0,1,2,3,4].map(i=>{
+        const s=phases[i].status;
+        const color=s==='complete'?'#6adf40':s==='active'?'#e07040':'#2a3a60';
+        const bg=s==='complete'?'#1a4a10':s==='active'?'rgba(193,84,28,.2)':'transparent';
+        return `<div style="flex:1;text-align:center">
+          <div style="width:20px;height:20px;border-radius:50%;background:${bg};border:2px solid ${color};margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:9px;color:${color};font-weight:900">${s==='complete'?'✓':i+1}</div>
+          <div style="font-size:8px;color:${color};font-family:'Montserrat',sans-serif;font-weight:700">P${i+1}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <!-- ── INFO GRID ── -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+    <div style="background:#0f1940;border:1px solid #2a3f80;border-radius:12px;padding:14px">
+      <div style="font-size:9px;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Next Milestone</div>
+      <div style="font-size:12px;color:#ffffff;line-height:1.45;font-weight:600">${nextMilestone}</div>
+    </div>
+    <div style="background:#0f1940;border:1px solid ${upcomingPay?'rgba(193,84,28,.5)':'#2a3f80'};border-radius:12px;padding:14px">
+      <div style="font-size:9px;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Upcoming Payment</div>
+      ${upcomingPay
+        ?`<div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:26px;color:#e07040;line-height:1">${upcomingPay.payment}</div>
+           <div style="font-size:10px;color:#8a9fcf;margin-top:5px;line-height:1.3">${upcomingPay.name}</div>`
+        :`<div style="font-size:12px;color:#6adf40;font-weight:600;line-height:1.4">All payments received</div>`}
+    </div>
+  </div>
+
+  <!-- ── LATEST UPDATE ── -->
+  <div style="background:#0a1230;border:1px solid #2a3f80;border-left:3px solid #c1541c;border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:20px;display:flex;align-items:flex-start;gap:12px">
+    <div style="font-size:18px;line-height:1;margin-top:1px">📣</div>
+    <div>
+      <div style="font-size:9px;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Latest Update</div>
+      <div style="font-size:13px;color:#ffffff;font-weight:600;line-height:1.4">${latestUpdate}</div>
+    </div>
+  </div>
+
+  <!-- ── PHASE TIMELINE HEADER ── -->
+  <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#8a9fcf;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1a2f60">Phase Timeline</div>`;
+
+  // Phase cards
   phases.forEach((phase,idx)=>{
     const def=PHASE_DEFS[idx];
     const doneItems=def.items.filter(i=>phase.items&&phase.items[i.key]).length;
@@ -594,7 +698,7 @@ function renderClientTracker(phases) {
         <div class="phase-dot ${phase.status}">${phase.status==='complete'?'✓':def.num}</div>
         <div class="phase-info">
           <div class="phase-name">${def.name}</div>
-          <div class="phase-meta">${doneItems}/${totalItems} items complete</div>
+          <div class="phase-meta">${doneItems}/${totalItems} items complete &nbsp;·&nbsp; ${def.payment}</div>
         </div>
         <span class="phase-badge ${phase.status}">${phase.status==='upcoming'?'Upcoming':phase.status==='active'?'In Progress':'Complete'}</span>
       </div>
@@ -621,8 +725,8 @@ function renderClientTracker(phases) {
     </div>
     ${idx<4?'<div class="phase-connector"></div>':''}`;
   });
+
   el.innerHTML=html;
-  // Auto-expand active phase
   const activeIdx=phases.findIndex(p=>p.status==='active');
   if(activeIdx>=0) togglePhaseExpand('client',activeIdx,true);
 }
