@@ -199,6 +199,38 @@
 textarea{resize:vertical;min-height:70px;line-height:1.5}
 .photo-inputs{display:flex;flex-direction:column;gap:6px}
 .photo-inputs input{margin-bottom:0}
+/* ── Messaging / Comm Log ── */
+.msg-thread{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;min-height:80px}
+.msg-bubble{max-width:88%;padding:11px 14px;border-radius:14px;position:relative;word-break:break-word}
+.msg-bubble.contractor{background:#131f52;border:1px solid #2a3f80;border-bottom-left-radius:4px;align-self:flex-start}
+.msg-bubble.client{background:#1a3a6c;border:1px solid #3a5090;border-bottom-right-radius:4px;align-self:flex-end}
+.msg-bubble.meeting{background:#1a2a10;border:1px solid #3a6020;align-self:flex-start;width:100%;max-width:100%}
+.msg-sender{font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.msg-sender.contractor{color:#e07040}
+.msg-sender.client{color:#6a9fd8}
+.msg-sender.meeting{color:#8adf40}
+.msg-text{font-size:13px;color:#ffffff;line-height:1.5}
+.msg-time{font-size:10px;color:#5a6a8a;margin-top:6px;text-align:right}
+.msg-attachment{display:flex;align-items:center;gap:8px;margin-top:8px;background:#0a1230;border-radius:8px;padding:8px 10px}
+.msg-attachment-icon{font-size:16px;flex-shrink:0}
+.msg-attachment-name{font-size:11px;color:#6a9fd8;text-decoration:none;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msg-empty{text-align:center;color:#5a6a8a;padding:30px 20px;font-size:13px}
+.msg-meeting-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:#8adf40;margin-bottom:6px}
+.msg-meeting-notes{font-size:12px;color:#b8d8a0;line-height:1.6;white-space:pre-wrap}
+/* Compose area */
+.msg-compose{background:#0a1230;border:1px solid #2a3f80;border-radius:12px;padding:12px}
+.msg-type-tabs{display:flex;gap:6px;margin-bottom:10px}
+.msg-type-btn{padding:6px 12px;border-radius:6px;border:1px solid #2a3f80;background:transparent;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase}
+.msg-type-btn.on{background:#c1541c;color:#fff;border-color:#c1541c}
+.msg-input-row{display:flex;gap:8px;align-items:flex-end}
+.msg-input-row textarea{flex:1;margin-bottom:0;min-height:48px;max-height:120px;resize:vertical;font-size:13px;padding:10px 12px}
+.msg-send-btn{background:#c1541c;color:#fff;border:none;border-radius:9px;padding:12px 18px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;cursor:pointer;flex-shrink:0;align-self:flex-end;height:48px}
+.msg-meeting-form{margin-top:8px}
+.meeting-note-upload{display:flex;align-items:center;gap:8px;margin-top:6px}
+.msg-divider{text-align:center;font-size:10px;color:#3a4a6a;margin:8px 0;font-family:'Montserrat',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;position:relative}
+.msg-divider::before,.msg-divider::after{content:'';position:absolute;top:50%;width:35%;height:1px;background:#1a2f60}
+.msg-divider::before{left:0}.msg-divider::after{right:0}
+.msg-admin-del{position:absolute;top:6px;right:8px;background:transparent;border:none;color:#3a4a6a;font-size:14px;cursor:pointer;line-height:1}
 /* ── File Upload ── */
 .upload-zone{border:2px dashed #2a4090;border-radius:10px;padding:14px 16px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:10px;background:#0a1230}
 .upload-zone:hover,.upload-zone.drag-over{border-color:#c1541c;background:rgba(193,84,28,.08)}
@@ -327,6 +359,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <div class="tab-bar">
         <button class="tab-btn on" id="ctab-tracker" onclick="setClientTab('tracker')">Tracker</button>
         <button class="tab-btn" id="ctab-updates" onclick="setClientTab('updates')">Updates</button>
+        <button class="tab-btn" id="ctab-messages" onclick="setClientTab('messages')">Messages</button>
         <button class="tab-btn" id="ctab-payments" onclick="setClientTab('payments')">Payments</button>
         <button class="tab-btn" id="ctab-scope" onclick="setClientTab('scope')">Scope</button>
         <button class="tab-btn" id="ctab-materials" onclick="setClientTab('materials')">Materials</button>
@@ -339,6 +372,10 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <!-- Updates tab -->
       <div id="client-tab-updates" style="display:none">
         <div id="client-updates-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
+      </div>
+      <!-- Messages tab -->
+      <div id="client-tab-messages" style="display:none">
+        <div id="client-messages-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
       <!-- Payments tab -->
       <div id="client-tab-payments" style="display:none">
@@ -385,6 +422,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <div class="tab-bar">
         <button class="tab-btn on" id="atab-tracker" onclick="setAdminTab('tracker')">Tracker</button>
         <button class="tab-btn" id="atab-updates" onclick="setAdminTab('updates')">Updates</button>
+        <button class="tab-btn" id="atab-messages" onclick="setAdminTab('messages')">Messages</button>
         <button class="tab-btn" id="atab-payments" onclick="setAdminTab('payments')">Payments</button>
         <button class="tab-btn" id="atab-scope" onclick="setAdminTab('scope')">Scope</button>
         <button class="tab-btn" id="atab-materials" onclick="setAdminTab('materials')">Materials</button>
@@ -398,6 +436,10 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <div id="admin-tab-updates" style="display:none">
         <button class="btn" style="margin-bottom:16px" id="post-update-btn" onclick="">+ Post Update</button>
         <div id="admin-updates-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
+      </div>
+      <!-- Admin messages tab -->
+      <div id="admin-tab-messages" style="display:none">
+        <div id="admin-messages-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
       <!-- Admin payments tab -->
       <div id="admin-tab-payments" style="display:none">
@@ -946,7 +988,10 @@ let unsubAdminTracker = null;
 let unsubAdminUpdates = null;
 let unsubAdminCO = null;
 let unsubClientCO = null;
+let unsubClientMessages = null;
+let unsubAdminMessages = null;
 let allClientItems = [];
+let msgType = 'contractor'; // for admin compose: contractor | meeting
 
 // ── Routing ────────────────────────────────────────────────────────────────
 function show(s) {
@@ -961,7 +1006,7 @@ function show(s) {
 // ── Tab switching ──────────────────────────────────────────────────────────
 function setClientTab(tab) {
   clientTab=tab;
-  ['tracker','updates','payments','scope','materials','docs'].forEach(t=>{
+  ['tracker','updates','messages','payments','scope','materials','docs'].forEach(t=>{
     document.getElementById('ctab-'+t).classList.toggle('on',t===tab);
     document.getElementById('client-tab-'+t).style.display=t===tab?'block':'none';
   });
@@ -969,7 +1014,7 @@ function setClientTab(tab) {
 
 function setAdminTab(tab) {
   adminTab=tab;
-  ['tracker','updates','payments','scope','materials','docs'].forEach(t=>{
+  ['tracker','updates','messages','payments','scope','materials','docs'].forEach(t=>{
     document.getElementById('atab-'+t).classList.toggle('on',t===tab);
     document.getElementById('admin-tab-'+t).style.display=t===tab?'block':'none';
   });
@@ -1059,6 +1104,14 @@ async function openJobDetail(jobId) {
       renderAdminChangeOrders(jobId, snap.docs.map(d=>({id:d.id,...d.data()})));
     });
 
+  // Subscribe to messages
+  if(unsubAdminMessages){unsubAdminMessages();unsubAdminMessages=null;}
+  unsubAdminMessages=db.collection('jobs').doc(jobId).collection('messages')
+    .orderBy('createdAt','asc').onSnapshot(snap=>{
+      const msgs=snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderMessages('admin', jobId, msgs, true);
+    });
+
   // Subscribe to updates
   if(unsubAdminUpdates){unsubAdminUpdates();unsubAdminUpdates=null;}
   unsubAdminUpdates=db.collection('jobs').doc(jobId).collection('updates')
@@ -1088,6 +1141,7 @@ function closeJobDetail() {
   if(unsubAdminTracker){unsubAdminTracker();unsubAdminTracker=null;}
   if(unsubAdminUpdates){unsubAdminUpdates();unsubAdminUpdates=null;}
   if(unsubAdminCO){unsubAdminCO();unsubAdminCO=null;}
+  if(unsubAdminMessages){unsubAdminMessages();unsubAdminMessages=null;}
   currentAdminJobId=null;
   document.getElementById('admin-detail-view').style.display='none';
   document.getElementById('admin-jobs-view').style.display='block';
@@ -1466,6 +1520,13 @@ async function clientLookup(){
     subscribeClientTracker();
     subscribeClientItems();
     subscribeClientUpdates();
+    // Subscribe to messages
+    if(unsubClientMessages){unsubClientMessages();unsubClientMessages=null;}
+    unsubClientMessages=db.collection('jobs').doc(currentJob.id).collection('messages')
+      .orderBy('createdAt','asc').onSnapshot(snap=>{
+        const msgs=snap.docs.map(d=>({id:d.id,...d.data()}));
+        renderMessages('client', currentJob.id, msgs, false);
+      });
     setClientTab('tracker');
   }catch(e){err.textContent='Connection error — please try again.';err.style.display='block';}
   sp.style.display='none';
@@ -1476,6 +1537,7 @@ function clientReset(silent){
   if(unsubClientTracker){unsubClientTracker();unsubClientTracker=null;}
   if(unsubClientUpdates){unsubClientUpdates();unsubClientUpdates=null;}
   if(unsubClientCO){unsubClientCO();unsubClientCO=null;}
+  if(unsubClientMessages){unsubClientMessages();unsubClientMessages=null;}
   currentJob=null;clientFilter='all';allClientItems=[];
   document.getElementById('client-lookup').style.display='block';
   document.getElementById('client-job').style.display='none';
@@ -2239,125 +2301,332 @@ function renderClientChangeOrders(jobId, orders) {
   el.innerHTML=html;
 }
 
+// ── Messaging / Communication Log ─────────────────────────────────────────
+function fmtMsgTime(ts) {
+  if(!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + ' at ' +
+    d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+}
+
+function renderMessages(prefix, jobId, msgs, isAdmin) {
+  const el = document.getElementById(`${prefix}-messages-content`);
+  if(!el) return;
+
+  const composeHtml = isAdmin ? adminComposeHtml(jobId) : clientComposeHtml(jobId);
+
+  if(!msgs.length) {
+    el.innerHTML = `<div style="font-size:12px;color:#8a9fcf;margin-bottom:16px;line-height:1.5">
+      This is your project communication log. All messages are saved here so nothing gets lost.
+      Phone calls, emails, meeting notes — keep it all in one place.
+    </div>
+    <div class="msg-empty">No messages yet. Start the conversation below.</div>
+    ${composeHtml}`;
+    if(isAdmin) wireAdminCompose(jobId);
+    else wireClientCompose(jobId);
+    return;
+  }
+
+  let threadHtml = '';
+  let lastDate = '';
+  msgs.forEach(msg => {
+    const d = msg.createdAt ? (msg.createdAt.toDate ? msg.createdAt.toDate() : new Date(msg.createdAt)) : new Date();
+    const dateStr = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    if(dateStr !== lastDate) {
+      threadHtml += `<div class="msg-divider">${dateStr}</div>`;
+      lastDate = dateStr;
+    }
+    threadHtml += msgBubble(msg, jobId, isAdmin);
+  });
+
+  el.innerHTML = `<div style="font-size:11px;color:#5a6a8a;margin-bottom:12px;text-align:center">Project communication log — ${msgs.length} message${msgs.length!==1?'s':''}</div>
+    <div class="msg-thread" id="${prefix}-msg-thread">${threadHtml}</div>
+    ${composeHtml}`;
+
+  if(isAdmin) wireAdminCompose(jobId);
+  else wireClientCompose(jobId);
+
+  // Scroll thread to bottom
+  const thread = document.getElementById(`${prefix}-msg-thread`);
+  if(thread) thread.scrollTop = thread.scrollHeight;
+}
+
+function msgBubble(msg, jobId, isAdmin) {
+  const type = msg.type || 'contractor';
+  const isMeeting = type === 'meeting';
+  const time = fmtMsgTime(msg.createdAt);
+  const delBtn = isAdmin ? `<button class="msg-admin-del" onclick="deleteMsg('${jobId}','${msg.id}')" title="Delete">×</button>` : '';
+
+  if(isMeeting) {
+    return `<div class="msg-bubble meeting" style="position:relative">
+      ${delBtn}
+      <div class="msg-meeting-title">📋 Meeting Notes${msg.meetingTitle?' — '+esc(msg.meetingTitle):''}</div>
+      ${msg.text?`<div class="msg-meeting-notes">${esc(msg.text)}</div>`:''}
+      ${msg.attachmentUrl?`<div class="msg-attachment">
+        <div class="msg-attachment-icon">📎</div>
+        <a class="msg-attachment-name" href="${msg.attachmentUrl}" target="_blank" rel="noopener noreferrer">${esc(msg.attachmentName||'Meeting Notes')}</a>
+      </div>`:''}
+      <div class="msg-time">${esc(msg.sender||'LHJack Contractors')} · ${time}</div>
+    </div>`;
+  }
+
+  const bubbleClass = type === 'client' ? 'client' : 'contractor';
+  const senderLabel = type === 'client' ? (msg.sender||'Homeowner') : 'LHJack Contractors';
+  return `<div class="msg-bubble ${bubbleClass}" style="position:relative">
+    ${delBtn}
+    <div class="msg-sender ${bubbleClass}">${esc(senderLabel)}</div>
+    <div class="msg-text">${esc(msg.text||'').replace(/\n/g,'<br>')}</div>
+    ${msg.attachmentUrl?`<div class="msg-attachment">
+      <div class="msg-attachment-icon">📎</div>
+      <a class="msg-attachment-name" href="${msg.attachmentUrl}" target="_blank" rel="noopener noreferrer">${esc(msg.attachmentName||'Attachment')}</a>
+    </div>`:''}
+    <div class="msg-time">${time}</div>
+  </div>`;
+}
+
+// ── Admin compose ──────────────────────────────────────────────────────────
+function adminComposeHtml(jobId) {
+  return `<div class="msg-compose">
+    <div class="msg-type-tabs">
+      <button class="msg-type-btn on" id="mtype-msg" onclick="setMsgType('contractor')">💬 Message</button>
+      <button class="msg-type-btn" id="mtype-meet" onclick="setMsgType('meeting')">📋 Meeting Notes</button>
+    </div>
+    <!-- Standard message -->
+    <div id="compose-msg-area">
+      <div class="msg-input-row">
+        <textarea id="admin-msg-text" placeholder="Type a message to your client…" rows="2"></textarea>
+
+```
+    <button class="msg-send-btn" onclick="sendAdminMsg('${jobId}')">Send</button>
+  </div>
+</div>
+<!-- Meeting notes -->
+<div id="compose-meet-area" style="display:none">
+  <input type="text" id="admin-meeting-title" placeholder="Meeting title (e.g. Design Review — April 3)" style="margin-bottom:8px" />
+  <textarea id="admin-meeting-text" placeholder="Paste Gemini notes, Google Meet transcript, or type a summary of the call…" rows="5"></textarea>
+  <div style="font-size:11px;color:#5a6a8a;margin-bottom:8px">Or upload a notes file:</div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+    <input type="file" id="admin-meeting-file" accept=".pdf,.doc,.docx,.txt" style="display:none" onchange="handleMeetingFileSelect(event,'${jobId}')" />
+    <button class="doc-upload-btn" onclick="document.getElementById('admin-meeting-file').click()">📤 Upload Notes File</button>
+    <span id="meeting-file-status" style="font-size:11px;color:#6adf40"></span>
+  </div>
+  <div id="meeting-upload-prog" style="display:none;margin-bottom:8px">
+    <div style="font-size:11px;color:#8a9fcf" id="meeting-prog-lbl">Uploading…</div>
+    <div style="background:#1a2a6c;border-radius:4px;height:5px;overflow:hidden;margin-top:4px">
+      <div id="meeting-prog-bar" style="height:100%;background:linear-gradient(90deg,#c1541c,#e07040);border-radius:4px;width:0%;transition:width .2s"></div>
+    </div>
+  </div>
+  <button class="msg-send-btn" style="width:100%;height:auto;padding:13px" onclick="sendMeetingNotes('${jobId}')">Post Meeting Notes</button>
+</div>
+```
+
+  </div>`;
+}
+
+function wireAdminCompose(jobId) {
+// Enter key sends message
+const ta = document.getElementById(‘admin-msg-text’);
+if(ta) ta.addEventListener(‘keydown’, e => {
+if(e.key===‘Enter’ && !e.shiftKey) { e.preventDefault(); sendAdminMsg(jobId); }
+});
+}
+
+function setMsgType(type) {
+msgType = type;
+document.getElementById(‘mtype-msg’).classList.toggle(‘on’, type===‘contractor’);
+document.getElementById(‘mtype-meet’).classList.toggle(‘on’, type===‘meeting’);
+document.getElementById(‘compose-msg-area’).style.display = type===‘contractor’ ? ‘block’ : ‘none’;
+document.getElementById(‘compose-meet-area’).style.display = type===‘meeting’ ? ‘block’ : ‘none’;
+}
+
+let meetingAttachmentUrl = ‘’;
+let meetingAttachmentName = ‘’;
+
+async function handleMeetingFileSelect(event, jobId) {
+const file = event.target.files[0];
+if(!file || !storage) return;
+const prog = document.getElementById(‘meeting-upload-prog’);
+const bar  = document.getElementById(‘meeting-prog-bar’);
+const lbl  = document.getElementById(‘meeting-prog-lbl’);
+const status = document.getElementById(‘meeting-file-status’);
+if(prog) prog.style.display = ‘block’;
+try {
+const safeName = file.name.replace(/[^a-zA-Z0-9.*-]/g,’*’);
+const path = `meetings/${jobId}/${Date.now()}_${safeName}`;
+const ref = storage.ref(path);
+await new Promise((res,rej) => {
+const task = ref.put(file);
+task.on(‘state_changed’, snap => {
+const p = Math.round(snap.bytesTransferred/snap.totalBytes*100);
+if(bar) bar.style.width=p+’%’;
+if(lbl) lbl.textContent=`Uploading ${file.name} (${p}%)…`;
+}, rej, res);
+});
+meetingAttachmentUrl = await ref.getDownloadURL();
+meetingAttachmentName = file.name;
+if(status) status.textContent = ‘✓ ’ + file.name;
+if(prog) prog.style.display=‘none’;
+} catch(e) {
+if(lbl) lbl.textContent = ‘Upload failed: ’ + (e.code||e.message);
+}
+event.target.value=’’;
+}
+
+async function sendAdminMsg(jobId) {
+const text = document.getElementById(‘admin-msg-text’).value.trim();
+if(!text) return;
+const btn = document.querySelector(’#compose-msg-area .msg-send-btn’);
+if(btn) btn.disabled = true;
+try {
+await db.collection(‘jobs’).doc(jobId).collection(‘messages’).add({
+type:‘contractor’, sender:‘LHJack Contractors’, text,
+createdAt: firebase.firestore.FieldValue.serverTimestamp()
+});
+document.getElementById(‘admin-msg-text’).value=’’;
+} catch(e) { alert(’Error: ’+e.message); }
+if(btn) btn.disabled = false;
+}
+
+async function sendMeetingNotes(jobId) {
+const title = document.getElementById(‘admin-meeting-title’).value.trim();
+const text  = document.getElementById(‘admin-meeting-text’).value.trim();
+if(!text && !meetingAttachmentUrl) { alert(‘Add meeting notes text or upload a file.’); return; }
+try {
+await db.collection(‘jobs’).doc(jobId).collection(‘messages’).add({
+type:‘meeting’, sender:‘LHJack Contractors’,
+meetingTitle: title, text,
+attachmentUrl: meetingAttachmentUrl,
+attachmentName: meetingAttachmentName,
+createdAt: firebase.firestore.FieldValue.serverTimestamp()
+});
+document.getElementById(‘admin-meeting-title’).value=’’;
+document.getElementById(‘admin-meeting-text’).value=’’;
+meetingAttachmentUrl=’’; meetingAttachmentName=’’;
+const s=document.getElementById(‘meeting-file-status’);if(s)s.textContent=’’;
+setMsgType(‘contractor’);
+} catch(e) { alert(’Error: ’+e.message); }
+}
+
+// ── Client compose ─────────────────────────────────────────────────────────
+function clientComposeHtml(jobId) {
+return `<div class="msg-compose">
+<div style="font-size:11px;color:#8a9fcf;margin-bottom:8px">Reply to your contractor:</div>
+<div class="msg-input-row">
+<textarea id="client-msg-text" placeholder="Type a message…" rows="2"></textarea>
+<button class="msg-send-btn" onclick="sendClientMsg('${jobId}')">Send</button>
+</div>
+<div style="font-size:10px;color:#4a5a7a;margin-top:6px">Messages are for project questions only. For emergencies call 917-750-5180.</div>
+
+  </div>`;
+}
+
+function wireClientCompose(jobId) {
+const ta = document.getElementById(‘client-msg-text’);
+if(ta) ta.addEventListener(‘keydown’, e => {
+if(e.key===‘Enter’ && !e.shiftKey) { e.preventDefault(); sendClientMsg(jobId); }
+});
+}
+
+async function sendClientMsg(jobId) {
+const ta = document.getElementById(‘client-msg-text’);
+const text = ta ? ta.value.trim() : ‘’;
+if(!text) return;
+const btn = document.querySelector(’#client-tab-messages .msg-send-btn’);
+if(btn) btn.disabled=true;
+try {
+await db.collection(‘jobs’).doc(jobId).collection(‘messages’).add({
+type:‘client’, sender:‘Homeowner’, text,
+createdAt: firebase.firestore.FieldValue.serverTimestamp()
+});
+if(ta) ta.value=’’;
+} catch(e) { alert(’Error: ’+e.message); }
+if(btn) btn.disabled=false;
+}
+
+async function deleteMsg(jobId, msgId) {
+if(!confirm(‘Delete this message?’)) return;
+await db.collection(‘jobs’).doc(jobId).collection(‘messages’).doc(msgId).delete();
+}
+
 // ── Document categories ────────────────────────────────────────────────────
 const DOC_CATS = [
-  {key:'proposal',   label:'Proposal',                icon:'📋', color:'#1a3a6a'},
-  {key:'nextsteps',  label:'Next Steps',              icon:'📌', color:'#1a4a2a'},
-  {key:'clientprep', label:'Client Prep Guidelines',  icon:'📝', color:'#3a2a6a'},
-  {key:'contract',   label:'Contract',                icon:'📄', color:'#4a1a1a'},
-  {key:'permits',    label:'Permits',                 icon:'🏛️', color:'#1a3a4a'},
-  {key:'license',    label:'License & Insurance',     icon:'🛡️', color:'#3a3a1a'},
-  {key:'drawings',   label:'Drawings & Plans',        icon:'📐', color:'#1a2a5a'},
-  {key:'warranty',   label:'Warranty Info',           icon:'🔒', color:'#2a1a4a'},
+{key:‘proposal’,   label:‘Proposal’,                icon:‘📋’, color:’#1a3a6a’},
+{key:‘nextsteps’,  label:‘Next Steps’,              icon:‘📌’, color:’#1a4a2a’},
+{key:‘clientprep’, label:‘Client Prep Guidelines’,  icon:‘📝’, color:’#3a2a6a’},
+{key:‘contract’,   label:‘Contract’,                icon:‘📄’, color:’#4a1a1a’},
+{key:‘permits’,    label:‘Permits’,                 icon:‘🏛️’, color:’#1a3a4a’},
+{key:‘license’,    label:‘License & Insurance’,     icon:‘🛡️’, color:’#3a3a1a’},
+{key:‘drawings’,   label:‘Drawings & Plans’,        icon:‘📐’, color:’#1a2a5a’},
+{key:‘warranty’,   label:‘Warranty Info’,           icon:‘🔒’, color:’#2a1a4a’},
 ];
 
 function renderClientDocs(docs) {
-  const el=document.getElementById('client-docs-content');
-  const available=DOC_CATS.filter(c=>docs&&docs[c.key]&&docs[c.key].url);
-  let html=`<div class="doc-vault-header">Your project documents are stored here by your contractor. Tap any document to view or download.</div>`;
-  if(!available.length){
-    html+='<div class="empty" style="padding:40px 20px">No documents uploaded yet.<br>Check back as your project progresses.</div>';
-    el.innerHTML=html; return;
-  }
-  html+=DOC_CATS.map(cat=>{
-    const doc=docs&&docs[cat.key];
-    const hasDoc=doc&&doc.url;
-    return `<div class="doc-category">
-      <div class="doc-icon" style="background:${cat.color}">${cat.icon}</div>
-      <div class="doc-info">
-        <div class="doc-name">${cat.label}</div>
-        ${hasDoc
-          ?`<div class="doc-status" style="color:#4aaf30;font-size:11px">Available</div>`
-          :`<div class="doc-status doc-unavailable">Not yet uploaded</div>`}
-      </div>
-      <div class="doc-action">
-        ${hasDoc
-          ?`<a class="doc-view-btn" href="${doc.url}" target="_blank" rel="noopener noreferrer">View</a>`
-          :`<span style="font-size:11px;color:#3a4a6a">Pending</span>`}
-      </div>
-    </div>`;
-  }).join('');
-  el.innerHTML=html;
+const el=document.getElementById(‘client-docs-content’);
+const available=DOC_CATS.filter(c=>docs&&docs[c.key]&&docs[c.key].url);
+let html=`<div class="doc-vault-header">Your project documents are stored here by your contractor. Tap any document to view or download.</div>`;
+if(!available.length){
+html+=’<div class="empty" style="padding:40px 20px">No documents uploaded yet.<br>Check back as your project progresses.</div>’;
+el.innerHTML=html; return;
+}
+html+=DOC_CATS.map(cat=>{
+const doc=docs&&docs[cat.key];
+const hasDoc=doc&&doc.url;
+return `<div class="doc-category"> <div class="doc-icon" style="background:${cat.color}">${cat.icon}</div> <div class="doc-info"> <div class="doc-name">${cat.label}</div> ${hasDoc ?`<div class="doc-status" style="color:#4aaf30;font-size:11px">Available</div>` :`<div class="doc-status doc-unavailable">Not yet uploaded</div>`} </div> <div class="doc-action"> ${hasDoc ?`<a class="doc-view-btn" href="${doc.url}" target="_blank" rel="noopener noreferrer">View</a>` :`<span style="font-size:11px;color:#3a4a6a">Pending</span>`} </div> </div>`;
+}).join(’’);
+el.innerHTML=html;
 }
 
 function renderAdminDocs(jobId, docs) {
-  const el=document.getElementById('admin-docs-content');
-  const noStorage = !storage;
-  const staticBanner = noStorage ? storageErrorBanner({ title:'Firebase Storage Not Enabled', steps:['Go to console.firebase.google.com → your project','Build → Storage → Get Started → Start in test mode → Done','Refresh this page'], showRules:true }) : '';
+const el=document.getElementById(‘admin-docs-content’);
+const noStorage = !storage;
+const staticBanner = noStorage ? storageErrorBanner({ title:‘Firebase Storage Not Enabled’, steps:[‘Go to console.firebase.google.com → your project’,‘Build → Storage → Get Started → Start in test mode → Done’,‘Refresh this page’], showRules:true }) : ‘’;
 
-  let html=staticBanner+`<div class="doc-vault-header" style="color:#8a9fcf;margin-bottom:14px">Upload files directly from your device, or paste a shareable link. Clients see a View button instantly.</div>`;
-  html+=DOC_CATS.map(cat=>{
-    const doc=docs&&docs[cat.key];
-    const savedUrl=doc&&doc.url?doc.url:'';
-    const savedName=doc&&doc.name?doc.name:'';
-    return `<div class="admin-doc-row">
-      <div class="admin-doc-top">
-        <div class="admin-doc-icon" style="background:${cat.color}">${cat.icon}</div>
-        <div style="flex:1">
-          <div class="admin-doc-name">${cat.label}</div>
-          ${savedName?`<div style="font-size:10px;color:#6a9fd8;margin-top:2px">📎 ${esc(savedName)}</div>`:''}
-        </div>
-        ${savedUrl?`<span class="admin-doc-saved">✓ Saved</span>`:''}
-      </div>
-      <!-- Upload from device -->
-      <div style="margin-bottom:8px">
-        <input type="file" id="doc-file-${cat.key}" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.heic,image/*" style="display:none"
-          onchange="uploadDocFile(event,'${jobId}','${cat.key}')" />
-        <div class="upload-progress" id="doc-prog-${cat.key}">
-          <div class="upload-progress-label" id="doc-prog-label-${cat.key}">Uploading…</div>
-          <div class="upload-progress-bar-bg"><div class="upload-progress-fill" id="doc-prog-bar-${cat.key}" style="width:0%"></div></div>
-        </div>
-        <button class="doc-upload-btn" onclick="document.getElementById('doc-file-${cat.key}').click()">
-          📤 Upload from Device
-        </button>
-      </div>
-      <!-- Or paste link -->
-      <div class="admin-doc-input-row">
-        <input type="text" id="doc-input-${cat.key}" placeholder="Or paste shareable link (Drive, Dropbox…)" value="${esc(savedUrl)}" />
-        <button class="admin-doc-save-btn" onclick="saveDocLink('${jobId}','${cat.key}')">Save</button>
-        ${savedUrl?`<button class="admin-doc-remove-btn" onclick="removeDocLink('${jobId}','${cat.key}')">✕</button>`:''}
-      </div>
-    </div>`;
-  }).join('');
-  el.innerHTML=html;
+let html=staticBanner+`<div class="doc-vault-header" style="color:#8a9fcf;margin-bottom:14px">Upload files directly from your device, or paste a shareable link. Clients see a View button instantly.</div>`;
+html+=DOC_CATS.map(cat=>{
+const doc=docs&&docs[cat.key];
+const savedUrl=doc&&doc.url?doc.url:’’;
+const savedName=doc&&doc.name?doc.name:’’;
+return `<div class="admin-doc-row"> <div class="admin-doc-top"> <div class="admin-doc-icon" style="background:${cat.color}">${cat.icon}</div> <div style="flex:1"> <div class="admin-doc-name">${cat.label}</div> ${savedName?`<div style="font-size:10px;color:#6a9fd8;margin-top:2px">📎 ${esc(savedName)}</div>`:''} </div> ${savedUrl?`<span class="admin-doc-saved">✓ Saved</span>`:''} </div> <!-- Upload from device --> <div style="margin-bottom:8px"> <input type="file" id="doc-file-${cat.key}" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.heic,image/*" style="display:none" onchange="uploadDocFile(event,'${jobId}','${cat.key}')" /> <div class="upload-progress" id="doc-prog-${cat.key}"> <div class="upload-progress-label" id="doc-prog-label-${cat.key}">Uploading…</div> <div class="upload-progress-bar-bg"><div class="upload-progress-fill" id="doc-prog-bar-${cat.key}" style="width:0%"></div></div> </div> <button class="doc-upload-btn" onclick="document.getElementById('doc-file-${cat.key}').click()"> 📤 Upload from Device </button> </div> <!-- Or paste link --> <div class="admin-doc-input-row"> <input type="text" id="doc-input-${cat.key}" placeholder="Or paste shareable link (Drive, Dropbox…)" value="${esc(savedUrl)}" /> <button class="admin-doc-save-btn" onclick="saveDocLink('${jobId}','${cat.key}')">Save</button> ${savedUrl?`<button class="admin-doc-remove-btn" onclick="removeDocLink('${jobId}','${cat.key}')">✕</button>`:''} </div> </div>`;
+}).join(’’);
+el.innerHTML=html;
 }
 
 async function saveDocLink(jobId, catKey) {
-  const url=document.getElementById('doc-input-'+catKey).value.trim();
-  if(!url) return;
-  const docRef=db.collection('jobs').doc(jobId);
-  const snap=await docRef.get();
-  const docs=(snap.data().documents)||{};
-  docs[catKey]={url, savedAt:new Date().toISOString()};
-  await docRef.update({documents:docs});
+const url=document.getElementById(‘doc-input-’+catKey).value.trim();
+if(!url) return;
+const docRef=db.collection(‘jobs’).doc(jobId);
+const snap=await docRef.get();
+const docs=(snap.data().documents)||{};
+docs[catKey]={url, savedAt:new Date().toISOString()};
+await docRef.update({documents:docs});
 }
 
 async function removeDocLink(jobId, catKey) {
-  const docRef=db.collection('jobs').doc(jobId);
-  const snap=await docRef.get();
-  const docs=(snap.data().documents)||{};
-  delete docs[catKey];
-  await docRef.update({documents:docs});
+const docRef=db.collection(‘jobs’).doc(jobId);
+const snap=await docRef.get();
+const docs=(snap.data().documents)||{};
+delete docs[catKey];
+await docRef.update({documents:docs});
 }
 
 function subscribeClientDocs() {
-  // Reuse the existing job snapshot (unsubClientTracker covers the job doc)
-  // renderClientDocs is called from job doc snapshot
+// Reuse the existing job snapshot (unsubClientTracker covers the job doc)
+// renderClientDocs is called from job doc snapshot
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 function getDomain(url){
-  if(!url) return '';
-  try{return new URL(url.startsWith('http')?url:'https://'+url).hostname.replace('www.','');}catch{return url;}
+if(!url) return ‘’;
+try{return new URL(url.startsWith(‘http’)?url:‘https://’+url).hostname.replace(‘www.’,’’);}catch{return url;}
 }
 function esc(s){
-  if(!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+if(!s) return ‘’;
+return String(s).replace(/&/g,’&’).replace(/</g,’<’).replace(/>/g,’>’).replace(/”/g,’"’);
 }
-document.getElementById('item-overlay').addEventListener('click',function(e){if(e.target===this)closeItemForm();});
-document.getElementById('co-overlay').addEventListener('click',function(e){if(e.target===this)closeCOForm();});
-document.getElementById('update-overlay').addEventListener('click',function(e){if(e.target===this)closeUpdateForm();});
-document.getElementById('newjob-overlay').addEventListener('click',function(e){if(e.target===this)closeNewJobSheet();});
+document.getElementById(‘item-overlay’).addEventListener(‘click’,function(e){if(e.target===this)closeItemForm();});
+document.getElementById(‘co-overlay’).addEventListener(‘click’,function(e){if(e.target===this)closeCOForm();});
+document.getElementById(‘update-overlay’).addEventListener(‘click’,function(e){if(e.target===this)closeUpdateForm();});
+document.getElementById(‘newjob-overlay’).addEventListener(‘click’,function(e){if(e.target===this)closeNewJobSheet();});
 </script>
 
 </div>
