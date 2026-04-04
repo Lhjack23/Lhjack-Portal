@@ -1172,6 +1172,151 @@ function renderAdminTracker(jobId, phases) {
         <span class="phase-badge ${phase.status}">${phase.status==='upcoming'?'Upcoming':phase.status==='active'?'In Progress':'Complete'}</span>
       </div>
       <div class="phase-body" id="admin-phase-body-${idx}">
+        ${idx===0?`<div style="margin:12px 0;overflow:hidden;border-radius:10px">
+          <svg viewBox="0 0 340 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+            <defs>
+              <style>
+                @keyframes cm-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+                @keyframes cm-sign{0%{stroke-dashoffset:120}100%{stroke-dashoffset:0}}
+                @keyframes cm-check{0%{stroke-dashoffset:40}100%{stroke-dashoffset:0}}
+                @keyframes cm-pen{0%,30%{transform:translate(148px,62px) rotate(-35deg)}70%,100%{transform:translate(113px,75px) rotate(-35deg)}}
+                @keyframes cm-ink{0%{opacity:0;stroke-dashoffset:60}40%{opacity:1}100%{opacity:1;stroke-dashoffset:0}}
+                @keyframes cm-pulse{0%,100%{opacity:.4;r:8}50%{opacity:.8;r:11}}
+                @keyframes cm-slide-r{0%{transform:translateX(20px);opacity:0}100%{transform:translateX(0);opacity:1}}
+                @keyframes cm-slide-l{0%{transform:translateX(-20px);opacity:0}100%{transform:translateX(0);opacity:1}}
+                @keyframes cm-fade{0%{opacity:0}100%{opacity:1}}
+                @keyframes cm-gear{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+                @keyframes cm-truck{0%{transform:translateX(-40px)}100%{transform:translateX(0)}}
+                @keyframes cm-dot{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
+              </style>
+              <linearGradient id="cm-bg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#1a2a6c"/>
+                <stop offset="100%" stop-color="#0e1840"/>
+              </linearGradient>
+              <filter id="cm-glow">
+                <feGaussianBlur stdDeviation="2" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <!-- Background -->
+            <rect width="340" height="130" fill="url(#cm-bg)" rx="10"/>
+            <!-- Subtle grid lines -->
+            <line x1="0" y1="32" x2="340" y2="32" stroke="#ffffff" stroke-width=".3" opacity=".06"/>
+            <line x1="0" y1="65" x2="340" y2="65" stroke="#ffffff" stroke-width=".3" opacity=".06"/>
+            <line x1="0" y1="98" x2="340" y2="98" stroke="#ffffff" stroke-width=".3" opacity=".06"/>
+            <!-- ── CONTRACT DOCUMENT (left) ── -->
+            <g style="animation:cm-float 3s ease-in-out infinite;transform-origin:80px 65px">
+              <!-- Doc shadow -->
+              <rect x="48" y="18" width="62" height="82" rx="4" fill="#000000" opacity=".25"/>
+              <!-- Doc body -->
+              <rect x="45" y="15" width="62" height="82" rx="4" fill="#ffffff"/>
+              <!-- Orange header strip -->
+              <rect x="45" y="15" width="62" height="10" rx="4" fill="#e05500"/>
+              <rect x="45" y="20" width="62" height="5" fill="#e05500"/>
+              <!-- Doc lines -->
+              <rect x="52" y="32" width="42" height="3" rx="1.5" fill="#e8e8e8"/>
+              <rect x="52" y="39" width="35" height="2" rx="1" fill="#e8e8e8"/>
+              <rect x="52" y="45" width="38" height="2" rx="1" fill="#e8e8e8"/>
+              <rect x="52" y="51" width="30" height="2" rx="1" fill="#e8e8e8"/>
+              <rect x="52" y="57" width="42" height="2" rx="1" fill="#e8e8e8"/>
+              <rect x="52" y="63" width="28" height="2" rx="1" fill="#e8e8e8"/>
+              <!-- Signature line -->
+              <line x1="52" y1="81" x2="94" y2="81" stroke="#cccccc" stroke-width="1.5" stroke-dasharray="2,2"/>
+              <!-- Animated signature -->
+              <path d="M54,79 C57,74 60,82 63,79 C66,76 68,82 72,78 C75,75 78,81 82,78" 
+                    stroke="#1a2a6c" stroke-width="2" fill="none" stroke-linecap="round"
+                    stroke-dasharray="120" stroke-dashoffset="120"
+                    style="animation:cm-sign 1.5s ease forwards 0.5s"/>
+              <!-- Orange stamp -->
+              <circle cx="90" cy="75" r="9" fill="none" stroke="#e05500" stroke-width="1.8" opacity=".9"/>
+              <text x="90" y="78" text-anchor="middle" fill="#e05500" font-size="6" font-weight="bold" font-family="Arial">OK</text>
+              <!-- Animated checkmark on stamp -->
+              <path d="M87,75 L89,77 L93,72" stroke="#e05500" stroke-width="2" fill="none" stroke-linecap="round"
+                    stroke-dasharray="40" stroke-dashoffset="40"
+                    style="animation:cm-check 0.6s ease forwards 1.8s"/>
+            </g>
+            <!-- ── PEN ── -->
+            <g style="animation:cm-pen 2s ease-in-out infinite;transform-origin:130px 80px">
+              <!-- Pen body -->
+              <rect x="-6" y="-3" width="22" height="7" rx="3" fill="#e05500" transform="rotate(-35)" style="transform-box:fill-box"/>
+              <polygon points="0,-2 -8,0 0,2" fill="#888888" transform="rotate(-35) translate(-9,0)" style="transform-box:fill-box"/>
+              <rect x="14" y="-3" width="5" height="7" rx="1" fill="#ffaa44" transform="rotate(-35)" style="transform-box:fill-box"/>
+              <!-- Pen clip -->
+              <g transform="rotate(-35)">
+                <rect x="10" y="-5" width="2" height="10" rx="1" fill="#cc3300"/>
+              </g>
+            </g>
+            <!-- Ink writing animation -->
+            <path d="M114,77 C117,72 120,80 124,77 C127,74 129,80 133,76 C136,73 139,79 143,76" 
+                  stroke="#e05500" stroke-width="1.5" fill="none" stroke-linecap="round"
+                  stroke-dasharray="60" stroke-dashoffset="60" opacity="0"
+                  style="animation:cm-ink 2s ease-in-out infinite 0.3s"/>
+            <!-- ── CENTER ICONS ── -->
+            <!-- Handshake circle -->
+            <circle cx="170" cy="65" r="28" fill="#e05500" opacity=".12"/>
+            <circle cx="170" cy="65" r="22" fill="none" stroke="#e05500" stroke-width="1.5" opacity=".4"
+                    style="animation:cm-pulse 2s ease-in-out infinite"/>
+            <!-- Handshake icon -->
+            <g transform="translate(156,55)" filter="url(#cm-glow)">
+              <!-- Left hand -->
+              <path d="M4,14 C4,14 0,11 0,8 C0,6 2,4 4,4 C5,4 6,5 7,6 L12,10" 
+                    stroke="#e05500" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+              <!-- Right hand -->
+              <path d="M24,14 C24,14 28,11 28,8 C28,6 26,4 24,4 C23,4 22,5 21,6 L16,10" 
+                    stroke="#e05500" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+              <!-- Clasped hands -->
+              <path d="M7,6 C9,4 11,4 12,5 L14,8 L16,5 C17,4 19,4 21,6 L22,9 C22,11 20,13 18,14 L14,16 L10,14 C8,13 6,11 7,9 Z" 
+                    fill="#e05500" opacity=".85"/>
+              <!-- Knuckle lines -->
+              <line x1="11" y1="8" x2="11" y2="13" stroke="#ffffff" stroke-width=".8" opacity=".5"/>
+              <line x1="14" y1="7" x2="14" y2="15" stroke="#ffffff" stroke-width=".8" opacity=".5"/>
+              <line x1="17" y1="8" x2="17" y2="13" stroke="#ffffff" stroke-width=".8" opacity=".5"/>
+            </g>
+            <!-- ── RIGHT SIDE: MOBILIZATION ICONS ── -->
+            <!-- Hard hat -->
+            <g style="animation:cm-slide-r 0.8s ease forwards 0.2s;opacity:0;transform-origin:260px 45px">
+              <ellipse cx="262" cy="50" rx="18" ry="5" fill="#e05500" opacity=".6"/>
+              <path d="M244,50 C244,38 252,30 262,30 C272,30 280,38 280,50 Z" fill="#e05500"/>
+              <rect x="240" y="49" width="44" height="5" rx="2.5" fill="#cc3300"/>
+              <rect x="257" y="29" width="10" height="8" rx="2" fill="#ffffff" opacity=".3"/>
+            </g>
+            <!-- Gear / mobilization symbol -->
+            <g transform="translate(298,40)" style="animation:cm-gear 4s linear infinite;transform-origin:16px 16px">
+              <circle cx="16" cy="16" r="7" fill="none" stroke="#e05500" stroke-width="2.5" opacity=".7"/>
+              <circle cx="16" cy="16" r="3" fill="#e05500" opacity=".7"/>
+              <line x1="16" y1="5" x2="16" y2="9" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
+              <line x1="16" y1="23" x2="16" y2="27" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
+              <line x1="5" y1="16" x2="9" y2="16" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
+              <line x1="23" y1="16" x2="27" y2="16" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
+              <line x1="8" y1="8" x2="11" y2="11" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+              <line x1="21" y1="21" x2="24" y2="24" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+              <line x1="24" y1="8" x2="21" y2="11" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+              <line x1="8" y1="24" x2="11" y2="21" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+            </g>
+            <!-- Permit clipboard -->
+            <g style="animation:cm-slide-r 0.8s ease forwards 0.5s;opacity:0">
+              <rect x="242" y="75" width="32" height="38" rx="3" fill="#ffffff" opacity=".92"/>
+              <rect x="242" y="75" width="32" height="7" rx="3" fill="#1a2a6c"/>
+              <rect x="248" y="70" width="20" height="8" rx="3" fill="#aaaaaa"/>
+              <rect x="247" y="88" width="22" height="2" rx="1" fill="#e8e8e8"/>
+              <rect x="247" y="93" width="18" height="2" rx="1" fill="#e8e8e8"/>
+              <rect x="247" y="98" width="20" height="2" rx="1" fill="#e8e8e8"/>
+              <!-- Check mark on permit -->
+              <path d="M249,105 L253,109 L261,101" stroke="#e05500" stroke-width="2" fill="none" stroke-linecap="round"
+                    stroke-dasharray="30" stroke-dashoffset="30"
+                    style="animation:cm-check 0.5s ease forwards 1.5s"/>
+            </g>
+            <!-- ── LABEL ── -->
+            <text x="170" y="108" text-anchor="middle" fill="#ffffff" font-size="9" font-family="'Montserrat',Arial" font-weight="700" letter-spacing="2" opacity=".8" style="animation:cm-fade 1s ease forwards">CONTRACT &amp; MOBILIZATION</text>
+            <!-- Progress dots -->
+            <g transform="translate(152,118)">
+              <circle cx="0" cy="0" r="3" fill="#e05500" style="animation:cm-dot 1.2s ease-in-out infinite 0s"/>
+              <circle cx="9" cy="0" r="3" fill="#e05500" style="animation:cm-dot 1.2s ease-in-out infinite 0.2s"/>
+              <circle cx="18" cy="0" r="3" fill="#e05500" style="animation:cm-dot 1.2s ease-in-out infinite 0.4s"/>
+              <circle cx="27" cy="0" r="3" fill="#e05500" style="animation:cm-dot 1.2s ease-in-out infinite 0.6s"/>
+            </g>
+          </svg>
+        </div>`:''}
         <div class="payment-banner">
           <div class="payment-banner-top">
             <div class="payment-label">${def.payLabel}</div>
@@ -1345,6 +1490,104 @@ function renderClientTracker(phases) {
         <span class="phase-badge ${phase.status}">${phase.status==='upcoming'?'Upcoming':phase.status==='active'?'In Progress':'Complete'}</span>
       </div>
       <div class="phase-body" id="client-phase-body-${idx}">
+        ${idx===0?`<div style="margin:12px 0;overflow:hidden;border-radius:10px">
+          <svg viewBox="0 0 340 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+            <defs>
+              <style>
+                @keyframes cm2-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+                @keyframes cm2-sign{0%{stroke-dashoffset:120}100%{stroke-dashoffset:0}}
+                @keyframes cm2-check{0%{stroke-dashoffset:40}100%{stroke-dashoffset:0}}
+                @keyframes cm2-pen{0%,30%{transform:translate(148px,62px) rotate(-35deg)}70%,100%{transform:translate(113px,75px) rotate(-35deg)}}
+                @keyframes cm2-ink{0%{opacity:0;stroke-dashoffset:60}40%{opacity:1}100%{opacity:1;stroke-dashoffset:0}}
+                @keyframes cm2-pulse{0%,100%{opacity:.4;r:8}50%{opacity:.8;r:11}}
+                @keyframes cm2-slide-r{0%{transform:translateX(20px);opacity:0}100%{transform:translateX(0);opacity:1}}
+                @keyframes cm2-fade{0%{opacity:0}100%{opacity:1}}
+                @keyframes cm2-gear{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+                @keyframes cm2-dot{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
+              </style>
+              <linearGradient id="cm2-bg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#1a2a6c"/>
+                <stop offset="100%" stop-color="#0e1840"/>
+              </linearGradient>
+              <filter id="cm2-glow">
+                <feGaussianBlur stdDeviation="2" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <rect width="340" height="130" fill="url(#cm2-bg)" rx="10"/>
+            <line x1="0" y1="32" x2="340" y2="32" stroke="#ffffff" stroke-width=".3" opacity=".06"/>
+            <line x1="0" y1="65" x2="340" y2="65" stroke="#ffffff" stroke-width=".3" opacity=".06"/>
+            <line x1="0" y1="98" x2="340" y2="98" stroke="#ffffff" stroke-width=".3" opacity=".06"/>
+            <g style="animation:cm2-float 3s ease-in-out infinite;transform-origin:80px 65px">
+              <rect x="48" y="18" width="62" height="82" rx="4" fill="#000000" opacity=".25"/>
+              <rect x="45" y="15" width="62" height="82" rx="4" fill="#ffffff"/>
+              <rect x="45" y="15" width="62" height="10" rx="4" fill="#e05500"/>
+              <rect x="45" y="20" width="62" height="5" fill="#e05500"/>
+              <rect x="52" y="32" width="42" height="3" rx="1.5" fill="#e8e8e8"/>
+              <rect x="52" y="39" width="35" height="2" rx="1" fill="#e8e8e8"/>
+              <rect x="52" y="45" width="38" height="2" rx="1" fill="#e8e8e8"/>
+              <rect x="52" y="51" width="30" height="2" rx="1" fill="#e8e8e8"/>
+              <rect x="52" y="57" width="42" height="2" rx="1" fill="#e8e8e8"/>
+              <rect x="52" y="63" width="28" height="2" rx="1" fill="#e8e8e8"/>
+              <line x1="52" y1="81" x2="94" y2="81" stroke="#cccccc" stroke-width="1.5" stroke-dasharray="2,2"/>
+              <path d="M54,79 C57,74 60,82 63,79 C66,76 68,82 72,78 C75,75 78,81 82,78" stroke="#1a2a6c" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" style="animation:cm2-sign 1.5s ease forwards 0.5s"/>
+              <circle cx="90" cy="75" r="9" fill="none" stroke="#e05500" stroke-width="1.8" opacity=".9"/>
+              <text x="90" y="78" text-anchor="middle" fill="#e05500" font-size="6" font-weight="bold" font-family="Arial">OK</text>
+              <path d="M87,75 L89,77 L93,72" stroke="#e05500" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="40" stroke-dashoffset="40" style="animation:cm2-check 0.6s ease forwards 1.8s"/>
+            </g>
+            <g style="animation:cm2-pen 2s ease-in-out infinite;transform-origin:130px 80px">
+              <rect x="-6" y="-3" width="22" height="7" rx="3" fill="#e05500" transform="rotate(-35)" style="transform-box:fill-box"/>
+              <polygon points="0,-2 -8,0 0,2" fill="#888888" transform="rotate(-35) translate(-9,0)" style="transform-box:fill-box"/>
+              <rect x="14" y="-3" width="5" height="7" rx="1" fill="#ffaa44" transform="rotate(-35)" style="transform-box:fill-box"/>
+              <g transform="rotate(-35)"><rect x="10" y="-5" width="2" height="10" rx="1" fill="#cc3300"/></g>
+            </g>
+            <path d="M114,77 C117,72 120,80 124,77 C127,74 129,80 133,76 C136,73 139,79 143,76" stroke="#e05500" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60" opacity="0" style="animation:cm2-ink 2s ease-in-out infinite 0.3s"/>
+            <circle cx="170" cy="65" r="28" fill="#e05500" opacity=".12"/>
+            <circle cx="170" cy="65" r="22" fill="none" stroke="#e05500" stroke-width="1.5" opacity=".4" style="animation:cm2-pulse 2s ease-in-out infinite"/>
+            <g transform="translate(156,55)" filter="url(#cm2-glow)">
+              <path d="M4,14 C4,14 0,11 0,8 C0,6 2,4 4,4 C5,4 6,5 7,6 L12,10" stroke="#e05500" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+              <path d="M24,14 C24,14 28,11 28,8 C28,6 26,4 24,4 C23,4 22,5 21,6 L16,10" stroke="#e05500" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+              <path d="M7,6 C9,4 11,4 12,5 L14,8 L16,5 C17,4 19,4 21,6 L22,9 C22,11 20,13 18,14 L14,16 L10,14 C8,13 6,11 7,9 Z" fill="#e05500" opacity=".85"/>
+              <line x1="11" y1="8" x2="11" y2="13" stroke="#ffffff" stroke-width=".8" opacity=".5"/>
+              <line x1="14" y1="7" x2="14" y2="15" stroke="#ffffff" stroke-width=".8" opacity=".5"/>
+              <line x1="17" y1="8" x2="17" y2="13" stroke="#ffffff" stroke-width=".8" opacity=".5"/>
+            </g>
+            <g style="animation:cm2-slide-r 0.8s ease forwards 0.2s;opacity:0;transform-origin:260px 45px">
+              <ellipse cx="262" cy="50" rx="18" ry="5" fill="#e05500" opacity=".6"/>
+              <path d="M244,50 C244,38 252,30 262,30 C272,30 280,38 280,50 Z" fill="#e05500"/>
+              <rect x="240" y="49" width="44" height="5" rx="2.5" fill="#cc3300"/>
+              <rect x="257" y="29" width="10" height="8" rx="2" fill="#ffffff" opacity=".3"/>
+            </g>
+            <g transform="translate(298,40)" style="animation:cm2-gear 4s linear infinite;transform-origin:16px 16px">
+              <circle cx="16" cy="16" r="7" fill="none" stroke="#e05500" stroke-width="2.5" opacity=".7"/>
+              <circle cx="16" cy="16" r="3" fill="#e05500" opacity=".7"/>
+              <line x1="16" y1="5" x2="16" y2="9" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
+              <line x1="16" y1="23" x2="16" y2="27" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
+              <line x1="5" y1="16" x2="9" y2="16" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
+              <line x1="23" y1="16" x2="27" y2="16" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
+              <line x1="8" y1="8" x2="11" y2="11" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+              <line x1="21" y1="21" x2="24" y2="24" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+              <line x1="24" y1="8" x2="21" y2="11" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+              <line x1="8" y1="24" x2="11" y2="21" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+            </g>
+            <g style="animation:cm2-slide-r 0.8s ease forwards 0.5s;opacity:0">
+              <rect x="242" y="75" width="32" height="38" rx="3" fill="#ffffff" opacity=".92"/>
+              <rect x="242" y="75" width="32" height="7" rx="3" fill="#1a2a6c"/>
+              <rect x="248" y="70" width="20" height="8" rx="3" fill="#aaaaaa"/>
+              <rect x="247" y="88" width="22" height="2" rx="1" fill="#e8e8e8"/>
+              <rect x="247" y="93" width="18" height="2" rx="1" fill="#e8e8e8"/>
+              <rect x="247" y="98" width="20" height="2" rx="1" fill="#e8e8e8"/>
+              <path d="M249,105 L253,109 L261,101" stroke="#e05500" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="30" stroke-dashoffset="30" style="animation:cm2-check 0.5s ease forwards 1.5s"/>
+            </g>
+            <text x="170" y="108" text-anchor="middle" fill="#ffffff" font-size="9" font-family="'Montserrat',Arial" font-weight="700" letter-spacing="2" opacity=".8" style="animation:cm2-fade 1s ease forwards">CONTRACT &amp; MOBILIZATION</text>
+            <g transform="translate(152,118)">
+              <circle cx="0" cy="0" r="3" fill="#e05500" style="animation:cm2-dot 1.2s ease-in-out infinite 0s"/>
+              <circle cx="9" cy="0" r="3" fill="#e05500" style="animation:cm2-dot 1.2s ease-in-out infinite 0.2s"/>
+              <circle cx="18" cy="0" r="3" fill="#e05500" style="animation:cm2-dot 1.2s ease-in-out infinite 0.4s"/>
+              <circle cx="27" cy="0" r="3" fill="#e05500" style="animation:cm2-dot 1.2s ease-in-out infinite 0.6s"/>
+            </g>
+          </svg>
+        </div>`:''}
         <div class="payment-banner">
           <div class="payment-banner-top">
             <div class="payment-label">${def.payLabel}</div>
