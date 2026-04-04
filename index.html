@@ -229,6 +229,19 @@
     .msg-divider::before,.msg-divider::after{content:'';position:absolute;top:50%;width:35%;height:1px;background:#1a2f60}
     .msg-divider::before{left:0}.msg-divider::after{right:0}
     .msg-admin-del{position:absolute;top:6px;right:8px;background:transparent;border:none;color:#3a4a6a;font-size:14px;cursor:pointer;line-height:1}
+    /* Msg photo upload */
+    .msg-photo-bar{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+    .msg-photo-attach-btn{background:#1a2a6c;color:#8ab8f0;border:1px solid #3a50a0;border-radius:7px;padding:7px 11px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+    .msg-photo-previews{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+    .msg-photo-thumb-wrap{position:relative;width:62px;height:62px}
+    .msg-photo-thumb{width:62px;height:62px;object-fit:cover;border-radius:8px;border:1px solid #2a3f80;background:#0a1230;display:block}
+    .msg-photo-remove{position:absolute;top:2px;right:2px;width:18px;height:18px;background:rgba(10,18,48,.9);border:1px solid #e05050;color:#e05050;border-radius:50%;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0}
+    .msg-photo-prog{font-size:10px;color:#8a9fcf;margin-bottom:6px;display:none}
+    /* Msg inline photo grid */
+    .msg-photos{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .msg-photo-link{position:relative;display:block;width:calc(33% - 4px)}
+    .msg-photo-img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1px solid #2a3f80;display:block}
+    .msg-photo-dl{position:absolute;bottom:4px;right:4px;background:rgba(10,18,48,.82);border:1px solid #6a9fd8;color:#6a9fd8;border-radius:5px;font-size:9px;padding:3px 6px;font-family:'Montserrat',sans-serif;font-weight:700;text-decoration:none;letter-spacing:.03em}
     /* ── File Upload ── */
     .upload-zone{border:2px dashed #2a4090;border-radius:10px;padding:14px 16px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:10px;background:#0a1230}
     .upload-zone:hover,.upload-zone.drag-over{border-color:#c1541c;background:rgba(193,84,28,.08)}
@@ -2300,6 +2313,9 @@ function fmtMsgTime(ts) {
 function renderMessages(prefix, jobId, msgs, isAdmin) {
   const el = document.getElementById(`${prefix}-messages-content`);
   if(!el) return;
+  // Reset photo state for this side whenever compose re-renders
+  const side = isAdmin ? 'admin' : 'client';
+  msgPhotos[side] = [];
 
   const composeHtml = isAdmin ? adminComposeHtml(jobId) : clientComposeHtml(jobId);
 
@@ -2345,11 +2361,21 @@ function msgBubble(msg, jobId, isAdmin) {
   const time = fmtMsgTime(msg.createdAt);
   const delBtn = isAdmin ? `<button class="msg-admin-del" onclick="deleteMsg('${jobId}','${msg.id}')" title="Delete">×</button>` : '';
 
+  // Inline photos
+  const photos = msg.photos && msg.photos.length ? msg.photos.filter(Boolean) : [];
+  const photosHtml = photos.length ? `<div class="msg-photos">
+    ${photos.map(p=>`<a class="msg-photo-link" href="${p.url}" target="_blank" rel="noopener noreferrer">
+      <img class="msg-photo-img" src="${p.url}" onerror="this.style.opacity='.3'" />
+      <span class="msg-photo-dl">⬇ Save</span>
+    </a>`).join('')}
+  </div>` : '';
+
   if(isMeeting) {
     return `<div class="msg-bubble meeting" style="position:relative">
       ${delBtn}
       <div class="msg-meeting-title">📋 Meeting Notes${msg.meetingTitle?' — '+esc(msg.meetingTitle):''}</div>
       ${msg.text?`<div class="msg-meeting-notes">${esc(msg.text)}</div>`:''}
+      ${photosHtml}
       ${msg.attachmentUrl?`<div class="msg-attachment">
         <div class="msg-attachment-icon">📎</div>
         <a class="msg-attachment-name" href="${msg.attachmentUrl}" target="_blank" rel="noopener noreferrer">${esc(msg.attachmentName||'Meeting Notes')}</a>
@@ -2363,7 +2389,8 @@ function msgBubble(msg, jobId, isAdmin) {
   return `<div class="msg-bubble ${bubbleClass}" style="position:relative">
     ${delBtn}
     <div class="msg-sender ${bubbleClass}">${esc(senderLabel)}</div>
-    <div class="msg-text">${esc(msg.text||'').replace(/\n/g,'<br>')}</div>
+    ${msg.text?`<div class="msg-text">${esc(msg.text||'').replace(/\n/g,'<br>')}</div>`:''}
+    ${photosHtml}
     ${msg.attachmentUrl?`<div class="msg-attachment">
       <div class="msg-attachment-icon">📎</div>
       <a class="msg-attachment-name" href="${msg.attachmentUrl}" target="_blank" rel="noopener noreferrer">${esc(msg.attachmentName||'Attachment')}</a>
@@ -2381,8 +2408,14 @@ function adminComposeHtml(jobId) {
     </div>
     <!-- Standard message -->
     <div id="compose-msg-area">
+      <div class="msg-photo-bar">
+        <button class="msg-photo-attach-btn" onclick="document.getElementById('admin-msg-photos').click()">📷 Attach Photos</button>
+        <input type="file" id="admin-msg-photos" accept="image/*" multiple style="display:none" onchange="handleMsgPhotoSelect(event,'admin','${jobId}')" />
+        <span id="admin-msg-photo-prog" class="msg-photo-prog"></span>
+      </div>
+      <div class="msg-photo-previews" id="admin-msg-preview"></div>
       <div class="msg-input-row">
-        <textarea id="admin-msg-text" placeholder="Type a message to your client…" rows="2"></textarea>
+        <textarea id="admin-msg-text" placeholder="Type a message to your client… (Enter to send, Shift+Enter for new line)" rows="2"></textarea>
         <button class="msg-send-btn" onclick="sendAdminMsg('${jobId}')">Send</button>
       </div>
     </div>
@@ -2426,6 +2459,67 @@ function setMsgType(type) {
 let meetingAttachmentUrl = '';
 let meetingAttachmentName = '';
 
+// ── Shared message photo upload ────────────────────────────────────────────
+let msgPhotos = { admin: [], client: [] }; // {url, name}[]
+
+async function handleMsgPhotoSelect(event, side, jobId) {
+  const input = event.target;
+  const files = Array.from(input.files).slice(0, 6);
+  if(!files.length) return;
+
+  const prog = document.getElementById(`${side}-msg-photo-prog`);
+  const preview = document.getElementById(`${side}-msg-preview`);
+  if(prog) { prog.style.display='block'; prog.textContent='Uploading…'; }
+
+  for(const file of files) {
+    if(!storage) {
+      if(prog) prog.textContent = '⚠️ Storage not enabled. Check Docs tab.';
+      break;
+    }
+    try {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+      const path = `messages/${jobId}/${side}/${Date.now()}_${safeName}`;
+      const ref = storage.ref(path);
+      await new Promise((res,rej) => {
+        const task = ref.put(file);
+        task.on('state_changed',
+          snap => { if(prog) prog.textContent = `Uploading ${file.name} (${Math.round(snap.bytesTransferred/snap.totalBytes*100)}%)…`; },
+          rej, res);
+      });
+      const url = await ref.getDownloadURL();
+      const idx = msgPhotos[side].length;
+      msgPhotos[side].push({url, name: file.name});
+      // Add thumbnail
+      if(preview) {
+        const wrap = document.createElement('div');
+        wrap.className = 'msg-photo-thumb-wrap';
+        wrap.id = `msg-thumb-${side}-${idx}`;
+        wrap.innerHTML = `<img class="msg-photo-thumb" src="${url}" />
+          <button class="msg-photo-remove" onclick="removeMsgPhoto('${side}',${idx})">×</button>`;
+        preview.appendChild(wrap);
+      }
+    } catch(e) {
+      if(prog) prog.textContent = '⚠️ Upload failed: ' + (e.code||e.message);
+    }
+  }
+  if(prog) { prog.textContent = `✓ ${msgPhotos[side].length} photo${msgPhotos[side].length!==1?'s':''} ready`; }
+  input.value = '';
+}
+
+function removeMsgPhoto(side, idx) {
+  msgPhotos[side][idx] = null;
+  const el = document.getElementById(`msg-thumb-${side}-${idx}`);
+  if(el) el.remove();
+}
+
+function clearMsgPhotos(side) {
+  msgPhotos[side] = [];
+  const preview = document.getElementById(`${side}-msg-preview`);
+  if(preview) preview.innerHTML = '';
+  const prog = document.getElementById(`${side}-msg-photo-prog`);
+  if(prog) { prog.style.display='none'; prog.textContent=''; }
+}
+
 async function handleMeetingFileSelect(event, jobId) {
   const file = event.target.files[0];
   if(!file || !storage) return;
@@ -2458,15 +2552,18 @@ async function handleMeetingFileSelect(event, jobId) {
 
 async function sendAdminMsg(jobId) {
   const text = document.getElementById('admin-msg-text').value.trim();
-  if(!text) return;
+  const photos = (msgPhotos['admin']||[]).filter(Boolean);
+  if(!text && !photos.length) return;
   const btn = document.querySelector('#compose-msg-area .msg-send-btn');
   if(btn) btn.disabled = true;
   try {
     await db.collection('jobs').doc(jobId).collection('messages').add({
       type:'contractor', sender:'LHJack Contractors', text,
+      photos: photos.map(p=>({url:p.url, name:p.name})),
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     document.getElementById('admin-msg-text').value='';
+    clearMsgPhotos('admin');
   } catch(e) { alert('Error: '+e.message); }
   if(btn) btn.disabled = false;
 }
@@ -2495,11 +2592,17 @@ async function sendMeetingNotes(jobId) {
 function clientComposeHtml(jobId) {
   return `<div class="msg-compose">
     <div style="font-size:11px;color:#8a9fcf;margin-bottom:8px">Reply to your contractor:</div>
+    <div class="msg-photo-bar">
+      <button class="msg-photo-attach-btn" onclick="document.getElementById('client-msg-photos').click()">📷 Attach Photos</button>
+      <input type="file" id="client-msg-photos" accept="image/*" multiple style="display:none" onchange="handleMsgPhotoSelect(event,'client','${jobId}')" />
+      <span id="client-msg-photo-prog" class="msg-photo-prog"></span>
+    </div>
+    <div class="msg-photo-previews" id="client-msg-preview"></div>
     <div class="msg-input-row">
-      <textarea id="client-msg-text" placeholder="Type a message…" rows="2"></textarea>
+      <textarea id="client-msg-text" placeholder="Type a message… (Enter to send)" rows="2"></textarea>
       <button class="msg-send-btn" onclick="sendClientMsg('${jobId}')">Send</button>
     </div>
-    <div style="font-size:10px;color:#4a5a7a;margin-top:6px">Messages are for project questions only. For emergencies call 917-750-5180.</div>
+    <div style="font-size:10px;color:#4a5a7a;margin-top:6px">For emergencies call 917-750-5180.</div>
   </div>`;
 }
 
@@ -2513,15 +2616,18 @@ function wireClientCompose(jobId) {
 async function sendClientMsg(jobId) {
   const ta = document.getElementById('client-msg-text');
   const text = ta ? ta.value.trim() : '';
-  if(!text) return;
+  const photos = (msgPhotos['client']||[]).filter(Boolean);
+  if(!text && !photos.length) return;
   const btn = document.querySelector('#client-tab-messages .msg-send-btn');
   if(btn) btn.disabled=true;
   try {
     await db.collection('jobs').doc(jobId).collection('messages').add({
       type:'client', sender:'Homeowner', text,
+      photos: photos.map(p=>({url:p.url, name:p.name})),
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     if(ta) ta.value='';
+    clearMsgPhotos('client');
   } catch(e) { alert('Error: '+e.message); }
   if(btn) btn.disabled=false;
 }
