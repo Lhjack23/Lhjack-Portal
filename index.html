@@ -847,6 +847,270 @@ async function uploadDocFile(event, jobId, catKey) {
   input.value = '';
 }
 
+
+// ── Phase Illustrations (animated SVG per phase) ─────────────────────────
+function phaseIllustration(idx) {
+  const n = 'pi' + idx;
+  const BG = `<linearGradient id="${n}bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a2a6c"/><stop offset="100%" stop-color="#0e1840"/></linearGradient>`;
+  const BASE = `<rect width="340" height="130" fill="url(#${n}bg)" rx="10"/><line x1="0" y1="32" x2="340" y2="32" stroke="#fff" stroke-width=".3" opacity=".06"/><line x1="0" y1="65" x2="340" y2="65" stroke="#fff" stroke-width=".3" opacity=".06"/><line x1="0" y1="98" x2="340" y2="98" stroke="#fff" stroke-width=".3" opacity=".06"/>`;
+  const DOTS = `<g transform="translate(152,118)"><circle cx="0" cy="0" r="3" fill="#e05500" style="animation:${n}dt 1.2s ease-in-out infinite 0s"/><circle cx="9" cy="0" r="3" fill="#e05500" style="animation:${n}dt 1.2s ease-in-out infinite .2s"/><circle cx="18" cy="0" r="3" fill="#e05500" style="animation:${n}dt 1.2s ease-in-out infinite .4s"/><circle cx="27" cy="0" r="3" fill="#e05500" style="animation:${n}dt 1.2s ease-in-out infinite .6s"/></g>`;
+
+  const svgFor = (styles, defs, body, label) =>
+    `<div style="margin:12px 0;overflow:hidden;border-radius:10px"><svg viewBox="0 0 340 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block"><defs><style>@keyframes ${n}dt{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}${styles}</style>${BG}${defs}</defs>${BASE}${body}<text x="170" y="108" text-anchor="middle" fill="#fff" font-size="9" font-family="Montserrat,Arial" font-weight="700" letter-spacing="2" opacity=".8">${label}</text>${DOTS}</svg></div>`;
+
+  if(idx === 0) {
+    // ── CONTRACT & MOBILIZATION ─────────────────────────────────────────
+    return svgFor(
+      `@keyframes ${n}fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes ${n}sg{0%{stroke-dashoffset:120}100%{stroke-dashoffset:0}}@keyframes ${n}ck{0%{stroke-dashoffset:40}100%{stroke-dashoffset:0}}@keyframes ${n}pn{0%,30%{transform:translate(148px,62px) rotate(-35deg)}70%,100%{transform:translate(113px,75px) rotate(-35deg)}}@keyframes ${n}ik{0%{opacity:0;stroke-dashoffset:60}40%{opacity:1}100%{opacity:1;stroke-dashoffset:0}}@keyframes ${n}pu{0%,100%{opacity:.4}50%{opacity:.8}}@keyframes ${n}sr{0%{transform:translateX(20px);opacity:0}100%{transform:translateX(0);opacity:1}}@keyframes ${n}gr{from{transform:rotate(0)}to{transform:rotate(360deg)}}`,
+      `<filter id="${n}gw"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`,
+      `<g style="animation:${n}fl 3s ease-in-out infinite;transform-origin:76px 56px"><rect x="45" y="15" width="62" height="82" rx="4" fill="#fff"/><rect x="45" y="15" width="62" height="10" rx="4" fill="#e05500"/><rect x="45" y="20" width="62" height="5" fill="#e05500"/><rect x="52" y="32" width="42" height="3" rx="1.5" fill="#e8e8e8"/><rect x="52" y="39" width="35" height="2" rx="1" fill="#e8e8e8"/><rect x="52" y="45" width="38" height="2" rx="1" fill="#e8e8e8"/><rect x="52" y="51" width="30" height="2" rx="1" fill="#e8e8e8"/><rect x="52" y="57" width="42" height="2" rx="1" fill="#e8e8e8"/><line x1="52" y1="81" x2="94" y2="81" stroke="#ccc" stroke-width="1.5" stroke-dasharray="2,2"/><path d="M54,79C57,74 60,82 63,79C66,76 68,82 72,78C75,75 78,81 82,78" stroke="#1a2a6c" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" style="animation:${n}sg 1.5s ease forwards .5s"/><circle cx="90" cy="75" r="9" fill="none" stroke="#e05500" stroke-width="1.8"/><path d="M87,75L89,77L93,72" stroke="#e05500" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="40" stroke-dashoffset="40" style="animation:${n}ck .6s ease forwards 1.8s"/></g>
+<g style="animation:${n}pn 2s ease-in-out infinite"><rect x="-6" y="-3" width="22" height="7" rx="3" fill="#e05500" transform="rotate(-35)"/><polygon points="0,-2 -8,0 0,2" fill="#888" transform="rotate(-35) translate(-9,0)"/></g>
+<circle cx="170" cy="65" r="28" fill="#e05500" opacity=".12"/>
+<circle cx="170" cy="65" r="22" fill="none" stroke="#e05500" stroke-width="1.5" opacity=".4" style="animation:${n}pu 2s ease-in-out infinite"/>
+<g transform="translate(156,55)" filter="url(#${n}gw)"><path d="M4,14C4,14,0,11,0,8C0,6,2,4,4,4C5,4,6,5,7,6L12,10" stroke="#e05500" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M24,14C24,14,28,11,28,8C28,6,26,4,24,4C23,4,22,5,21,6L16,10" stroke="#e05500" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M7,6C9,4,11,4,12,5L14,8L16,5C17,4,19,4,21,6L22,9C22,11,20,13,18,14L14,16L10,14C8,13,6,11,7,9Z" fill="#e05500" opacity=".85"/></g>
+<g style="animation:${n}sr .8s ease forwards .2s;opacity:0"><ellipse cx="262" cy="50" rx="18" ry="5" fill="#e05500" opacity=".6"/><path d="M244,50C244,38,252,30,262,30C272,30,280,38,280,50Z" fill="#e05500"/><rect x="240" y="49" width="44" height="5" rx="2.5" fill="#cc3300"/></g>
+<g transform="translate(298,40)" style="animation:${n}gr 4s linear infinite;transform-origin:16px 16px"><circle cx="16" cy="16" r="7" fill="none" stroke="#e05500" stroke-width="2.5" opacity=".7"/><circle cx="16" cy="16" r="3" fill="#e05500" opacity=".7"/><line x1="16" y1="5" x2="16" y2="9" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/><line x1="16" y1="23" x2="16" y2="27" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/><line x1="5" y1="16" x2="9" y2="16" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/><line x1="23" y1="16" x2="27" y2="16" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/><line x1="8" y1="8" x2="11" y2="11" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/><line x1="21" y1="21" x2="24" y2="24" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/></g>
+<g style="animation:${n}sr .8s ease forwards .5s;opacity:0"><rect x="242" y="75" width="32" height="38" rx="3" fill="#fff" opacity=".92"/><rect x="242" y="75" width="32" height="7" rx="3" fill="#1a2a6c"/><rect x="248" y="88" width="22" height="2" rx="1" fill="#e8e8e8"/><rect x="248" y="93" width="18" height="2" rx="1" fill="#e8e8e8"/><rect x="248" y="98" width="20" height="2" rx="1" fill="#e8e8e8"/><path d="M249,105L253,109L261,101" stroke="#e05500" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="30" stroke-dashoffset="30" style="animation:${n}ck .5s ease forwards 1.5s"/></g>`,
+      'CONTRACT &amp; MOBILIZATION'
+    );
+  }
+
+  if(idx === 1) {
+    // ── DEMO & SITE PREP ────────────────────────────────────────────────
+    return svgFor(
+      `@keyframes ${n}sw{0%,100%{transform:rotate(-28deg)}50%{transform:rotate(28deg)}}@keyframes ${n}fl{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(45px) rotate(20deg);opacity:0}}@keyframes ${n}du{0%,100%{opacity:0;r:8}50%{opacity:.5;r:14}}@keyframes ${n}cr{0%{stroke-dashoffset:60}100%{stroke-dashoffset:0}}@keyframes ${n}sh{0%,100%{transform:translateX(0)}30%{transform:translateX(-2px)}70%{transform:translateX(2px)}}@keyframes ${n}am{0%,100%{transform:rotate(0deg)}50%{transform:rotate(30deg)}}@keyframes ${n}sl{0%{opacity:0;transform:translateX(15px)}100%{opacity:1;transform:translateX(0)}}`,
+      '',
+      `<!-- Crane -->
+<rect x="38" y="10" width="5" height="82" fill="#888" opacity=".5"/>
+<rect x="38" y="10" width="45" height="4" fill="#888" opacity=".5"/>
+<g style="animation:${n}sw 1.6s ease-in-out infinite;transform-origin:60px 10px">
+  <line x1="60" y1="10" x2="60" y2="50" stroke="#aaa" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <circle cx="60" cy="58" r="12" fill="#444" opacity=".95"/>
+  <circle cx="60" cy="58" r="12" fill="none" stroke="#777" stroke-width="2" opacity=".4"/>
+  <circle cx="55" cy="54" r="2" fill="#666"/><circle cx="65" cy="54" r="2" fill="#666"/><circle cx="60" cy="64" r="2" fill="#666"/>
+</g>
+<!-- Brick wall -->
+<g style="animation:${n}sh .35s linear infinite">
+  <g fill="#b04020" opacity=".9"><rect x="100" y="18" width="16" height="9" rx="1"/><rect x="118" y="18" width="16" height="9" rx="1"/><rect x="136" y="18" width="8" height="9" rx="1"/><rect x="108" y="29" width="16" height="9" rx="1"/><rect x="126" y="29" width="16" height="9" rx="1"/><rect x="100" y="40" width="16" height="9" rx="1"/><rect x="118" y="40" width="16" height="9" rx="1"/><rect x="136" y="40" width="8" height="9" rx="1"/></g>
+  <rect x="100" y="27" width="44" height="2" fill="#777" opacity=".3"/>
+  <rect x="100" y="38" width="44" height="2" fill="#777" opacity=".3"/>
+  <path d="M116,20L112,30L119,32L115,49" stroke="#ff7733" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60" style="animation:${n}cr .9s ease forwards .4s" opacity=".9"/>
+</g>
+<!-- Falling bricks -->
+<rect x="116" y="52" width="13" height="8" rx="1" fill="#b04020" opacity=".8" style="animation:${n}fl 1.6s ease-in infinite .0s"/>
+<rect x="103" y="56" width="11" height="7" rx="1" fill="#b04020" opacity=".7" style="animation:${n}fl 1.6s ease-in infinite .3s"/>
+<rect x="130" y="54" width="10" height="7" rx="1" fill="#b04020" opacity=".7" style="animation:${n}fl 1.6s ease-in infinite .55s"/>
+<!-- Dust -->
+<circle cx="118" cy="82" r="8" fill="#aaa" opacity="0" style="animation:${n}du 1.6s ease-in-out infinite .15s"/>
+<circle cx="132" cy="80" r="6" fill="#aaa" opacity="0" style="animation:${n}du 1.6s ease-in-out infinite .45s"/>
+<!-- Rubble pile -->
+<ellipse cx="120" cy="92" rx="26" ry="5" fill="#553322" opacity=".5"/>
+<rect x="100" y="88" width="8" height="5" rx="1" fill="#994422" opacity=".7" transform="rotate(-10,104,90)"/>
+<rect x="114" y="89" width="6" height="4" rx="1" fill="#994422" opacity=".7" transform="rotate(7,117,91)"/>
+<rect x="124" y="87" width="9" height="5" rx="1" fill="#994422" opacity=".7" transform="rotate(-5,128,89)"/>
+<!-- Excavator center -->
+<g transform="translate(158,28)" style="animation:${n}sl .6s ease forwards .1s;opacity:0">
+  <circle cx="22" cy="22" r="24" fill="#e05500" opacity=".1"/>
+  <rect x="4" y="20" width="28" height="14" rx="3" fill="#e05500" opacity=".8"/>
+  <rect x="18" y="10" width="15" height="13" rx="2" fill="#e05500" opacity=".9"/>
+  <rect x="20" y="12" width="11" height="8" rx="1" fill="#1a2a6c" opacity=".6"/>
+  <rect x="1" y="32" width="34" height="6" rx="3" fill="#333" opacity=".9"/>
+  <circle cx="9" cy="35" r="3" fill="#555"/>
+  <circle cx="29" cy="35" r="3" fill="#555"/>
+  <g style="animation:${n}am 1.8s ease-in-out infinite;transform-origin:18px 16px">
+    <rect x="-3" y="-18" width="5" height="22" rx="2" fill="#e05500" opacity=".9" transform="rotate(-15)"/>
+    <path d="M-8,-20L-2,-30L8,-30L3,-18Z" fill="#cc3300" transform="rotate(-15) translate(-1,-1)"/>
+  </g>
+</g>
+<!-- Dump truck right -->
+<g style="animation:${n}sl .7s ease forwards .3s;opacity:0">
+  <rect x="245" y="50" width="52" height="24" rx="3" fill="#e05500" opacity=".7"/>
+  <rect x="272" y="38" width="25" height="20" rx="3" fill="#e05500" opacity=".9"/>
+  <rect x="274" y="40" width="21" height="13" rx="2" fill="#1a2a6c" opacity=".5"/>
+  <circle cx="255" cy="76" r="7" fill="#222"/><circle cx="255" cy="76" r="4" fill="#444"/>
+  <circle cx="282" cy="76" r="7" fill="#222"/><circle cx="282" cy="76" r="4" fill="#444"/>
+  <path d="M249,50L253,38L270,38L270,50" fill="#994422" opacity=".8"/>
+  <ellipse cx="260" cy="38" rx="10" ry="4" fill="#883311" opacity=".8"/>
+</g>`
+      , 'DEMO &amp; SITE PREP');
+  }
+
+  if(idx === 2) {
+    // ── ROUGH WORK ──────────────────────────────────────────────────────
+    return svgFor(
+      `@keyframes ${n}fr{0%{stroke-dashoffset:300}100%{stroke-dashoffset:0}}@keyframes ${n}bl{0%,100%{opacity:.1;transform:scale(.9)}45%,55%{opacity:1;transform:scale(1)}}@keyframes ${n}pp{0%{stroke-dashoffset:120}100%{stroke-dashoffset:0}}@keyframes ${n}hm{0%,100%{transform:rotate(0)}50%{transform:rotate(-45deg)}}@keyframes ${n}gw{0%,100%{filter:drop-shadow(0 0 3px #e05500)}50%{filter:drop-shadow(0 0 10px #e05500)}}@keyframes ${n}fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes ${n}sp{0%,100%{opacity:0;transform:scale(0)}50%{opacity:1;transform:scale(1)}}`,
+      `<clipPath id="${n}bc"><rect x="0" y="0" width="340" height="130"/></clipPath>`,
+      `<!-- LEFT: lumber frame rising -->
+<g style="animation:${n}fl 4s ease-in-out infinite">
+  <rect x="20" y="88" width="88" height="5" rx="2" fill="#664" opacity=".7"/>
+  <line x1="30" y1="88" x2="30" y2="26" stroke="#cc8844" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards 0s"/>
+  <line x1="55" y1="88" x2="55" y2="16" stroke="#cc8844" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards .15s"/>
+  <line x1="80" y1="88" x2="80" y2="26" stroke="#cc8844" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards .3s"/>
+  <line x1="100" y1="88" x2="100" y2="16" stroke="#cc8844" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards .45s"/>
+  <line x1="30" y1="88" x2="100" y2="88" stroke="#cc8844" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards .05s"/>
+  <line x1="30" y1="55" x2="100" y2="55" stroke="#cc8844" stroke-width="3" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards .6s"/>
+  <line x1="30" y1="26" x2="100" y2="26" stroke="#cc8844" stroke-width="3" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards .8s"/>
+  <line x1="30" y1="26" x2="55" y2="12" stroke="#cc8844" stroke-width="3" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards 1.0s"/>
+  <line x1="55" y1="12" x2="100" y2="26" stroke="#cc8844" stroke-width="3" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards 1.15s"/>
+  <line x1="30" y1="55" x2="55" y2="88" stroke="#aa6622" stroke-width="2" stroke-linecap="round" opacity=".45" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr .8s ease forwards 1.3s"/>
+</g>
+<!-- CENTER: Electrical bolt -->
+<g transform="translate(147,18)" style="animation:${n}gw 1.4s ease-in-out infinite">
+  <polygon points="24,0 14,26 22,26 12,52 32,20 24,20" fill="#e05500" style="animation:${n}bl 1.3s ease-in-out infinite"/>
+  <circle cx="8" cy="10" r="5" fill="#ffaa44" style="animation:${n}sp 1.3s ease-in-out infinite .1s"/>
+  <circle cx="38" cy="14" r="4" fill="#ffaa44" style="animation:${n}sp 1.3s ease-in-out infinite .3s"/>
+  <circle cx="10" cy="42" r="4" fill="#ffaa44" style="animation:${n}sp 1.3s ease-in-out infinite .2s"/>
+</g>
+<!-- Plumbing pipes -->
+<path d="M120,72C133,72 138,82 150,82C162,82 167,72 180,72" stroke="#5aaad8" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" style="animation:${n}pp 1s ease forwards .6s"/>
+<path d="M120,84C133,84 138,94 150,94C162,94 167,84 180,84" stroke="#5aaad8" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" style="animation:${n}pp 1s ease forwards .9s"/>
+<!-- HVAC duct -->
+<rect x="120" y="98" width="60" height="12" rx="3" fill="none" stroke="#8adf40" stroke-width="2" stroke-dasharray="120" stroke-dashoffset="120" style="animation:${n}pp 1s ease forwards 1.2s"/>
+<!-- RIGHT: Blueprint -->
+<g transform="translate(218,14)">
+  <rect x="6" y="4" width="84" height="58" rx="3" fill="#162656" stroke="#5aaad8" stroke-width="1.5"/>
+  <line x1="6" y1="16" x2="90" y2="16" stroke="#5aaad8" stroke-width=".5" opacity=".35"/>
+  <line x1="6" y1="28" x2="90" y2="28" stroke="#5aaad8" stroke-width=".5" opacity=".35"/>
+  <line x1="6" y1="40" x2="90" y2="40" stroke="#5aaad8" stroke-width=".5" opacity=".35"/>
+  <line x1="6" y1="52" x2="90" y2="52" stroke="#5aaad8" stroke-width=".5" opacity=".35"/>
+  <line x1="24" y1="4" x2="24" y2="62" stroke="#5aaad8" stroke-width=".5" opacity=".35"/>
+  <line x1="48" y1="4" x2="48" y2="62" stroke="#5aaad8" stroke-width=".5" opacity=".35"/>
+  <line x1="72" y1="4" x2="72" y2="62" stroke="#5aaad8" stroke-width=".5" opacity=".35"/>
+  <path d="M14,56L14,22L34,10L54,22L54,56Z" fill="none" stroke="#fff" stroke-width="1.5" opacity=".6"/>
+  <rect x="24" y="40" width="12" height="16" stroke="#fff" stroke-width="1" fill="none" opacity=".6"/>
+  <ellipse cx="6" cy="33" rx="4" ry="31" fill="#2a4a8a" stroke="#5aaad8" stroke-width="1"/>
+  <ellipse cx="90" cy="33" rx="4" ry="31" fill="#2a4a8a" stroke="#5aaad8" stroke-width="1"/>
+</g>
+<!-- Hammer -->
+<g transform="translate(222,74)" style="animation:${n}hm .7s ease-in-out infinite;transform-origin:10px 5px">
+  <rect x="0" y="0" width="22" height="9" rx="2" fill="#888" opacity=".9"/>
+  <rect x="5" y="8" width="4" height="18" rx="2" fill="#cc8844"/>
+  <rect x="-2" y="1" width="11" height="7" rx="1" fill="#666"/>
+</g>`
+      , 'ROUGH WORK');
+  }
+
+  if(idx === 3) {
+    // ── FINISHES ────────────────────────────────────────────────────────
+    const tiles = [0,1,2,3,4,5,6,7,8,9,10,11].map(i => {
+      const c=i%4, r=Math.floor(i/4);
+      return `<rect x="${130+c*18+1}" y="${38+r*18+1}" width="16" height="16" rx="1.5" fill="#d4c9aa" opacity=".55" style="animation:${n}tl .35s ease forwards ${(i*0.06).toFixed(2)}s;opacity:0"/>`;
+    }).join('');
+    return svgFor(
+      `@keyframes ${n}rl{0%{transform:translateX(-100px)}100%{transform:translateX(100px)}}@keyframes ${n}pw{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0% 0 0)}}@keyframes ${n}tl{0%{opacity:0;transform:scale(.4)}100%{opacity:.55;transform:scale(1)}}@keyframes ${n}dr{0%{transform:perspective(200px) rotateY(0)}50%{transform:perspective(200px) rotateY(-55deg)}100%{transform:perspective(200px) rotateY(0)}}@keyframes ${n}sh{0%{transform:translateX(-70px)}100%{transform:translateX(70px)}}@keyframes ${n}sw{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}`,
+      `<clipPath id="${n}pc"><rect x="16" y="34" width="98" height="28" rx="2"/></clipPath><clipPath id="${n}sc"><rect x="232" y="16" width="78" height="70" rx="4"/></clipPath>`,
+      `<!-- LEFT: Paint wall + roller -->
+<rect x="16" y="34" width="98" height="28" rx="2" fill="#e0e0e0" opacity=".25"/>
+<g clip-path="url(#${n}pc)"><rect x="16" y="34" width="98" height="28" fill="#e05500" opacity=".35" style="animation:${n}pw 2.5s ease-in-out infinite"/></g>
+<rect x="16" y="34" width="98" height="28" rx="2" fill="none" stroke="#999" stroke-width="1" opacity=".3"/>
+<g style="animation:${n}rl 2.5s ease-in-out infinite">
+  <line x1="65" y1="16" x2="65" y2="33" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="65" y1="16" x2="78" y2="16" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+  <rect x="74" y="33" width="20" height="14" rx="5" fill="#e05500" opacity=".95"/>
+  <rect x="76" y="35" width="16" height="10" rx="4" fill="#cc3300"/>
+</g>
+<!-- Color swatches -->
+<rect x="18" y="70" width="13" height="17" rx="2" fill="#e05500" opacity=".85"/>
+<rect x="33" y="70" width="13" height="17" rx="2" fill="#1a2a6c" opacity=".85"/>
+<rect x="48" y="70" width="13" height="17" rx="2" fill="#6adf40" opacity=".85"/>
+<rect x="63" y="70" width="13" height="17" rx="2" fill="#f0d060" opacity=".85"/>
+<rect x="78" y="70" width="13" height="17" rx="2" fill="#ffffff" opacity=".6" stroke="#ddd" stroke-width="1"/>
+<!-- CENTER: Floor tiles -->
+<rect x="128" y="36" width="76" height="58" rx="2" fill="#c8c0a0" opacity=".2"/>
+${tiles}
+<line x1="128" y1="56" x2="204" y2="56" stroke="#888" stroke-width=".8" opacity=".25"/>
+<line x1="128" y1="74" x2="204" y2="74" stroke="#888" stroke-width=".8" opacity=".25"/>
+<line x1="146" y1="36" x2="146" y2="94" stroke="#888" stroke-width=".8" opacity=".25"/>
+<line x1="164" y1="36" x2="164" y2="94" stroke="#888" stroke-width=".8" opacity=".25"/>
+<line x1="182" y1="36" x2="182" y2="94" stroke="#888" stroke-width=".8" opacity=".25"/>
+<!-- tile trowel icon -->
+<g transform="translate(148,16)" style="animation:${n}sw 2s ease-in-out infinite">
+  <rect x="-3" y="0" width="18" height="10" rx="2" fill="#888" opacity=".8"/>
+  <rect x="6" y="10" width="3" height="10" rx="1" fill="#cc8844"/>
+  <polygon points="-3,10 0,18 15,10" fill="#777" opacity=".6"/>
+</g>
+<!-- RIGHT: Cabinet -->
+<rect x="232" y="18" width="76" height="70" rx="4" fill="#d4b06a" opacity=".75"/>
+<rect x="229" y="14" width="82" height="8" rx="3" fill="#c49050" opacity=".85"/>
+<rect x="229" y="14" width="82" height="4" rx="2" fill="#f0e8d0" opacity=".9"/>
+<g style="animation:${n}dr 3.5s ease-in-out infinite;transform-origin:270px 52px">
+  <rect x="234" y="26" width="32" height="58" rx="3" fill="#c49050" opacity=".9"/>
+  <rect x="236" y="28" width="28" height="54" rx="2" fill="#d4b06a" opacity=".55"/>
+</g>
+<rect x="270" y="26" width="32" height="58" rx="3" fill="#c49050" opacity=".9"/>
+<rect x="272" y="28" width="28" height="54" rx="2" fill="#d4b06a" opacity=".55"/>
+<rect x="262" y="52" width="14" height="4" rx="2" fill="#888" opacity=".7"/>
+<g clip-path="url(#${n}sc)"><rect x="225" y="14" width="16" height="76" fill="#fff" opacity=".15" style="animation:${n}sh 2.8s ease-in-out infinite"/></g>
+<rect x="248" y="2" width="36" height="6" rx="3" fill="#fff" opacity=".25"/>`
+      , 'FINISHES');
+  }
+
+  if(idx === 4) {
+    // ── FINAL & CLOSEOUT ─────────────────────────────────────────────────
+    return svgFor(
+      `@keyframes ${n}hg{0%,100%{filter:drop-shadow(0 0 5px #e05500);opacity:.8}50%{filter:drop-shadow(0 0 18px #e05500);opacity:1}}@keyframes ${n}kk{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}@keyframes ${n}ck{0%{stroke-dashoffset:80}100%{stroke-dashoffset:0}}@keyframes ${n}sl{0%{transform:rotate(0) scale(0)}100%{transform:rotate(360deg) scale(1)}}@keyframes ${n}st{0%,100%{opacity:0;transform:scale(0)}35%,65%{opacity:1;transform:scale(1)}}@keyframes ${n}cf{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(52px) rotate(400deg);opacity:0}}@keyframes ${n}bn{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes ${n}sh{0%{transform:translateX(-80px)}100%{transform:translateX(80px)}}`,
+      `<radialGradient id="${n}rg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e05500" stop-opacity=".35"/><stop offset="100%" stop-color="#e05500" stop-opacity="0"/></radialGradient><clipPath id="${n}hc"><rect x="14" y="6" width="110" height="100"/></clipPath>`,
+      `<!-- LEFT: Glowing completed house -->
+<g transform="translate(16,8)" style="animation:${n}bn 3s ease-in-out infinite">
+  <ellipse cx="50" cy="78" rx="48" ry="18" fill="url(#${n}rg)"/>
+  <g style="animation:${n}hg 2.2s ease-in-out infinite">
+    <rect x="12" y="46" width="76" height="44" rx="2" fill="#fff" opacity=".92"/>
+    <polygon points="2,48 50,14 98,48" fill="#e05500" opacity=".95"/>
+    <rect x="20" y="56" width="16" height="14" rx="2" fill="#1a2a6c" opacity=".7"/>
+    <rect x="62" y="56" width="16" height="14" rx="2" fill="#1a2a6c" opacity=".7"/>
+    <line x1="28" y1="56" x2="28" y2="70" stroke="#fff" stroke-width="1" opacity=".4"/>
+    <line x1="20" y1="63" x2="36" y2="63" stroke="#fff" stroke-width="1" opacity=".4"/>
+    <line x1="70" y1="56" x2="70" y2="70" stroke="#fff" stroke-width="1" opacity=".4"/>
+    <line x1="62" y1="63" x2="78" y2="63" stroke="#fff" stroke-width="1" opacity=".4"/>
+    <rect x="38" y="68" width="20" height="22" rx="2" fill="#cc8844" opacity=".9"/>
+    <circle cx="55" cy="79" r="2.5" fill="#888"/>
+    <rect x="63" y="15" width="10" height="18" rx="1" fill="#d4b878" opacity=".8"/>
+  </g>
+  <!-- Big green check -->
+  <path d="M20,72L38,90L80,50" stroke="#6adf40" stroke-width="5.5" fill="none" stroke-linecap="round" stroke-dasharray="80" stroke-dashoffset="80" style="animation:${n}ck .9s ease forwards .5s" opacity=".95"/>
+</g>
+<!-- CENTER: Spinning key -->
+<g transform="translate(148,38)" style="animation:${n}kk 3.5s linear infinite;transform-origin:24px 24px">
+  <circle cx="24" cy="24" r="17" fill="none" stroke="#e05500" stroke-width="4" opacity=".95"/>
+  <circle cx="24" cy="24" r="10" fill="none" stroke="#e05500" stroke-width="2" opacity=".4"/>
+  <rect x="36" y="22" width="38" height="5" rx="2.5" fill="#e05500" opacity=".95"/>
+  <rect x="46" y="27" width="5" height="9" rx="1" fill="#e05500" opacity=".95"/>
+  <rect x="56" y="27" width="5" height="6" rx="1" fill="#e05500" opacity=".95"/>
+  <rect x="66" y="27" width="5" height="10" rx="1" fill="#e05500" opacity=".95"/>
+</g>
+<!-- RIGHT: Certificate -->
+<g transform="translate(232,12)">
+  <rect x="0" y="0" width="82" height="68" rx="4" fill="#fffef0" opacity=".95"/>
+  <rect x="0" y="0" width="82" height="14" rx="4" fill="#1a2a6c"/>
+  <rect x="0" y="10" width="82" height="4" fill="#1a2a6c"/>
+  <text x="41" y="10" text-anchor="middle" fill="#fff" font-size="5.5" font-family="Arial" font-weight="bold" opacity=".9">CERTIFICATE OF COMPLETION</text>
+  <rect x="8" y="22" width="66" height="2" rx="1" fill="#e0e0e0"/>
+  <rect x="14" y="28" width="54" height="2" rx="1" fill="#e0e0e0"/>
+  <rect x="10" y="34" width="62" height="2" rx="1" fill="#e0e0e0"/>
+  <rect x="14" y="40" width="54" height="2" rx="1" fill="#e0e0e0"/>
+  <path d="M16,48L28,60L60,28" stroke="#e05500" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="80" stroke-dashoffset="80" style="animation:${n}ck 1s ease forwards .4s" opacity=".85"/>
+  <g style="animation:${n}sl 1.2s ease forwards .6s;transform-origin:68px 58px;transform:rotate(0) scale(0)">
+    <circle cx="68" cy="58" r="12" fill="#e05500" opacity=".9"/>
+    <circle cx="68" cy="58" r="9" fill="none" stroke="#fff" stroke-width="1.2" opacity=".5" stroke-dasharray="4,2"/>
+    <text x="68" y="62" text-anchor="middle" fill="#fff" font-size="8" font-family="Arial" font-weight="bold">✓</text>
+  </g>
+</g>
+<!-- Confetti burst -->
+<circle cx="222" cy="22" r="5" fill="#e05500" style="animation:${n}st 1.5s ease-in-out infinite 0s"/>
+<circle cx="234" cy="16" r="4" fill="#6adf40" style="animation:${n}st 1.5s ease-in-out infinite .2s"/>
+<circle cx="212" cy="18" r="4" fill="#f0d060" style="animation:${n}st 1.5s ease-in-out infinite .4s"/>
+<rect x="215" y="10" width="7" height="7" rx="1.5" fill="#e05500" style="animation:${n}cf 1.5s ease-in-out infinite .1s" transform="rotate(30,218,13)"/>
+<rect x="228" y="8" width="6" height="6" rx="1.5" fill="#6adf40" style="animation:${n}cf 1.5s ease-in-out infinite .35s" transform="rotate(-20,231,11)"/>
+<rect x="205" y="12" width="7" height="5" rx="1.5" fill="#f0d060" style="animation:${n}cf 1.5s ease-in-out infinite .55s" transform="rotate(45,208,14)"/>
+<!-- Done badge -->
+<rect x="142" y="84" width="60" height="16" rx="8" fill="#6adf40" opacity=".18"/>
+<text x="172" y="96" text-anchor="middle" fill="#6adf40" font-size="8" font-family="Montserrat,Arial" font-weight="700" letter-spacing="1">PROJECT DONE</text>`
+      , 'FINAL &amp; CLOSEOUT');
+  }
+
+  return '';
+}
+
 // ── Phase definitions ──────────────────────────────────────────────────────
 const PHASE_DEFS = [
   { id:0, num:1, name:'Contract & Mobilization', payment:'10%', payLabel:'Payment 1 of 5 — initiates project & permitting',
@@ -1172,151 +1436,7 @@ function renderAdminTracker(jobId, phases) {
         <span class="phase-badge ${phase.status}">${phase.status==='upcoming'?'Upcoming':phase.status==='active'?'In Progress':'Complete'}</span>
       </div>
       <div class="phase-body" id="admin-phase-body-${idx}">
-        ${idx===0?`<div style="margin:12px 0;overflow:hidden;border-radius:10px">
-          <svg viewBox="0 0 340 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
-            <defs>
-              <style>
-                @keyframes cm-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-                @keyframes cm-sign{0%{stroke-dashoffset:120}100%{stroke-dashoffset:0}}
-                @keyframes cm-check{0%{stroke-dashoffset:40}100%{stroke-dashoffset:0}}
-                @keyframes cm-pen{0%,30%{transform:translate(148px,62px) rotate(-35deg)}70%,100%{transform:translate(113px,75px) rotate(-35deg)}}
-                @keyframes cm-ink{0%{opacity:0;stroke-dashoffset:60}40%{opacity:1}100%{opacity:1;stroke-dashoffset:0}}
-                @keyframes cm-pulse{0%,100%{opacity:.4;r:8}50%{opacity:.8;r:11}}
-                @keyframes cm-slide-r{0%{transform:translateX(20px);opacity:0}100%{transform:translateX(0);opacity:1}}
-                @keyframes cm-slide-l{0%{transform:translateX(-20px);opacity:0}100%{transform:translateX(0);opacity:1}}
-                @keyframes cm-fade{0%{opacity:0}100%{opacity:1}}
-                @keyframes cm-gear{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-                @keyframes cm-truck{0%{transform:translateX(-40px)}100%{transform:translateX(0)}}
-                @keyframes cm-dot{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
-              </style>
-              <linearGradient id="cm-bg" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#1a2a6c"/>
-                <stop offset="100%" stop-color="#0e1840"/>
-              </linearGradient>
-              <filter id="cm-glow">
-                <feGaussianBlur stdDeviation="2" result="blur"/>
-                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-            </defs>
-            <!-- Background -->
-            <rect width="340" height="130" fill="url(#cm-bg)" rx="10"/>
-            <!-- Subtle grid lines -->
-            <line x1="0" y1="32" x2="340" y2="32" stroke="#ffffff" stroke-width=".3" opacity=".06"/>
-            <line x1="0" y1="65" x2="340" y2="65" stroke="#ffffff" stroke-width=".3" opacity=".06"/>
-            <line x1="0" y1="98" x2="340" y2="98" stroke="#ffffff" stroke-width=".3" opacity=".06"/>
-            <!-- ── CONTRACT DOCUMENT (left) ── -->
-            <g style="animation:cm-float 3s ease-in-out infinite;transform-origin:80px 65px">
-              <!-- Doc shadow -->
-              <rect x="48" y="18" width="62" height="82" rx="4" fill="#000000" opacity=".25"/>
-              <!-- Doc body -->
-              <rect x="45" y="15" width="62" height="82" rx="4" fill="#ffffff"/>
-              <!-- Orange header strip -->
-              <rect x="45" y="15" width="62" height="10" rx="4" fill="#e05500"/>
-              <rect x="45" y="20" width="62" height="5" fill="#e05500"/>
-              <!-- Doc lines -->
-              <rect x="52" y="32" width="42" height="3" rx="1.5" fill="#e8e8e8"/>
-              <rect x="52" y="39" width="35" height="2" rx="1" fill="#e8e8e8"/>
-              <rect x="52" y="45" width="38" height="2" rx="1" fill="#e8e8e8"/>
-              <rect x="52" y="51" width="30" height="2" rx="1" fill="#e8e8e8"/>
-              <rect x="52" y="57" width="42" height="2" rx="1" fill="#e8e8e8"/>
-              <rect x="52" y="63" width="28" height="2" rx="1" fill="#e8e8e8"/>
-              <!-- Signature line -->
-              <line x1="52" y1="81" x2="94" y2="81" stroke="#cccccc" stroke-width="1.5" stroke-dasharray="2,2"/>
-              <!-- Animated signature -->
-              <path d="M54,79 C57,74 60,82 63,79 C66,76 68,82 72,78 C75,75 78,81 82,78" 
-                    stroke="#1a2a6c" stroke-width="2" fill="none" stroke-linecap="round"
-                    stroke-dasharray="120" stroke-dashoffset="120"
-                    style="animation:cm-sign 1.5s ease forwards 0.5s"/>
-              <!-- Orange stamp -->
-              <circle cx="90" cy="75" r="9" fill="none" stroke="#e05500" stroke-width="1.8" opacity=".9"/>
-              <text x="90" y="78" text-anchor="middle" fill="#e05500" font-size="6" font-weight="bold" font-family="Arial">OK</text>
-              <!-- Animated checkmark on stamp -->
-              <path d="M87,75 L89,77 L93,72" stroke="#e05500" stroke-width="2" fill="none" stroke-linecap="round"
-                    stroke-dasharray="40" stroke-dashoffset="40"
-                    style="animation:cm-check 0.6s ease forwards 1.8s"/>
-            </g>
-            <!-- ── PEN ── -->
-            <g style="animation:cm-pen 2s ease-in-out infinite;transform-origin:130px 80px">
-              <!-- Pen body -->
-              <rect x="-6" y="-3" width="22" height="7" rx="3" fill="#e05500" transform="rotate(-35)" style="transform-box:fill-box"/>
-              <polygon points="0,-2 -8,0 0,2" fill="#888888" transform="rotate(-35) translate(-9,0)" style="transform-box:fill-box"/>
-              <rect x="14" y="-3" width="5" height="7" rx="1" fill="#ffaa44" transform="rotate(-35)" style="transform-box:fill-box"/>
-              <!-- Pen clip -->
-              <g transform="rotate(-35)">
-                <rect x="10" y="-5" width="2" height="10" rx="1" fill="#cc3300"/>
-              </g>
-            </g>
-            <!-- Ink writing animation -->
-            <path d="M114,77 C117,72 120,80 124,77 C127,74 129,80 133,76 C136,73 139,79 143,76" 
-                  stroke="#e05500" stroke-width="1.5" fill="none" stroke-linecap="round"
-                  stroke-dasharray="60" stroke-dashoffset="60" opacity="0"
-                  style="animation:cm-ink 2s ease-in-out infinite 0.3s"/>
-            <!-- ── CENTER ICONS ── -->
-            <!-- Handshake circle -->
-            <circle cx="170" cy="65" r="28" fill="#e05500" opacity=".12"/>
-            <circle cx="170" cy="65" r="22" fill="none" stroke="#e05500" stroke-width="1.5" opacity=".4"
-                    style="animation:cm-pulse 2s ease-in-out infinite"/>
-            <!-- Handshake icon -->
-            <g transform="translate(156,55)" filter="url(#cm-glow)">
-              <!-- Left hand -->
-              <path d="M4,14 C4,14 0,11 0,8 C0,6 2,4 4,4 C5,4 6,5 7,6 L12,10" 
-                    stroke="#e05500" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-              <!-- Right hand -->
-              <path d="M24,14 C24,14 28,11 28,8 C28,6 26,4 24,4 C23,4 22,5 21,6 L16,10" 
-                    stroke="#e05500" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-              <!-- Clasped hands -->
-              <path d="M7,6 C9,4 11,4 12,5 L14,8 L16,5 C17,4 19,4 21,6 L22,9 C22,11 20,13 18,14 L14,16 L10,14 C8,13 6,11 7,9 Z" 
-                    fill="#e05500" opacity=".85"/>
-              <!-- Knuckle lines -->
-              <line x1="11" y1="8" x2="11" y2="13" stroke="#ffffff" stroke-width=".8" opacity=".5"/>
-              <line x1="14" y1="7" x2="14" y2="15" stroke="#ffffff" stroke-width=".8" opacity=".5"/>
-              <line x1="17" y1="8" x2="17" y2="13" stroke="#ffffff" stroke-width=".8" opacity=".5"/>
-            </g>
-            <!-- ── RIGHT SIDE: MOBILIZATION ICONS ── -->
-            <!-- Hard hat -->
-            <g style="animation:cm-slide-r 0.8s ease forwards 0.2s;opacity:0;transform-origin:260px 45px">
-              <ellipse cx="262" cy="50" rx="18" ry="5" fill="#e05500" opacity=".6"/>
-              <path d="M244,50 C244,38 252,30 262,30 C272,30 280,38 280,50 Z" fill="#e05500"/>
-              <rect x="240" y="49" width="44" height="5" rx="2.5" fill="#cc3300"/>
-              <rect x="257" y="29" width="10" height="8" rx="2" fill="#ffffff" opacity=".3"/>
-            </g>
-            <!-- Gear / mobilization symbol -->
-            <g transform="translate(298,40)" style="animation:cm-gear 4s linear infinite;transform-origin:16px 16px">
-              <circle cx="16" cy="16" r="7" fill="none" stroke="#e05500" stroke-width="2.5" opacity=".7"/>
-              <circle cx="16" cy="16" r="3" fill="#e05500" opacity=".7"/>
-              <line x1="16" y1="5" x2="16" y2="9" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
-              <line x1="16" y1="23" x2="16" y2="27" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
-              <line x1="5" y1="16" x2="9" y2="16" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
-              <line x1="23" y1="16" x2="27" y2="16" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
-              <line x1="8" y1="8" x2="11" y2="11" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
-              <line x1="21" y1="21" x2="24" y2="24" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
-              <line x1="24" y1="8" x2="21" y2="11" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
-              <line x1="8" y1="24" x2="11" y2="21" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
-            </g>
-            <!-- Permit clipboard -->
-            <g style="animation:cm-slide-r 0.8s ease forwards 0.5s;opacity:0">
-              <rect x="242" y="75" width="32" height="38" rx="3" fill="#ffffff" opacity=".92"/>
-              <rect x="242" y="75" width="32" height="7" rx="3" fill="#1a2a6c"/>
-              <rect x="248" y="70" width="20" height="8" rx="3" fill="#aaaaaa"/>
-              <rect x="247" y="88" width="22" height="2" rx="1" fill="#e8e8e8"/>
-              <rect x="247" y="93" width="18" height="2" rx="1" fill="#e8e8e8"/>
-              <rect x="247" y="98" width="20" height="2" rx="1" fill="#e8e8e8"/>
-              <!-- Check mark on permit -->
-              <path d="M249,105 L253,109 L261,101" stroke="#e05500" stroke-width="2" fill="none" stroke-linecap="round"
-                    stroke-dasharray="30" stroke-dashoffset="30"
-                    style="animation:cm-check 0.5s ease forwards 1.5s"/>
-            </g>
-            <!-- ── LABEL ── -->
-            <text x="170" y="108" text-anchor="middle" fill="#ffffff" font-size="9" font-family="'Montserrat',Arial" font-weight="700" letter-spacing="2" opacity=".8" style="animation:cm-fade 1s ease forwards">CONTRACT &amp; MOBILIZATION</text>
-            <!-- Progress dots -->
-            <g transform="translate(152,118)">
-              <circle cx="0" cy="0" r="3" fill="#e05500" style="animation:cm-dot 1.2s ease-in-out infinite 0s"/>
-              <circle cx="9" cy="0" r="3" fill="#e05500" style="animation:cm-dot 1.2s ease-in-out infinite 0.2s"/>
-              <circle cx="18" cy="0" r="3" fill="#e05500" style="animation:cm-dot 1.2s ease-in-out infinite 0.4s"/>
-              <circle cx="27" cy="0" r="3" fill="#e05500" style="animation:cm-dot 1.2s ease-in-out infinite 0.6s"/>
-            </g>
-          </svg>
-        </div>`:''}
+        ${phaseIllustration(idx)}
         <div class="payment-banner">
           <div class="payment-banner-top">
             <div class="payment-label">${def.payLabel}</div>
@@ -1490,104 +1610,7 @@ function renderClientTracker(phases) {
         <span class="phase-badge ${phase.status}">${phase.status==='upcoming'?'Upcoming':phase.status==='active'?'In Progress':'Complete'}</span>
       </div>
       <div class="phase-body" id="client-phase-body-${idx}">
-        ${idx===0?`<div style="margin:12px 0;overflow:hidden;border-radius:10px">
-          <svg viewBox="0 0 340 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
-            <defs>
-              <style>
-                @keyframes cm2-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-                @keyframes cm2-sign{0%{stroke-dashoffset:120}100%{stroke-dashoffset:0}}
-                @keyframes cm2-check{0%{stroke-dashoffset:40}100%{stroke-dashoffset:0}}
-                @keyframes cm2-pen{0%,30%{transform:translate(148px,62px) rotate(-35deg)}70%,100%{transform:translate(113px,75px) rotate(-35deg)}}
-                @keyframes cm2-ink{0%{opacity:0;stroke-dashoffset:60}40%{opacity:1}100%{opacity:1;stroke-dashoffset:0}}
-                @keyframes cm2-pulse{0%,100%{opacity:.4;r:8}50%{opacity:.8;r:11}}
-                @keyframes cm2-slide-r{0%{transform:translateX(20px);opacity:0}100%{transform:translateX(0);opacity:1}}
-                @keyframes cm2-fade{0%{opacity:0}100%{opacity:1}}
-                @keyframes cm2-gear{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-                @keyframes cm2-dot{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
-              </style>
-              <linearGradient id="cm2-bg" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#1a2a6c"/>
-                <stop offset="100%" stop-color="#0e1840"/>
-              </linearGradient>
-              <filter id="cm2-glow">
-                <feGaussianBlur stdDeviation="2" result="blur"/>
-                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-            </defs>
-            <rect width="340" height="130" fill="url(#cm2-bg)" rx="10"/>
-            <line x1="0" y1="32" x2="340" y2="32" stroke="#ffffff" stroke-width=".3" opacity=".06"/>
-            <line x1="0" y1="65" x2="340" y2="65" stroke="#ffffff" stroke-width=".3" opacity=".06"/>
-            <line x1="0" y1="98" x2="340" y2="98" stroke="#ffffff" stroke-width=".3" opacity=".06"/>
-            <g style="animation:cm2-float 3s ease-in-out infinite;transform-origin:80px 65px">
-              <rect x="48" y="18" width="62" height="82" rx="4" fill="#000000" opacity=".25"/>
-              <rect x="45" y="15" width="62" height="82" rx="4" fill="#ffffff"/>
-              <rect x="45" y="15" width="62" height="10" rx="4" fill="#e05500"/>
-              <rect x="45" y="20" width="62" height="5" fill="#e05500"/>
-              <rect x="52" y="32" width="42" height="3" rx="1.5" fill="#e8e8e8"/>
-              <rect x="52" y="39" width="35" height="2" rx="1" fill="#e8e8e8"/>
-              <rect x="52" y="45" width="38" height="2" rx="1" fill="#e8e8e8"/>
-              <rect x="52" y="51" width="30" height="2" rx="1" fill="#e8e8e8"/>
-              <rect x="52" y="57" width="42" height="2" rx="1" fill="#e8e8e8"/>
-              <rect x="52" y="63" width="28" height="2" rx="1" fill="#e8e8e8"/>
-              <line x1="52" y1="81" x2="94" y2="81" stroke="#cccccc" stroke-width="1.5" stroke-dasharray="2,2"/>
-              <path d="M54,79 C57,74 60,82 63,79 C66,76 68,82 72,78 C75,75 78,81 82,78" stroke="#1a2a6c" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" style="animation:cm2-sign 1.5s ease forwards 0.5s"/>
-              <circle cx="90" cy="75" r="9" fill="none" stroke="#e05500" stroke-width="1.8" opacity=".9"/>
-              <text x="90" y="78" text-anchor="middle" fill="#e05500" font-size="6" font-weight="bold" font-family="Arial">OK</text>
-              <path d="M87,75 L89,77 L93,72" stroke="#e05500" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="40" stroke-dashoffset="40" style="animation:cm2-check 0.6s ease forwards 1.8s"/>
-            </g>
-            <g style="animation:cm2-pen 2s ease-in-out infinite;transform-origin:130px 80px">
-              <rect x="-6" y="-3" width="22" height="7" rx="3" fill="#e05500" transform="rotate(-35)" style="transform-box:fill-box"/>
-              <polygon points="0,-2 -8,0 0,2" fill="#888888" transform="rotate(-35) translate(-9,0)" style="transform-box:fill-box"/>
-              <rect x="14" y="-3" width="5" height="7" rx="1" fill="#ffaa44" transform="rotate(-35)" style="transform-box:fill-box"/>
-              <g transform="rotate(-35)"><rect x="10" y="-5" width="2" height="10" rx="1" fill="#cc3300"/></g>
-            </g>
-            <path d="M114,77 C117,72 120,80 124,77 C127,74 129,80 133,76 C136,73 139,79 143,76" stroke="#e05500" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60" opacity="0" style="animation:cm2-ink 2s ease-in-out infinite 0.3s"/>
-            <circle cx="170" cy="65" r="28" fill="#e05500" opacity=".12"/>
-            <circle cx="170" cy="65" r="22" fill="none" stroke="#e05500" stroke-width="1.5" opacity=".4" style="animation:cm2-pulse 2s ease-in-out infinite"/>
-            <g transform="translate(156,55)" filter="url(#cm2-glow)">
-              <path d="M4,14 C4,14 0,11 0,8 C0,6 2,4 4,4 C5,4 6,5 7,6 L12,10" stroke="#e05500" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-              <path d="M24,14 C24,14 28,11 28,8 C28,6 26,4 24,4 C23,4 22,5 21,6 L16,10" stroke="#e05500" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-              <path d="M7,6 C9,4 11,4 12,5 L14,8 L16,5 C17,4 19,4 21,6 L22,9 C22,11 20,13 18,14 L14,16 L10,14 C8,13 6,11 7,9 Z" fill="#e05500" opacity=".85"/>
-              <line x1="11" y1="8" x2="11" y2="13" stroke="#ffffff" stroke-width=".8" opacity=".5"/>
-              <line x1="14" y1="7" x2="14" y2="15" stroke="#ffffff" stroke-width=".8" opacity=".5"/>
-              <line x1="17" y1="8" x2="17" y2="13" stroke="#ffffff" stroke-width=".8" opacity=".5"/>
-            </g>
-            <g style="animation:cm2-slide-r 0.8s ease forwards 0.2s;opacity:0;transform-origin:260px 45px">
-              <ellipse cx="262" cy="50" rx="18" ry="5" fill="#e05500" opacity=".6"/>
-              <path d="M244,50 C244,38 252,30 262,30 C272,30 280,38 280,50 Z" fill="#e05500"/>
-              <rect x="240" y="49" width="44" height="5" rx="2.5" fill="#cc3300"/>
-              <rect x="257" y="29" width="10" height="8" rx="2" fill="#ffffff" opacity=".3"/>
-            </g>
-            <g transform="translate(298,40)" style="animation:cm2-gear 4s linear infinite;transform-origin:16px 16px">
-              <circle cx="16" cy="16" r="7" fill="none" stroke="#e05500" stroke-width="2.5" opacity=".7"/>
-              <circle cx="16" cy="16" r="3" fill="#e05500" opacity=".7"/>
-              <line x1="16" y1="5" x2="16" y2="9" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
-              <line x1="16" y1="23" x2="16" y2="27" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
-              <line x1="5" y1="16" x2="9" y2="16" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
-              <line x1="23" y1="16" x2="27" y2="16" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
-              <line x1="8" y1="8" x2="11" y2="11" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
-              <line x1="21" y1="21" x2="24" y2="24" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
-              <line x1="24" y1="8" x2="21" y2="11" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
-              <line x1="8" y1="24" x2="11" y2="21" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/>
-            </g>
-            <g style="animation:cm2-slide-r 0.8s ease forwards 0.5s;opacity:0">
-              <rect x="242" y="75" width="32" height="38" rx="3" fill="#ffffff" opacity=".92"/>
-              <rect x="242" y="75" width="32" height="7" rx="3" fill="#1a2a6c"/>
-              <rect x="248" y="70" width="20" height="8" rx="3" fill="#aaaaaa"/>
-              <rect x="247" y="88" width="22" height="2" rx="1" fill="#e8e8e8"/>
-              <rect x="247" y="93" width="18" height="2" rx="1" fill="#e8e8e8"/>
-              <rect x="247" y="98" width="20" height="2" rx="1" fill="#e8e8e8"/>
-              <path d="M249,105 L253,109 L261,101" stroke="#e05500" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="30" stroke-dashoffset="30" style="animation:cm2-check 0.5s ease forwards 1.5s"/>
-            </g>
-            <text x="170" y="108" text-anchor="middle" fill="#ffffff" font-size="9" font-family="'Montserrat',Arial" font-weight="700" letter-spacing="2" opacity=".8" style="animation:cm2-fade 1s ease forwards">CONTRACT &amp; MOBILIZATION</text>
-            <g transform="translate(152,118)">
-              <circle cx="0" cy="0" r="3" fill="#e05500" style="animation:cm2-dot 1.2s ease-in-out infinite 0s"/>
-              <circle cx="9" cy="0" r="3" fill="#e05500" style="animation:cm2-dot 1.2s ease-in-out infinite 0.2s"/>
-              <circle cx="18" cy="0" r="3" fill="#e05500" style="animation:cm2-dot 1.2s ease-in-out infinite 0.4s"/>
-              <circle cx="27" cy="0" r="3" fill="#e05500" style="animation:cm2-dot 1.2s ease-in-out infinite 0.6s"/>
-            </g>
-          </svg>
-        </div>`:''}
+        ${phaseIllustration(idx)}
         <div class="payment-banner">
           <div class="payment-banner-top">
             <div class="payment-label">${def.payLabel}</div>
