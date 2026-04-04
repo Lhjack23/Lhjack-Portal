@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -73,199 +74,202 @@
     .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
     @keyframes spin{to{transform:rotate(360deg)}}
 
-    /* ── Tab bar — scrollable for 5 tabs ── */
-    .tab-bar{display:flex;background:#0a1230;border-radius:10px;padding:4px;margin-bottom:18px;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-    .tab-bar::-webkit-scrollbar{display:none}
-    .tab-btn{flex-shrink:0;padding:10px 12px;background:transparent;border:none;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border-radius:7px;transition:all .15s;white-space:nowrap}
-    .tab-btn.on{background:#c1541c;color:#ffffff}
+```
+/* ── Tab bar — scrollable for 5 tabs ── */
+.tab-bar{display:flex;background:#0a1230;border-radius:10px;padding:4px;margin-bottom:18px;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:10px 12px;background:transparent;border:none;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border-radius:7px;transition:all .15s;white-space:nowrap}
+.tab-btn.on{background:#c1541c;color:#ffffff}
 
-    /* ── Payment Center ── */
-    .pay-summary{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;padding:18px;margin-bottom:12px}
-    .pay-due-card{background:#0a1230;border:2px solid #c1541c;border-radius:14px;padding:18px;margin-bottom:14px}
-    .pay-due-label{font-size:10px;color:#e07040;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
-    .pay-due-amount{font-family:'Montserrat',sans-serif;font-weight:900;font-size:34px;color:#ffffff;line-height:1;margin-bottom:4px}
-    .pay-due-phase{font-size:12px;color:#8a9fcf;margin-bottom:16px}
-    .pay-now-btn{display:block;width:100%;background:#c1541c;color:#fff;border:none;border-radius:10px;padding:15px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-align:center;text-decoration:none}
-    .pay-instructions{font-size:11px;color:#8a9fcf;text-align:center;margin-top:8px;line-height:1.5}
-    .pay-schedule-card{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;padding:4px 16px;margin-bottom:12px}
-    .pay-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #151e45}
-    .pay-row:last-child{border-bottom:none}
-    .pay-row-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:11px;flex-shrink:0}
-    .pay-row-info{flex:1;min-width:0}
-    .pay-row-name{font-size:12px;color:#ffffff;font-weight:600}
-    .pay-row-sub{font-size:10px;color:#8a9fcf;margin-top:2px}
-    .pay-row-right{text-align:right;flex-shrink:0}
-    .pay-row-amount{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px}
-    .pay-row-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 8px;border-radius:10px;display:inline-block;margin-top:3px}
-    .pay-hist-card{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;padding:14px 16px;margin-bottom:8px;border-left:3px solid #3a8a20}
-    .pay-empty-msg{text-align:center;padding:30px 20px;color:#8a9fcf;font-size:13px}
-    /* Admin payment panel */
-    .contract-setup{background:#0a1230;border:1px solid #2a4090;border-radius:12px;padding:16px;margin-bottom:14px}
-    .contract-setup-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#ffffff;margin-bottom:12px}
-    .admin-pay-row{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;padding:14px 16px;margin-bottom:10px}
-    .admin-pay-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-    .admin-pay-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;flex-shrink:0}
-    .admin-pay-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#ffffff;flex:1}
-    .admin-pay-calc{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;color:#e07040}
-    .pay-status-btns{display:flex;gap:6px;margin-bottom:10px}
-    .psb{padding:7px 12px;border-radius:6px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase;border:1px solid transparent;opacity:.55;transition:all .15s}
-    .psb.active{opacity:1}
-    .psb-upcoming{background:#1a2a6c;color:#8a9fcf;border-color:#3a50a0}
-    .psb-due{background:rgba(193,84,28,.2);color:#e07040;border-color:#c1541c}
-    .psb-paid{background:#1a4a10;color:#6adf40;border-color:#3a8a20}
-    .admin-pay-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-    .admin-pay-fields input{margin-bottom:0;font-size:12px;padding:9px 10px}
-    .admin-pay-save{width:100%;background:#c1541c;color:#fff;border:none;border-radius:7px;padding:10px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;letter-spacing:.04em;text-transform:uppercase}
+/* ── Payment Center ── */
+.pay-summary{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;padding:18px;margin-bottom:12px}
+.pay-due-card{background:#0a1230;border:2px solid #c1541c;border-radius:14px;padding:18px;margin-bottom:14px}
+.pay-due-label{font-size:10px;color:#e07040;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.pay-due-amount{font-family:'Montserrat',sans-serif;font-weight:900;font-size:34px;color:#ffffff;line-height:1;margin-bottom:4px}
+.pay-due-phase{font-size:12px;color:#8a9fcf;margin-bottom:16px}
+.pay-now-btn{display:block;width:100%;background:#c1541c;color:#fff;border:none;border-radius:10px;padding:15px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-align:center;text-decoration:none}
+.pay-instructions{font-size:11px;color:#8a9fcf;text-align:center;margin-top:8px;line-height:1.5}
+.pay-schedule-card{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;padding:4px 16px;margin-bottom:12px}
+.pay-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #151e45}
+.pay-row:last-child{border-bottom:none}
+.pay-row-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:11px;flex-shrink:0}
+.pay-row-info{flex:1;min-width:0}
+.pay-row-name{font-size:12px;color:#ffffff;font-weight:600}
+.pay-row-sub{font-size:10px;color:#8a9fcf;margin-top:2px}
+.pay-row-right{text-align:right;flex-shrink:0}
+.pay-row-amount{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px}
+.pay-row-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 8px;border-radius:10px;display:inline-block;margin-top:3px}
+.pay-hist-card{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;padding:14px 16px;margin-bottom:8px;border-left:3px solid #3a8a20}
+.pay-empty-msg{text-align:center;padding:30px 20px;color:#8a9fcf;font-size:13px}
+/* Admin payment panel */
+.contract-setup{background:#0a1230;border:1px solid #2a4090;border-radius:12px;padding:16px;margin-bottom:14px}
+.contract-setup-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#ffffff;margin-bottom:12px}
+.admin-pay-row{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.admin-pay-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.admin-pay-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;flex-shrink:0}
+.admin-pay-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#ffffff;flex:1}
+.admin-pay-calc{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;color:#e07040}
+.pay-status-btns{display:flex;gap:6px;margin-bottom:10px}
+.psb{padding:7px 12px;border-radius:6px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase;border:1px solid transparent;opacity:.55;transition:all .15s}
+.psb.active{opacity:1}
+.psb-upcoming{background:#1a2a6c;color:#8a9fcf;border-color:#3a50a0}
+.psb-due{background:rgba(193,84,28,.2);color:#e07040;border-color:#c1541c}
+.psb-paid{background:#1a4a10;color:#6adf40;border-color:#3a8a20}
+.admin-pay-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.admin-pay-fields input{margin-bottom:0;font-size:12px;padding:9px 10px}
+.admin-pay-save{width:100%;background:#c1541c;color:#fff;border:none;border-radius:7px;padding:10px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;letter-spacing:.04em;text-transform:uppercase}
 
-    /* ── Project Tracker ── */
-    .phase-card{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;margin-bottom:12px;overflow:hidden}
-    .phase-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
-    .phase-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;flex-shrink:0}
-    .phase-dot.upcoming{background:#1a2a6c;border:2px solid #3a50a0;color:#8a9fcf}
-    .phase-dot.active{background:#c1541c;border:2px solid #c1541c;color:#ffffff}
-    .phase-dot.complete{background:#2a7a20;border:2px solid #2a7a20;color:#ffffff}
-    .phase-info{flex:1}
-    .phase-name{font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#ffffff}
-    .phase-meta{font-size:11px;color:#8a9fcf;margin-top:2px}
-    .phase-badge{font-size:10px;font-family:'Montserrat',sans-serif;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.04em;white-space:nowrap}
-    .phase-badge.upcoming{background:#1a2a6c;border:1px solid #3a50a0;color:#8a9fcf}
-    .phase-badge.active{background:rgba(193,84,28,.2);border:1px solid #c1541c;color:#e07040}
-    .phase-badge.complete{background:#1a4a10;border:1px solid #3a8a20;color:#6adf40}
-    .phase-body{padding:0 16px 14px;border-top:1px solid #1a2f60;margin-top:0;display:none}
-    .phase-body.open{display:block}
-    .scope-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #151e45}
-    .scope-item:last-child{border-bottom:none}
-    .scope-chk{width:20px;height:20px;border-radius:5px;border:2px solid #3a50a0;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
-    .scope-chk.done{background:#2a7a20;border-color:#2a7a20}
-    .scope-chk svg{display:none}.scope-chk.done svg{display:block}
-    .scope-chk.clickable{cursor:pointer}
-    .scope-label{font-size:12px;color:#c8d8f0;flex:1}
-    .scope-label.done{text-decoration:line-through;color:#6a7a9a}
-    .phase-connector{width:2px;height:12px;background:#2a3f80;margin:0 auto 0 30px}
-    .payment-banner{background:#0a1230;border:1px solid #c1541c;border-radius:10px;padding:12px 14px;margin:12px 0 0}
-    .payment-banner-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-    .payment-label{font-size:11px;color:#8a9fcf;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em}
-    .payment-pct{font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;color:#e07040}
-    .payment-trigger{font-size:11px;color:#c8d8f0;font-style:italic;border-top:1px solid #1a2f60;padding-top:7px;margin-top:4px}
-    .tracker-overall{background:#0a1230;border-radius:10px;padding:14px 16px;margin-bottom:16px}
-    .tracker-overall-label{font-size:11px;color:#8a9fcf;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
-    .tracker-phase-stat{font-family:'Montserrat',sans-serif;font-weight:900;font-size:11px;color:#ffffff;margin-top:4px}
+/* ── Project Tracker ── */
+.phase-card{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.phase-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+.phase-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;flex-shrink:0}
+.phase-dot.upcoming{background:#1a2a6c;border:2px solid #3a50a0;color:#8a9fcf}
+.phase-dot.active{background:#c1541c;border:2px solid #c1541c;color:#ffffff}
+.phase-dot.complete{background:#2a7a20;border:2px solid #2a7a20;color:#ffffff}
+.phase-info{flex:1}
+.phase-name{font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#ffffff}
+.phase-meta{font-size:11px;color:#8a9fcf;margin-top:2px}
+.phase-badge{font-size:10px;font-family:'Montserrat',sans-serif;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.04em;white-space:nowrap}
+.phase-badge.upcoming{background:#1a2a6c;border:1px solid #3a50a0;color:#8a9fcf}
+.phase-badge.active{background:rgba(193,84,28,.2);border:1px solid #c1541c;color:#e07040}
+.phase-badge.complete{background:#1a4a10;border:1px solid #3a8a20;color:#6adf40}
+.phase-body{padding:0 16px 14px;border-top:1px solid #1a2f60;margin-top:0;display:none}
+.phase-body.open{display:block}
+.scope-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #151e45}
+.scope-item:last-child{border-bottom:none}
+.scope-chk{width:20px;height:20px;border-radius:5px;border:2px solid #3a50a0;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.scope-chk.done{background:#2a7a20;border-color:#2a7a20}
+.scope-chk svg{display:none}.scope-chk.done svg{display:block}
+.scope-chk.clickable{cursor:pointer}
+.scope-label{font-size:12px;color:#c8d8f0;flex:1}
+.scope-label.done{text-decoration:line-through;color:#6a7a9a}
+.phase-connector{width:2px;height:12px;background:#2a3f80;margin:0 auto 0 30px}
+.payment-banner{background:#0a1230;border:1px solid #c1541c;border-radius:10px;padding:12px 14px;margin:12px 0 0}
+.payment-banner-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.payment-label{font-size:11px;color:#8a9fcf;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em}
+.payment-pct{font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;color:#e07040}
+.payment-trigger{font-size:11px;color:#c8d8f0;font-style:italic;border-top:1px solid #1a2f60;padding-top:7px;margin-top:4px}
+.tracker-overall{background:#0a1230;border-radius:10px;padding:14px 16px;margin-bottom:16px}
+.tracker-overall-label{font-size:11px;color:#8a9fcf;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.tracker-phase-stat{font-family:'Montserrat',sans-serif;font-weight:900;font-size:11px;color:#ffffff;margin-top:4px}
 
-    /* ── Admin tracker controls ── */
-    .admin-phase-ctrl{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
-    .phase-ctrl-btn{padding:5px 10px;border-radius:6px;border:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase}
-    .phase-ctrl-btn.set-active{background:rgba(193,84,28,.2);color:#e07040;border:1px solid #c1541c}
-    .phase-ctrl-btn.set-complete{background:#1a4a10;color:#6adf40;border:1px solid #3a8a20}
-    .phase-ctrl-btn.set-upcoming{background:#1a2a6c;color:#8a9fcf;border:1px solid #3a50a0}
-    /* ── Documents Vault ── */
-    .doc-category{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px}
-    .doc-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-    .doc-info{flex:1;min-width:0}
-    .doc-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:#ffffff;margin-bottom:2px}
-    .doc-status{font-size:11px}
-    .doc-action{flex-shrink:0}
-    .doc-view-btn{display:inline-block;background:#c1541c;color:#ffffff;border:none;border-radius:7px;padding:8px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.04em;cursor:pointer;text-decoration:none;white-space:nowrap}
-    .doc-unavailable{font-size:11px;color:#5a6a9a;font-style:italic}
-    .doc-vault-header{font-size:12px;color:#8a9fcf;margin-bottom:14px;line-height:1.5}
-    /* Admin doc form */
-    .admin-doc-row{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;padding:14px 16px;margin-bottom:10px}
-    .admin-doc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-    .admin-doc-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-    .admin-doc-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:#ffffff;flex:1}
-    .admin-doc-saved{font-size:10px;color:#4aaf30;font-family:'Montserrat',sans-serif;font-weight:700}
-    .admin-doc-input-row{display:flex;gap:8px;align-items:center}
-    .admin-doc-input-row input{margin-bottom:0;flex:1;font-size:12px;padding:9px 10px}
-    .admin-doc-save-btn{background:#c1541c;color:#fff;border:none;border-radius:7px;padding:9px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
-    .admin-doc-remove-btn{background:transparent;border:1px solid #e05050;color:#e05050;border-radius:7px;padding:9px 10px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;flex-shrink:0}
-    /* ── Updates Feed ── */
-    .update-card{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;margin-bottom:14px;overflow:hidden}
-    .update-card-header{background:#0a1230;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1a2f60}
-    .update-date{font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:#e07040;letter-spacing:.04em}
-    .update-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 8px;border-radius:10px;background:rgba(193,84,28,.2);color:#e07040;border:1px solid rgba(193,84,28,.4);letter-spacing:.04em}
-    .update-body{padding:14px 16px}
-    .update-summary{font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:#ffffff;margin-bottom:12px;line-height:1.4}
-    .update-section{margin-bottom:10px}
-    .update-section-label{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
-    .update-section-text{font-size:12px;color:#c8d8f0;line-height:1.5}
-    .update-blocker{font-size:12px;color:#ff8870;line-height:1.5}
-    .update-photos{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    .update-photo{width:calc(33.333% - 6px);aspect-ratio:4/3;border-radius:8px;object-fit:cover;background:#0a1230;cursor:pointer;border:1px solid #2a3f80}
-    .update-photo-link{width:calc(33.333% - 6px)}
-    .update-feed-empty{text-align:center;padding:40px 20px;color:#8a9fcf;font-size:13px}
-    /* Update form fields */
-    .update-form-section{margin-bottom:4px}
-    textarea{resize:vertical;min-height:70px;line-height:1.5}
-    .photo-inputs{display:flex;flex-direction:column;gap:6px}
-    .photo-inputs input{margin-bottom:0}
-    /* ── File Upload ── */
-    .upload-zone{border:2px dashed #2a4090;border-radius:10px;padding:14px 16px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:10px;background:#0a1230}
-    .upload-zone:hover,.upload-zone.drag-over{border-color:#c1541c;background:rgba(193,84,28,.08)}
-    .upload-zone-text{font-size:12px;color:#8a9fcf;line-height:1.5}
-    .upload-zone-icon{font-size:24px;margin-bottom:6px}
-    .upload-progress{background:#0a1230;border-radius:8px;padding:10px 12px;margin-bottom:8px;display:none}
-    .upload-progress-bar-bg{background:#1a2a6c;border-radius:4px;height:6px;overflow:hidden;margin:6px 0 4px}
-    .upload-progress-fill{height:100%;background:linear-gradient(90deg,#c1541c,#e07040);border-radius:4px;transition:width .2s}
-    .upload-progress-label{font-size:11px;color:#8a9fcf}
-    .photo-preview-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-    .photo-thumb-wrap{position:relative;width:calc(33% - 6px)}
-    .photo-thumb{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;border:1px solid #2a3f80;background:#0a1230}
-    .photo-thumb-remove{position:absolute;top:4px;right:4px;width:20px;height:20px;background:rgba(10,18,48,.85);border:1px solid #e05050;color:#e05050;border-radius:50%;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0}
-    .doc-upload-row{display:flex;gap:6px;align-items:center;margin-top:6px}
-    .doc-upload-btn{background:#1a2a6c;color:#8ab8f0;border:1px solid #3a50a0;border-radius:7px;padding:8px 12px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;cursor:pointer;white-space:nowrap;letter-spacing:.04em;text-transform:uppercase}
-    .doc-or-divider{font-size:10px;color:#5a6a8a;flex-shrink:0}
-    /* ── Inspection & Permit Tracker ── */
-    .insp-section{margin-top:14px;padding-top:14px;border-top:1px solid #1a2f60}
-    .insp-section-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#6a9fd8;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-    .insp-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #0e1838}
-    .insp-row:last-child{border-bottom:none}
-    .insp-icon{font-size:14px;flex-shrink:0;width:22px;text-align:center}
-    .insp-label{flex:1;font-size:12px;color:#c8d8f0;line-height:1.3}
-    .insp-status-wrap{flex-shrink:0}
-    /* Client read-only badge */
-    .insp-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:4px 9px;border-radius:12px;letter-spacing:.04em;white-space:nowrap}
-    .insp-pending{background:#1a2a6c;color:#8a9fcf;border:1px solid #3a50a0}
-    .insp-submitted{background:rgba(193,84,28,.2);color:#e07040;border:1px solid #c1541c}
-    .insp-scheduled{background:#1a3a6a;color:#6a9fd8;border:1px solid #3a6090}
-    .insp-passed{background:#1a4a10;color:#6adf40;border:1px solid #3a8a20}
-    .insp-na{background:#1e1e2a;color:#5a6a8a;border:1px solid #3a3a5a}
-    /* Admin select */
-    .insp-select{background:#0a1230;border:1px solid #2a4090;border-radius:7px;color:#fff;font-family:'Open Sans',sans-serif;font-size:11px;padding:6px 8px;outline:none;cursor:pointer;max-width:110px}
-    .insp-na-reason{background:#0a1230;border:1px solid #2a4090;border-radius:7px;color:#8a9fcf;font-family:'Open Sans',sans-serif;font-size:10px;padding:5px 7px;outline:none;cursor:pointer;width:100%;margin-top:5px}
-    .insp-na-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:0}
-    /* ── Scope of Work ── */
-    .scope-section-card{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;margin-bottom:12px;overflow:hidden}
-    .scope-section-header{padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a2f60}
-    .scope-section-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-    .scope-section-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#ffffff;flex:1}
-    .scope-count-badge{font-size:10px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 9px;border-radius:12px;color:#ffffff}
-    .scope-items-list{padding:6px 16px 12px}
-    .scope-line{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid #0e1838}
-    .scope-line:last-child{border-bottom:none}
-    .scope-bullet{font-size:12px;margin-top:1px;flex-shrink:0}
-    .scope-line-text{font-size:12px;color:#c8d8f0;line-height:1.45;flex:1}
-    .scope-empty{font-size:12px;color:#4a5a8a;font-style:italic;padding:8px 0}
-    /* Admin scope edit */
-    .scope-add-row{display:flex;gap:8px;margin-top:8px}
-    .scope-add-row input{flex:1;margin-bottom:0;font-size:12px;padding:9px 10px}
-    .scope-add-btn{background:#c1541c;color:#fff;border:none;border-radius:7px;padding:9px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
-    .scope-del-btn{background:transparent;border:none;color:#e05050;font-size:14px;cursor:pointer;padding:2px 6px;flex-shrink:0;line-height:1}
-    /* Change Orders */
-    .co-card{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;margin-bottom:12px;overflow:hidden}
-    .co-header{background:#0a1230;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1a2f60}
-    .co-num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:#e07040}
-    .co-status-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:4px 10px;border-radius:12px;letter-spacing:.04em}
-    .co-status-pending{background:rgba(193,84,28,.2);color:#e07040;border:1px solid rgba(193,84,28,.5)}
-    .co-status-approved{background:#1a4a10;color:#6adf40;border:1px solid #3a8a20}
-    .co-status-rejected{background:#3a0a0a;color:#e05050;border:1px solid #8a2020}
-    .co-body{padding:14px 16px}
-    .co-desc{font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:#ffffff;margin-bottom:10px;line-height:1.4}
-    .co-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-    .co-meta-item{background:#0a1230;border-radius:8px;padding:10px 12px}
-    .co-meta-label{font-size:9px;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
-    .co-meta-val{font-size:13px;color:#ffffff;font-weight:600}
-    .co-accept-btn{width:100%;background:#2a7a20;color:#fff;border:none;border-radius:9px;padding:13px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;margin-top:4px}
-    .co-reject-btn{width:100%;background:transparent;color:#e05050;border:1px solid #e05050;border-radius:9px;padding:11px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;cursor:pointer;margin-top:6px}
-    .co-empty{text-align:center;color:#8a9fcf;padding:30px 20px;font-size:13px}
+/* ── Admin tracker controls ── */
+.admin-phase-ctrl{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.phase-ctrl-btn{padding:5px 10px;border-radius:6px;border:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase}
+.phase-ctrl-btn.set-active{background:rgba(193,84,28,.2);color:#e07040;border:1px solid #c1541c}
+.phase-ctrl-btn.set-complete{background:#1a4a10;color:#6adf40;border:1px solid #3a8a20}
+.phase-ctrl-btn.set-upcoming{background:#1a2a6c;color:#8a9fcf;border:1px solid #3a50a0}
+/* ── Documents Vault ── */
+.doc-category{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px}
+.doc-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.doc-info{flex:1;min-width:0}
+.doc-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:#ffffff;margin-bottom:2px}
+.doc-status{font-size:11px}
+.doc-action{flex-shrink:0}
+.doc-view-btn{display:inline-block;background:#c1541c;color:#ffffff;border:none;border-radius:7px;padding:8px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.04em;cursor:pointer;text-decoration:none;white-space:nowrap}
+.doc-unavailable{font-size:11px;color:#5a6a9a;font-style:italic}
+.doc-vault-header{font-size:12px;color:#8a9fcf;margin-bottom:14px;line-height:1.5}
+/* Admin doc form */
+.admin-doc-row{background:#0f1940;border:1px solid #2a3f80;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.admin-doc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.admin-doc-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.admin-doc-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:#ffffff;flex:1}
+.admin-doc-saved{font-size:10px;color:#4aaf30;font-family:'Montserrat',sans-serif;font-weight:700}
+.admin-doc-input-row{display:flex;gap:8px;align-items:center}
+.admin-doc-input-row input{margin-bottom:0;flex:1;font-size:12px;padding:9px 10px}
+.admin-doc-save-btn{background:#c1541c;color:#fff;border:none;border-radius:7px;padding:9px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.admin-doc-remove-btn{background:transparent;border:1px solid #e05050;color:#e05050;border-radius:7px;padding:9px 10px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;flex-shrink:0}
+/* ── Updates Feed ── */
+.update-card{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;margin-bottom:14px;overflow:hidden}
+.update-card-header{background:#0a1230;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1a2f60}
+.update-date{font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:#e07040;letter-spacing:.04em}
+.update-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 8px;border-radius:10px;background:rgba(193,84,28,.2);color:#e07040;border:1px solid rgba(193,84,28,.4);letter-spacing:.04em}
+.update-body{padding:14px 16px}
+.update-summary{font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:#ffffff;margin-bottom:12px;line-height:1.4}
+.update-section{margin-bottom:10px}
+.update-section-label{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.update-section-text{font-size:12px;color:#c8d8f0;line-height:1.5}
+.update-blocker{font-size:12px;color:#ff8870;line-height:1.5}
+.update-photos{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.update-photo{width:calc(33.333% - 6px);aspect-ratio:4/3;border-radius:8px;object-fit:cover;background:#0a1230;cursor:pointer;border:1px solid #2a3f80}
+.update-photo-link{width:calc(33.333% - 6px)}
+.update-feed-empty{text-align:center;padding:40px 20px;color:#8a9fcf;font-size:13px}
+/* Update form fields */
+.update-form-section{margin-bottom:4px}
+textarea{resize:vertical;min-height:70px;line-height:1.5}
+.photo-inputs{display:flex;flex-direction:column;gap:6px}
+.photo-inputs input{margin-bottom:0}
+/* ── File Upload ── */
+.upload-zone{border:2px dashed #2a4090;border-radius:10px;padding:14px 16px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:10px;background:#0a1230}
+.upload-zone:hover,.upload-zone.drag-over{border-color:#c1541c;background:rgba(193,84,28,.08)}
+.upload-zone-text{font-size:12px;color:#8a9fcf;line-height:1.5}
+.upload-zone-icon{font-size:24px;margin-bottom:6px}
+.upload-progress{background:#0a1230;border-radius:8px;padding:10px 12px;margin-bottom:8px;display:none}
+.upload-progress-bar-bg{background:#1a2a6c;border-radius:4px;height:6px;overflow:hidden;margin:6px 0 4px}
+.upload-progress-fill{height:100%;background:linear-gradient(90deg,#c1541c,#e07040);border-radius:4px;transition:width .2s}
+.upload-progress-label{font-size:11px;color:#8a9fcf}
+.photo-preview-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.photo-thumb-wrap{position:relative;width:calc(33% - 6px)}
+.photo-thumb{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;border:1px solid #2a3f80;background:#0a1230}
+.photo-thumb-remove{position:absolute;top:4px;right:4px;width:20px;height:20px;background:rgba(10,18,48,.85);border:1px solid #e05050;color:#e05050;border-radius:50%;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0}
+.doc-upload-row{display:flex;gap:6px;align-items:center;margin-top:6px}
+.doc-upload-btn{background:#1a2a6c;color:#8ab8f0;border:1px solid #3a50a0;border-radius:7px;padding:8px 12px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;cursor:pointer;white-space:nowrap;letter-spacing:.04em;text-transform:uppercase}
+.doc-or-divider{font-size:10px;color:#5a6a8a;flex-shrink:0}
+/* ── Inspection & Permit Tracker ── */
+.insp-section{margin-top:14px;padding-top:14px;border-top:1px solid #1a2f60}
+.insp-section-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#6a9fd8;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.insp-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #0e1838}
+.insp-row:last-child{border-bottom:none}
+.insp-icon{font-size:14px;flex-shrink:0;width:22px;text-align:center}
+.insp-label{flex:1;font-size:12px;color:#c8d8f0;line-height:1.3}
+.insp-status-wrap{flex-shrink:0}
+/* Client read-only badge */
+.insp-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:4px 9px;border-radius:12px;letter-spacing:.04em;white-space:nowrap}
+.insp-pending{background:#1a2a6c;color:#8a9fcf;border:1px solid #3a50a0}
+.insp-submitted{background:rgba(193,84,28,.2);color:#e07040;border:1px solid #c1541c}
+.insp-scheduled{background:#1a3a6a;color:#6a9fd8;border:1px solid #3a6090}
+.insp-passed{background:#1a4a10;color:#6adf40;border:1px solid #3a8a20}
+.insp-na{background:#1e1e2a;color:#5a6a8a;border:1px solid #3a3a5a}
+/* Admin select */
+.insp-select{background:#0a1230;border:1px solid #2a4090;border-radius:7px;color:#fff;font-family:'Open Sans',sans-serif;font-size:11px;padding:6px 8px;outline:none;cursor:pointer;max-width:110px}
+.insp-na-reason{background:#0a1230;border:1px solid #2a4090;border-radius:7px;color:#8a9fcf;font-family:'Open Sans',sans-serif;font-size:10px;padding:5px 7px;outline:none;cursor:pointer;width:100%;margin-top:5px}
+.insp-na-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:0}
+/* ── Scope of Work ── */
+.scope-section-card{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;margin-bottom:12px;overflow:hidden}
+.scope-section-header{padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a2f60}
+.scope-section-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.scope-section-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#ffffff;flex:1}
+.scope-count-badge{font-size:10px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 9px;border-radius:12px;color:#ffffff}
+.scope-items-list{padding:6px 16px 12px}
+.scope-line{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid #0e1838}
+.scope-line:last-child{border-bottom:none}
+.scope-bullet{font-size:12px;margin-top:1px;flex-shrink:0}
+.scope-line-text{font-size:12px;color:#c8d8f0;line-height:1.45;flex:1}
+.scope-empty{font-size:12px;color:#4a5a8a;font-style:italic;padding:8px 0}
+/* Admin scope edit */
+.scope-add-row{display:flex;gap:8px;margin-top:8px}
+.scope-add-row input{flex:1;margin-bottom:0;font-size:12px;padding:9px 10px}
+.scope-add-btn{background:#c1541c;color:#fff;border:none;border-radius:7px;padding:9px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.scope-del-btn{background:transparent;border:none;color:#e05050;font-size:14px;cursor:pointer;padding:2px 6px;flex-shrink:0;line-height:1}
+/* Change Orders */
+.co-card{background:#0f1940;border:1px solid #2a3f80;border-radius:14px;margin-bottom:12px;overflow:hidden}
+.co-header{background:#0a1230;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1a2f60}
+.co-num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:#e07040}
+.co-status-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:4px 10px;border-radius:12px;letter-spacing:.04em}
+.co-status-pending{background:rgba(193,84,28,.2);color:#e07040;border:1px solid rgba(193,84,28,.5)}
+.co-status-approved{background:#1a4a10;color:#6adf40;border:1px solid #3a8a20}
+.co-status-rejected{background:#3a0a0a;color:#e05050;border:1px solid #8a2020}
+.co-body{padding:14px 16px}
+.co-desc{font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:#ffffff;margin-bottom:10px;line-height:1.4}
+.co-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.co-meta-item{background:#0a1230;border-radius:8px;padding:10px 12px}
+.co-meta-label{font-size:9px;color:#8a9fcf;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.co-meta-val{font-size:13px;color:#ffffff;font-weight:600}
+.co-accept-btn{width:100%;background:#2a7a20;color:#fff;border:none;border-radius:9px;padding:13px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;margin-top:4px}
+.co-reject-btn{width:100%;background:transparent;color:#e05050;border:1px solid #e05050;border-radius:9px;padding:11px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;cursor:pointer;margin-top:6px}
+.co-empty{text-align:center;color:#8a9fcf;padding:30px 20px;font-size:13px}
+```
+
   </style>
 </head>
 <body>
@@ -282,6 +286,7 @@
 <div class="body">
 
   <!-- LANDING -->
+
   <div class="screen active" id="screen-landing" style="padding-top:48px;text-align:center">
     <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:22px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;color:#ffffff">Client Portal</div>
     <div style="font-size:13px;margin-bottom:36px;color:#a0b4d8">Your project hub — powered by LHJack Contractors</div>
@@ -293,6 +298,7 @@
   </div>
 
   <!-- ADMIN LOGIN -->
+
   <div class="screen" id="screen-adminlogin" style="padding-top:40px">
     <button class="obtn" style="margin-bottom:22px" onclick="show('landing')">← Back</button>
     <h2 class="sec">Contractor Login</h2>
@@ -303,6 +309,7 @@
   </div>
 
   <!-- CLIENT PORTAL -->
+
   <div class="screen" id="screen-client" style="padding-top:32px">
     <div id="client-lookup">
       <button class="obtn" style="margin-bottom:22px" onclick="show('landing')">← Back</button>
@@ -359,6 +366,7 @@
   </div>
 
   <!-- ADMIN DASHBOARD -->
+
   <div class="screen" id="screen-admin">
     <div id="admin-jobs-view">
       <div class="top-row" style="margin-top:22px">
@@ -414,6 +422,7 @@
 </div><!-- /body -->
 
 <!-- UPDATE FORM SHEET -->
+
 <div class="overlay" id="update-overlay">
   <div class="sheet">
     <h2 class="sec" id="update-form-title">Post Update</h2>
@@ -450,10 +459,12 @@
       <button class="btn btn-dark btn-cancel" onclick="closeUpdateForm()">Cancel</button>
       <button class="btn" onclick="saveUpdate()"><span id="save-update-spin" class="spin" style="display:none"></span>Post Update</button>
     </div>
+    <div id="update-form-err" style="display:none;color:#ff5555;font-size:12px;text-align:center;margin-top:8px">Add a summary, description, or at least one photo before posting.</div>
   </div>
 </div>
 
 <!-- CHANGE ORDER FORM SHEET -->
+
 <div class="overlay" id="co-overlay">
   <div class="sheet">
     <h2 class="sec" id="co-form-title">New Change Order</h2>
@@ -483,6 +494,7 @@
 </div>
 
 <!-- ITEM FORM SHEET -->
+
 <div class="overlay" id="item-overlay">
   <div class="sheet">
     <h2 class="sec" id="item-form-title">Add Material Item</h2>
@@ -519,6 +531,7 @@
 </div>
 
 <!-- NEW JOB SHEET -->
+
 <div class="overlay" id="newjob-overlay">
   <div class="sheet">
     <h2 class="sec">Create New Job</h2>
@@ -550,33 +563,84 @@ const db = firebase.firestore();
 
 // ── Firebase Storage — safe init ──────────────────────────────────────────
 let storage = null;
+let storageError = null;
 try {
   storage = firebase.storage();
 } catch(e) {
+  storageError = e.message;
   console.warn('Firebase Storage init failed:', e.message);
 }
 
-function storageErrMsg(e) {
-  const c = e.code || e.message || '';
+// Test if storage actually works — run this once before any upload
+async function testStorageConnection() {
+  if(!storage) return { ok: false, msg: 'Firebase Storage SDK not loaded. Check the storage compat script tag.' };
+  try {
+    const testRef = storage.ref('_test/ping.txt');
+    await testRef.putString('ping');
+    await testRef.delete();
+    return { ok: true };
+  } catch(e) {
+    console.error('Storage test failed:', e);
+    return { ok: false, code: e.code, msg: buildStorageErrMsg(e) };
+  }
+}
+
+function buildStorageErrMsg(e) {
+  const c = String(e.code || e.message || '');
+  console.error('Storage error code:', c, e);
   if(c.includes('bucket-not-found') || c.includes('storage/bucket-not-found'))
-    return 'Storage not enabled. Go to Firebase Console → Build → Storage → Get Started.';
-  if(c.includes('unauthorized') || c.includes('storage/unauthorized'))
-    return 'Storage rules are blocking uploads. Go to Firebase Console → Storage → Rules and set: allow read, write: if true;';
-  if(c.includes('unauthenticated'))
-    return 'Storage rules require login. Update rules to allow unauthenticated access.';
-  if(c.includes('quota-exceeded') || c.includes('storage/quota-exceeded'))
-    return 'Firebase free storage quota exceeded.';
-  if(c.includes('cors') || c.includes('CORS') || c.includes('Failed to fetch') || c.includes('NetworkError'))
-    return 'CORS error — Firebase Storage needs CORS rules configured. See setup instructions.';
-  if(c.includes('storage/unknown') || c.includes('XMLHttpRequest'))
-    return 'Network error uploading. Check Storage is enabled and rules allow writes (code: ' + c + ')';
-  return 'Upload failed: ' + (c || 'unknown error. Check Firebase Storage is enabled.');
+    return { title: 'Storage Not Enabled', steps: ['Go to console.firebase.google.com', 'Open your LHJack-Portal project', 'Left menu → Build → Storage', 'Tap Get Started → Start in test mode → Done', 'Then refresh this page'] };
+  if(c.includes('unauthorized') || c.includes('storage/unauthorized') || c.includes('permission-denied') || c.includes('403'))
+    return { title: 'Storage Rules Are Blocking Uploads', steps: ['Go to console.firebase.google.com', 'Open LHJack-Portal project', 'Left menu → Build → Storage', 'Tap the Rules tab', 'Replace ALL text with the code shown below', 'Tap Publish', 'Refresh this page'], showRules: true };
+  if(c.includes('unauthenticated') || c.includes('storage/unauthenticated'))
+    return { title: 'Storage Rules Require Login', steps: ['Go to Firebase Console → Build → Storage → Rules', 'Replace rules with the code shown below', 'Tap Publish, then refresh'], showRules: true };
+  if(c.includes('quota') || c.includes('storage/quota'))
+    return { title: 'Firebase Free Storage Quota Exceeded', steps: ['Go to Firebase Console → Upgrade to Blaze plan (pay as you go — free for small usage)'] };
+  if(c.includes('cors') || c.includes('CORS') || c.includes('Failed to fetch') || c.includes('NetworkError') || c.includes('net::') || c.includes('XMLHttpRequest'))
+    return { title: 'CORS Error — Storage Blocked by Browser', steps: ['This means Firebase Storage is enabled but needs a CORS configuration for your Vercel domain.', 'Option 1 (easiest): Go to Firebase Console → Build → Storage → Rules and set the rules shown below.', 'Option 2: Contact support or check that test mode rules have not expired.'], showRules: true };
+  return { title: 'Upload Failed (code: ' + c + ')', steps: ['Check Firebase Console → Build → Storage is enabled', 'Check the Rules tab — rules may have expired', 'Try the rules fix shown below'], showRules: true };
+}
+
+function storageErrorBanner(errObj) {
+  if(!errObj) return '';
+  const info = typeof errObj === 'string' ? { title: errObj, steps: [], showRules: false } : errObj;
+  const rules = info.showRules ? `<div style="background:#020810;border-radius:6px;padding:10px 12px;margin-top:10px;font-family:monospace;font-size:10px;color:#6adf40;line-height:1.7;white-space:pre;overflow-x:auto">rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if true;
+    }
+  }
+}</div>` : '';
+  const steps = (info.steps||[]).map((s,i)=>`<div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:#e07040;font-weight:700;flex-shrink:0">${i+1}.</span><span>${s}</span></div>`).join('');
+  return `<div id="storage-err-banner" style="background:rgba(193,84,28,.12);border:2px solid #c1541c;border-radius:12px;padding:16px;margin-bottom:16px">
+    <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#e07040;margin-bottom:10px">⚠️ ${info.title}</div>
+    <div style="font-size:12px;color:#c8d8f0;line-height:1.8">${steps}</div>
+    ${rules}
+  </div>`;
 }
 
 function setProgress(barEl, labelEl, pct, text) {
   if(barEl) barEl.style.width = pct + '%';
   if(labelEl) labelEl.textContent = text;
 }
+
+function showUploadError(progEl, barEl, lblEl, errObj) {
+  const info = typeof errObj === 'object' ? errObj : { title: String(errObj), steps:[], showRules:true };
+  if(lblEl) lblEl.textContent = '⚠️ ' + info.title + ' — See instructions above';
+  if(barEl) { barEl.style.width = '0%'; barEl.style.background = '#e05050'; }
+  if(progEl) {
+    progEl.style.display = 'block';
+    progEl.style.background = 'rgba(193,84,28,0.15)';
+    progEl.style.border = '1px solid #c1541c';
+  }
+  // Inject big error banner into the docs content area
+  const existing = document.getElementById('storage-err-banner');
+  if(existing) existing.remove();
+  const docsEl = document.getElementById('admin-docs-content');
+  if(docsEl) docsEl.insertAdjacentHTML('afterbegin', storageErrorBanner(info));
+}
+
 
 // ── Photo uploads (Updates tab) ───────────────────────────────────────────
 let uploadedPhotoUrls = [];
@@ -597,24 +661,32 @@ async function uploadPhotos(files, jobId, inputEl) {
   const prog = document.getElementById('photo-upload-progress');
   const bar  = document.getElementById('photo-upload-bar');
   const lbl  = document.getElementById('photo-upload-label');
-  if(prog) prog.style.display = 'block';
+  if(prog) { prog.style.display='block'; prog.style.background=''; prog.style.border=''; }
+  if(bar) bar.style.background = '';
+  setProgress(bar, lbl, 2, 'Testing connection…');
+
+  const test = await testStorageConnection();
+  if(!test.ok) {
+    setProgress(bar, lbl, 0, '⚠️ ' + test.msg.title + ' — Check rules (see Docs tab for instructions)');
+    if(prog) { prog.style.background='rgba(193,84,28,0.15)'; prog.style.border='1px solid #c1541c'; }
+    if(inputEl) inputEl.value = '';
+    return;
+  }
 
   let uploaded = 0;
   for(const file of files) {
     setProgress(bar, lbl, Math.round(uploaded / files.length * 100), `Uploading ${file.name}…`);
     try {
-      // Sanitize filename — remove spaces and special chars
       const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
       const path = `updates/${jobId || 'general'}/${Date.now()}_${safeName}`;
       const ref = storage.ref(path);
 
-      // Upload with progress
       await new Promise((resolve, reject) => {
         const task = ref.put(file);
         task.on('state_changed',
           snap => {
             const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
-            setProgress(bar, lbl, pct, `Uploading ${file.name} (${pct}%)…`);
+            setProgress(bar, lbl, Math.max(pct, 5), `Uploading ${file.name} — ${pct}%`);
           },
           err => reject(err),
           () => resolve()
@@ -624,35 +696,24 @@ async function uploadPhotos(files, jobId, inputEl) {
       const url = await ref.getDownloadURL();
       uploadedPhotoUrls.push(url);
       addPhotoPreview(url, uploadedPhotoUrls.length - 1);
-
-      // Fill URL text inputs as backup
       const slots = ['u-photo1', 'u-photo2', 'u-photo3'];
       const empty = slots.find(s => !document.getElementById(s).value);
       if(empty) document.getElementById(empty).value = url;
-
       uploaded++;
-      setProgress(bar, lbl, Math.round(uploaded / files.length * 100), `${uploaded}/${files.length} uploaded…`);
 
     } catch(e) {
       console.error('Photo upload error:', e);
-      setProgress(bar, lbl, 0, storageErrMsg(e));
-      // Show in a more visible way
-      if(prog) {
-        prog.style.background = 'rgba(193,84,28,0.2)';
-        prog.style.border = '1px solid #c1541c';
-        setTimeout(() => {
-          if(prog) { prog.style.background = ''; prog.style.border = ''; }
-        }, 6000);
-      }
+      const errInfo = buildStorageErrMsg(e);
+      setProgress(bar, lbl, 0, '⚠️ ' + (typeof errInfo === 'object' ? errInfo.title : errInfo));
+      if(prog) { prog.style.background='rgba(193,84,28,0.15)'; prog.style.border='1px solid #c1541c'; }
     }
   }
 
   if(uploaded > 0) {
-    setProgress(bar, lbl, 100, `✓ ${uploaded} photo${uploaded > 1 ? 's' : ''} uploaded successfully`);
+    setProgress(bar, lbl, 100, `✓ ${uploaded} photo${uploaded > 1 ? 's' : ''} uploaded`);
+    if(bar) bar.style.background = 'linear-gradient(90deg,#2a7a20,#6adf40)';
     setTimeout(() => { if(prog) prog.style.display = 'none'; }, 3000);
   }
-
-  // Clear the file input so same file can be re-selected
   if(inputEl) inputEl.value = '';
 }
 
@@ -684,7 +745,8 @@ async function uploadDocFile(event, jobId, catKey) {
   if(!file) return;
 
   if(!storage) {
-    alert('Firebase Storage is not initialized. Enable it in Firebase Console → Build → Storage.');
+    const docsEl = document.getElementById('admin-docs-content');
+    if(docsEl) docsEl.insertAdjacentHTML('afterbegin', storageErrorBanner({ title:'Firebase Storage Not Initialized', steps:['Go to console.firebase.google.com → your project','Build → Storage → Get Started → Start in test mode → Done','Refresh this page'], showRules:true }));
     input.value = '';
     return;
   }
@@ -693,8 +755,19 @@ async function uploadDocFile(event, jobId, catKey) {
   const bar  = document.getElementById(`doc-prog-bar-${catKey}`);
   const lbl  = document.getElementById(`doc-prog-label-${catKey}`);
 
-  if(prog) { prog.style.display = 'block'; prog.style.background = ''; prog.style.border = ''; }
-  setProgress(bar, lbl, 5, `Uploading ${file.name}…`);
+  if(prog) { prog.style.display='block'; prog.style.background=''; prog.style.border=''; }
+  if(bar) bar.style.background = '';
+  setProgress(bar, lbl, 5, `Starting upload — testing connection…`);
+
+  // Test connection first
+  const test = await testStorageConnection();
+  if(!test.ok) {
+    showUploadError(prog, bar, lbl, test.msg);
+    input.value = '';
+    return;
+  }
+
+  setProgress(bar, lbl, 10, `Uploading ${file.name}…`);
 
   try {
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
@@ -706,7 +779,7 @@ async function uploadDocFile(event, jobId, catKey) {
       task.on('state_changed',
         snap => {
           const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
-          setProgress(bar, lbl, pct, `Uploading ${file.name} (${pct}%)…`);
+          setProgress(bar, lbl, Math.max(pct, 10), `Uploading ${file.name} — ${pct}%`);
         },
         err => reject(err),
         () => resolve()
@@ -714,26 +787,19 @@ async function uploadDocFile(event, jobId, catKey) {
     });
 
     const url = await ref.getDownloadURL();
-
-    // Save URL + filename to Firestore
     const docRef = db.collection('jobs').doc(jobId);
     const snap = await docRef.get();
     const docs = (snap.data().documents) || {};
     docs[catKey] = { url, name: file.name, savedAt: new Date().toISOString() };
     await docRef.update({ documents: docs });
 
-    setProgress(bar, lbl, 100, `✓ ${file.name} uploaded`);
+    setProgress(bar, lbl, 100, `✓ ${file.name} uploaded successfully`);
+    if(bar) bar.style.background = 'linear-gradient(90deg,#2a7a20,#6adf40)';
     setTimeout(() => { if(prog) prog.style.display = 'none'; }, 3000);
 
   } catch(e) {
     console.error('Doc upload error:', e);
-    const msg = storageErrMsg(e);
-    setProgress(bar, lbl, 0, msg);
-    if(prog) {
-      prog.style.background = 'rgba(193,84,28,0.15)';
-      prog.style.border = '1px solid #c1541c';
-    }
-    // Keep error visible
+    showUploadError(prog, bar, lbl, buildStorageErrMsg(e));
   }
   input.value = '';
 }
@@ -1684,23 +1750,41 @@ async function saveUpdate(){
   const editId=document.getElementById('edit-update-id').value;
   const summary=document.getElementById('u-summary').value.trim();
   const done=document.getElementById('u-done').value.trim();
-  if(!summary&&!done) return;
-  const sp=document.getElementById('save-update-spin');sp.style.display='inline-block';
-  const data={
-    date:document.getElementById('u-date').value,
-    summary,
-    done,
-    next:document.getElementById('u-next').value.trim(),
-    blockers:document.getElementById('u-blockers').value.trim(),
-    photo1:document.getElementById('u-photo1').value.trim(),
-    photo2:document.getElementById('u-photo2').value.trim(),
-    photo3:document.getElementById('u-photo3').value.trim(),
-  };
-  const ref=db.collection('jobs').doc(jobId).collection('updates');
-  if(editId) await ref.doc(editId).update(data);
-  else{data.createdAt=firebase.firestore.FieldValue.serverTimestamp();await ref.add(data);}
-  sp.style.display='none';
-  closeUpdateForm();
+  const photo1=document.getElementById('u-photo1').value.trim();
+  const photo2=document.getElementById('u-photo2').value.trim();
+  const photo3=document.getElementById('u-photo3').value.trim();
+
+  // Need at least a summary, some work done, OR a photo
+  const hasContent = summary || done || photo1 || photo2 || photo3;
+  if(!hasContent){
+    // Show a visible error instead of silently doing nothing
+    const btn=document.getElementById('save-update-spin');
+    const errEl=document.getElementById('update-form-err');
+    if(errEl){ errEl.style.display='block'; setTimeout(()=>errEl.style.display='none',3000); }
+    return;
+  }
+
+  const sp=document.getElementById('save-update-spin');
+  sp.style.display='inline-block';
+
+  try {
+    const data={
+      date:document.getElementById('u-date').value,
+      summary, done,
+      next:document.getElementById('u-next').value.trim(),
+      blockers:document.getElementById('u-blockers').value.trim(),
+      photo1, photo2, photo3,
+    };
+    const ref=db.collection('jobs').doc(jobId).collection('updates');
+    if(editId) await ref.doc(editId).update(data);
+    else{ data.createdAt=firebase.firestore.FieldValue.serverTimestamp(); await ref.add(data); }
+    sp.style.display='none';
+    closeUpdateForm();
+  } catch(e) {
+    console.error('Save update error:', e);
+    sp.style.display='none';
+    alert('Error saving update: ' + (e.message||e.code||'unknown error'));
+  }
 }
 
 async function deleteUpdate(jobId,updateId){
@@ -2198,27 +2282,10 @@ function renderClientDocs(docs) {
 
 function renderAdminDocs(jobId, docs) {
   const el=document.getElementById('admin-docs-content');
-  const storageOK = !!storage;
-  const setupBanner = storageOK ? '' : `<div style="background:rgba(193,84,28,.15);border:1px solid #c1541c;border-radius:10px;padding:14px 16px;margin-bottom:14px">
-    <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:#e07040;margin-bottom:8px">⚠️ Enable Firebase Storage for File Uploads</div>
-    <div style="font-size:11px;color:#c8d8f0;line-height:1.8">
-      1. Go to <strong>console.firebase.google.com</strong> → your project<br>
-      2. Tap <strong>Build → Storage → Get Started</strong><br>
-      3. Choose <strong>Start in test mode</strong> → Done<br>
-      4. Tap <strong>Rules</strong> tab → replace all text with the code below → <strong>Publish</strong><br>
-      5. Refresh this page
-    </div>
-    <div style="background:#0a1230;border-radius:6px;padding:10px 12px;margin-top:10px;font-family:monospace;font-size:10px;color:#6adf40;line-height:1.6;white-space:pre">rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow read, write: if true;
-    }
-  }
-}</div>
-  </div>`;
+  const noStorage = !storage;
+  const staticBanner = noStorage ? storageErrorBanner({ title:'Firebase Storage Not Enabled', steps:['Go to console.firebase.google.com → your project','Build → Storage → Get Started → Start in test mode → Done','Refresh this page'], showRules:true }) : '';
 
-  let html=setupBanner+`<div class="doc-vault-header" style="color:#8a9fcf;margin-bottom:14px">Upload files directly from your device or paste a shareable link. Clients see a View button instantly.</div>`;
+  let html=staticBanner+`<div class="doc-vault-header" style="color:#8a9fcf;margin-bottom:14px">Upload files directly from your device, or paste a shareable link. Clients see a View button instantly.</div>`;
   html+=DOC_CATS.map(cat=>{
     const doc=docs&&docs[cat.key];
     const savedUrl=doc&&doc.url?doc.url:'';
@@ -2292,6 +2359,7 @@ document.getElementById('co-overlay').addEventListener('click',function(e){if(e.
 document.getElementById('update-overlay').addEventListener('click',function(e){if(e.target===this)closeUpdateForm();});
 document.getElementById('newjob-overlay').addEventListener('click',function(e){if(e.target===this)closeNewJobSheet();});
 </script>
+
 </div>
 </body>
 </html>
