@@ -5,7 +5,321 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LHJack Client Portal</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+html{background:#f4f4f4 !important;min-height:100%}
+body{font-family:'Open Sans',sans-serif;background:#f4f4f4 !important;min-height:100vh;color:#111111;-webkit-font-smoothing:antialiased}
+.header{background:#1a2a6c;border-bottom:3px solid #e05500;padding:16px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
+.logo{width:36px;height:36px;background:#e05500;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;letter-spacing:1px;flex-shrink:0;color:#ffffff}
+.head-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:15px;text-transform:uppercase;letter-spacing:.05em;color:#ffffff}
+.head-sub{color:#a0b4d8;font-size:11px;margin-top:2px}
+.body{max-width:660px;margin:0 auto;padding:22px 14px 60px}
+.screen{display:none}.screen.active{display:block}
+h2.sec{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;color:#111111}
+.lbl{color:#888888;font-size:11px;font-family:'Montserrat',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;display:block}
+.muted{color:#888888}
+.err{color:#ff5555;font-size:12px;text-align:center;margin-bottom:8px;display:none;font-weight:600}
+.empty{color:#888888;text-align:center;padding:36px 20px;font-size:13px}
+.loading{color:#888888;text-align:center;padding:50px 20px;font-size:13px}
+input,textarea{width:100%;background:#ffffff;border:1px solid #d0d0d0;border-radius:8px;padding:11px 12px;color:#111111;font-family:'Open Sans',sans-serif;font-size:14px;margin-bottom:12px;outline:none;-webkit-appearance:none;appearance:none}
+input[type=number]{-moz-appearance:textfield}
+input::placeholder{color:#bbbbbb}
+input:focus{border-color:#e05500}
+.btn{display:block;width:100%;background:#e05500;color:#ffffff;border:none;border-radius:8px;padding:13px 20px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;margin-bottom:10px;text-align:center}
+.btn-dark{background:#eeeeee;border:1px solid #cccccc;color:#333333}
+.btn-row{display:flex;gap:10px}.btn-row .btn{margin-bottom:0;flex:1}
+.btn-row .btn-cancel{flex:0 0 auto;width:auto;padding:13px 18px}
+.obtn{display:inline-block;background:transparent;border:1px solid #bbbbbb;color:#555555;border-radius:8px;padding:8px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.05em;cursor:pointer;white-space:nowrap}
+.obtn-blue{border-color:#5aaad8;color:#5aaad8}
+.obtn-red{border-color:#e05050;color:#e05050}
+.obtn-orange{border-color:#e05500;color:#f07030;background:transparent}
+.seg-wrap{display:flex;border-radius:8px;overflow:hidden;border:1px solid #d8d8d8;margin-bottom:12px}
+.seg{flex:1;padding:10px 4px;background:#f0f0f0;color:#666666;border:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:all .15s}
+.seg.on{background:#e05500;color:#ffffff}
+.card{background:#ffffff;border:1px solid #e0e0e0;border-radius:12px;padding:16px;margin-bottom:10px}
+.card-hl{border-left:4px solid #e05500}
+.progress-bg{background:#eeeeee;border-radius:4px;height:6px;overflow:hidden;margin:8px 0 6px}
+.progress-fill{height:100%;background:linear-gradient(90deg,#e05500,#f07030);border-radius:4px;transition:width .4s}
+.pill{font-size:10px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.04em;display:inline-block;margin:2px 2px 0 0;color:#ffffff}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:18px}
+.stat{background:#f8f8f8;border:1px solid #e0e0e0;border-radius:10px;padding:12px 10px;text-align:center}
+.stat-n{font-family:'Montserrat',sans-serif;font-weight:900;font-size:22px;color:#111111}
+.stat-l{color:#888888;font-size:10px;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.item-top{display:flex;gap:12px;align-items:flex-start}
+.chk{width:24px;height:24px;border-radius:6px;border:2px solid #cccccc;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:2px;transition:all .2s}
+.chk.on{background:#e05500;border-color:#e05500}
+.chk.green{background:#2a7a20;border-color:#2a7a20}
+.chk svg{display:none}.chk.on svg,.chk.green svg{display:block}
+.item-body{flex:1}
+.item-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;margin-bottom:4px;color:#111111}
+.item-name.done{text-decoration:line-through;opacity:.5}
+.item-link{display:flex;align-items:center;gap:5px;margin-bottom:5px}
+.item-link img{width:13px;height:13px;border-radius:2px}
+.item-link a{color:#6ab4f0;font-size:11px;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px}
+.item-notes{color:#aaaaaa;font-size:11px;margin-top:5px;font-style:italic}
+.item-actions{display:flex;gap:8px;margin-top:10px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);align-items:flex-end;justify-content:center;z-index:100}
+.overlay.open{display:flex}
+.sheet{background:#ffffff;border-top:2px solid #e05500;border-radius:18px 18px 0 0;padding:24px 18px 36px;width:100%;max-width:660px;box-shadow:0 -8px 40px rgba(0,0,0,.7);max-height:88vh;overflow-y:auto}
+.top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.top-actions{display:flex;gap:8px;align-items:center}
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.fbtn{background:#f0f0f0;border:1px solid #d8d8d8;border-radius:20px;padding:7px 14px;color:#888888;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;letter-spacing:.04em}
+.fbtn.on{background:#e05500;color:#ffffff;border-color:#e05500}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Tab bar — scrollable for 5 tabs ── */
+.tab-bar{display:flex;background:#e8e8e8;border-radius:10px;padding:4px;margin-bottom:18px;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:10px 12px;background:transparent;border:none;color:#666666;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border-radius:7px;transition:all .15s;white-space:nowrap}
+.tab-btn.on{background:#e05500;color:#ffffff}
+
+/* ── Payment Center ── */
+.pay-summary{background:#ffffff;border:1px solid #e0e0e0;border-radius:14px;padding:18px;margin-bottom:12px}
+.pay-due-card{background:#fff8f4;border:2px solid #e05500;border-radius:14px;padding:18px;margin-bottom:14px}
+.pay-due-label{font-size:10px;color:#f07030;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.pay-due-amount{font-family:'Montserrat',sans-serif;font-weight:900;font-size:34px;color:#111111;line-height:1;margin-bottom:4px}
+.pay-due-phase{font-size:12px;color:#888888;margin-bottom:16px}
+.pay-now-btn{display:block;width:100%;background:#e05500;color:#fff;border:none;border-radius:10px;padding:15px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-align:center;text-decoration:none}
+.pay-instructions{font-size:11px;color:#888888;text-align:center;margin-top:8px;line-height:1.5}
+.pay-schedule-card{background:#ffffff;border:1px solid #e0e0e0;border-radius:14px;padding:4px 16px;margin-bottom:12px}
+.pay-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #f0f0f0}
+.pay-row:last-child{border-bottom:none}
+.pay-row-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:11px;flex-shrink:0}
+.pay-row-info{flex:1;min-width:0}
+.pay-row-name{font-size:12px;color:#111111;font-weight:600}
+.pay-row-sub{font-size:10px;color:#888888;margin-top:2px}
+.pay-row-right{text-align:right;flex-shrink:0}
+.pay-row-amount{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px}
+.pay-row-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 8px;border-radius:10px;display:inline-block;margin-top:3px}
+.pay-hist-card{background:#ffffff;border:1px solid #e0e0e0;border-radius:12px;padding:14px 16px;margin-bottom:8px;border-left:3px solid #3a8a20}
+.pay-empty-msg{text-align:center;padding:30px 20px;color:#888888;font-size:13px}
+/* Admin payment panel */
+.contract-setup{background:#f8f8f8;border:1px solid #e0e0e0;border-radius:12px;padding:16px;margin-bottom:14px}
+.contract-setup-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#111111;margin-bottom:12px}
+.admin-pay-row{background:#ffffff;border:1px solid #e0e0e0;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.admin-pay-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.admin-pay-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;flex-shrink:0}
+.admin-pay-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#111111;flex:1}
+.admin-pay-calc{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;color:#f07030}
+.pay-status-btns{display:flex;gap:6px;margin-bottom:10px}
+.psb{padding:7px 12px;border-radius:6px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase;border:1px solid transparent;opacity:.55;transition:all .15s}
+.psb.active{opacity:1}
+.psb-upcoming{background:#f5f5f5;color:#888888;border-color:#3a3a3a}
+.psb-due{background:rgba(224,85,0,.2);color:#f07030;border-color:#e05500}
+.psb-paid{background:#1a4a10;color:#6adf40;border-color:#3a8a20}
+.admin-pay-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.admin-pay-fields input{margin-bottom:0;font-size:12px;padding:9px 10px}
+.admin-pay-save{width:100%;background:#e05500;color:#fff;border:none;border-radius:7px;padding:10px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;letter-spacing:.04em;text-transform:uppercase}
+
+/* ── Project Tracker ── */
+.phase-card{background:#ffffff;border:1px solid #e0e0e0;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.phase-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+.phase-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;flex-shrink:0}
+.phase-dot.upcoming{background:#f5f5f5;border:2px solid #cccccc;color:#888888}
+.phase-dot.active{background:#e05500;border:2px solid #e05500;color:#ffffff}
+.phase-dot.complete{background:#2a7a20;border:2px solid #2a7a20;color:#ffffff}
+.phase-info{flex:1}
+.phase-name{font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#111111}
+.phase-meta{font-size:11px;color:#888888;margin-top:2px}
+.phase-badge{font-size:10px;font-family:'Montserrat',sans-serif;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.04em;white-space:nowrap}
+.phase-badge.upcoming{background:#f8f8f8;border:1px solid #cccccc;color:#888888}
+.phase-badge.active{background:rgba(224,85,0,.2);border:1px solid #e05500;color:#f07030}
+.phase-badge.complete{background:#1a4a10;border:1px solid #3a8a20;color:#6adf40}
+.phase-body{padding:0 16px 14px;border-top:1px solid #e8e8e8;margin-top:0;display:none}
+.phase-body.open{display:block}
+.scope-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f0f0}
+.scope-item:last-child{border-bottom:none}
+.scope-chk{width:20px;height:20px;border-radius:5px;border:2px solid #cccccc;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.scope-chk.done{background:#2a7a20;border-color:#2a7a20}
+.scope-chk svg{display:none}.scope-chk.done svg{display:block}
+.scope-chk.clickable{cursor:pointer}
+.scope-label{font-size:12px;color:#444444;flex:1}
+.scope-label.done{text-decoration:line-through;color:#666666}
+.phase-connector{width:2px;height:12px;background:#2e2e2e;margin:0 auto 0 30px}
+.payment-banner{background:#fff8f4;border:1px solid #e05500;border-radius:10px;padding:12px 14px;margin:12px 0 0}
+.payment-banner-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.payment-label{font-size:11px;color:#888888;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em}
+.payment-pct{font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;color:#f07030}
+.payment-trigger{font-size:11px;color:#666666;font-style:italic;border-top:1px solid #eeeeee;padding-top:7px;margin-top:4px}
+.tracker-overall{background:#f8f8f8;border-radius:10px;padding:14px 16px;margin-bottom:16px}
+.tracker-overall-label{font-size:11px;color:#666666;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.tracker-phase-stat{font-family:'Montserrat',sans-serif;font-weight:900;font-size:11px;color:#111111;margin-top:4px}
+
+/* ── Admin tracker controls ── */
+.admin-phase-ctrl{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.phase-ctrl-btn{padding:5px 10px;border-radius:6px;border:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase}
+.phase-ctrl-btn.set-active{background:rgba(224,85,0,.2);color:#f07030;border:1px solid #e05500}
+.phase-ctrl-btn.set-complete{background:#1a4a10;color:#6adf40;border:1px solid #3a8a20}
+.phase-ctrl-btn.set-upcoming{background:#f5f5f5;color:#888888;border:1px solid #cccccc}
+/* ── Documents Vault ── */
+.doc-category{background:#ffffff;border:1px solid #e0e0e0;border-radius:12px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px}
+.doc-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.doc-info{flex:1;min-width:0}
+.doc-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:#111111;margin-bottom:2px}
+.doc-status{font-size:11px}
+.doc-action{flex-shrink:0}
+.doc-view-btn{display:inline-block;background:#e05500;color:#ffffff;border:none;border-radius:7px;padding:8px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:.04em;cursor:pointer;text-decoration:none;white-space:nowrap}
+.doc-unavailable{font-size:11px;color:#555555;font-style:italic}
+.doc-vault-header{font-size:12px;color:#888888;margin-bottom:14px;line-height:1.5}
+/* Admin doc form */
+.admin-doc-row{background:#ffffff;border:1px solid #e0e0e0;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.admin-doc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.admin-doc-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.admin-doc-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:#111111;flex:1}
+.admin-doc-saved{font-size:10px;color:#4aaf30;font-family:'Montserrat',sans-serif;font-weight:700}
+.admin-doc-input-row{display:flex;gap:8px;align-items:center}
+.admin-doc-input-row input{margin-bottom:0;flex:1;font-size:12px;padding:9px 10px}
+.admin-doc-save-btn{background:#e05500;color:#fff;border:none;border-radius:7px;padding:9px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.admin-doc-remove-btn{background:transparent;border:1px solid #e05050;color:#e05050;border-radius:7px;padding:9px 10px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;flex-shrink:0}
+/* ── Updates Feed ── */
+.update-card{background:#ffffff;border:1px solid #e0e0e0;border-radius:14px;margin-bottom:14px;overflow:hidden}
+.update-card-header{background:#f8f8f8;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eeeeee}
+.update-date{font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:#f07030;letter-spacing:.04em}
+.update-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 8px;border-radius:10px;background:rgba(224,85,0,.2);color:#f07030;border:1px solid rgba(224,85,0,.4);letter-spacing:.04em}
+.update-body{padding:14px 16px}
+.update-summary{font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:#111111;margin-bottom:12px;line-height:1.4}
+.update-section{margin-bottom:10px}
+.update-section-label{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.update-section-text{font-size:12px;color:#444444;line-height:1.5}
+.update-blocker{font-size:12px;color:#ff8870;line-height:1.5}
+.update-photos{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.update-photo{width:calc(33.333% - 6px);aspect-ratio:4/3;border-radius:8px;object-fit:cover;background:#f5f5f5;cursor:pointer;border:1px solid #e0e0e0}
+.update-photo-link{width:calc(33.333% - 6px)}
+.update-feed-empty{text-align:center;padding:40px 20px;color:#888888;font-size:13px}
+/* Update form fields */
+.update-form-section{margin-bottom:4px}
+textarea{resize:vertical;min-height:70px;line-height:1.5}
+.photo-inputs{display:flex;flex-direction:column;gap:6px}
+.photo-inputs input{margin-bottom:0}
+/* ── Messaging / Comm Log ── */
+.msg-thread{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;min-height:80px}
+.msg-bubble{max-width:88%;padding:11px 14px;border-radius:14px;position:relative;word-break:break-word}
+.msg-bubble.contractor{background:#f0f0f0;border:1px solid #d8d8d8;border-bottom-left-radius:4px;align-self:flex-start}
+.msg-bubble.client{background:#1a3a6c;border:1px solid #cccccc;border-bottom-right-radius:4px;align-self:flex-end}
+.msg-bubble.meeting{background:#1a2a10;border:1px solid #2a5010;align-self:flex-start;width:100%;max-width:100%}
+.msg-sender{font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.msg-sender.contractor{color:#f07030}
+.msg-sender.client{color:#5aaad8}
+.msg-sender.meeting{color:#8adf40}
+.msg-text{font-size:13px;color:#111111;line-height:1.5}
+.msg-time{font-size:10px;color:#555555;margin-top:6px;text-align:right}
+.msg-attachment{display:flex;align-items:center;gap:8px;margin-top:8px;background:#f0f0f0;border-radius:8px;padding:8px 10px}
+.msg-attachment-icon{font-size:16px;flex-shrink:0}
+.msg-attachment-name{font-size:11px;color:#5aaad8;text-decoration:none;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msg-empty{text-align:center;color:#555555;padding:30px 20px;font-size:13px}
+.msg-meeting-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:#8adf40;margin-bottom:6px}
+.msg-meeting-notes{font-size:12px;color:#b8d8a0;line-height:1.6;white-space:pre-wrap}
+/* Compose area */
+.msg-compose{background:#f8f8f8;border:1px solid #e0e0e0;border-radius:12px;padding:12px}
+.msg-type-tabs{display:flex;gap:6px;margin-bottom:10px}
+.msg-type-btn{padding:6px 12px;border-radius:6px;border:1px solid #cccccc;background:transparent;color:#666666;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase}
+.msg-type-btn.on{background:#e05500;color:#fff;border-color:#e05500}
+.msg-input-row{display:flex;gap:8px;align-items:flex-end}
+.msg-input-row textarea{flex:1;margin-bottom:0;min-height:48px;max-height:120px;resize:vertical;font-size:13px;padding:10px 12px}
+.msg-send-btn{background:#e05500;color:#fff;border:none;border-radius:9px;padding:12px 18px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;cursor:pointer;flex-shrink:0;align-self:flex-end;height:48px}
+.msg-meeting-form{margin-top:8px}
+.meeting-note-upload{display:flex;align-items:center;gap:8px;margin-top:6px}
+.msg-divider{text-align:center;font-size:10px;color:#333333;margin:8px 0;font-family:'Montserrat',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;position:relative}
+.msg-divider::before,.msg-divider::after{content:'';position:absolute;top:50%;width:35%;height:1px;background:#222222}
+.msg-divider::before{left:0}.msg-divider::after{right:0}
+.msg-admin-del{position:absolute;top:6px;right:8px;background:transparent;border:none;color:#333333;font-size:14px;cursor:pointer;line-height:1}
+/* Msg photo upload */
+.msg-photo-bar{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.msg-photo-attach-btn{background:#f5f5f5;color:#6ab8f8;border:1px solid #cccccc;border-radius:7px;padding:7px 11px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.msg-photo-previews{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.msg-photo-thumb-wrap{position:relative;width:62px;height:62px}
+.msg-photo-thumb{width:62px;height:62px;object-fit:cover;border-radius:8px;border:1px solid #e0e0e0;background:#f5f5f5;display:block}
+.msg-photo-remove{position:absolute;top:2px;right:2px;width:18px;height:18px;background:rgba(10,18,48,.9);border:1px solid #e05050;color:#e05050;border-radius:50%;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0}
+.msg-photo-prog{font-size:10px;color:#888888;margin-bottom:6px;display:none}
+/* Msg inline photo grid */
+.msg-photos{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.msg-photo-link{position:relative;display:block;width:calc(33% - 4px)}
+.msg-photo-img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1px solid #e0e0e0;display:block}
+.msg-photo-dl{position:absolute;bottom:4px;right:4px;background:rgba(10,18,48,.82);border:1px solid #5aaad8;color:#5aaad8;border-radius:5px;font-size:9px;padding:3px 6px;font-family:'Montserrat',sans-serif;font-weight:700;text-decoration:none;letter-spacing:.03em}
+/* ── File Upload ── */
+.upload-zone{border:2px dashed #cccccc;border-radius:10px;padding:14px 16px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:10px;background:#f8f8f8}
+.upload-zone:hover,.upload-zone.drag-over{border-color:#e05500;background:rgba(224,85,0,.08)}
+.upload-zone-text{font-size:12px;color:#888888;line-height:1.5}
+.upload-zone-icon{font-size:24px;margin-bottom:6px}
+.upload-progress{background:#f5f5f5;border-radius:8px;padding:10px 12px;margin-bottom:8px;display:none}
+.upload-progress-bar-bg{background:#f5f5f5;border-radius:4px;height:6px;overflow:hidden;margin:6px 0 4px}
+.upload-progress-fill{height:100%;background:linear-gradient(90deg,#e05500,#f07030);border-radius:4px;transition:width .2s}
+.upload-progress-label{font-size:11px;color:#666666}
+.photo-preview-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.photo-thumb-wrap{position:relative;width:calc(33% - 6px)}
+.photo-thumb{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;border:1px solid #e0e0e0;background:#f5f5f5}
+.photo-thumb-remove{position:absolute;top:4px;right:4px;width:20px;height:20px;background:rgba(10,18,48,.85);border:1px solid #e05050;color:#e05050;border-radius:50%;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0}
+.doc-upload-row{display:flex;gap:6px;align-items:center;margin-top:6px}
+.doc-upload-btn{background:#f5f5f5;color:#6ab8f8;border:1px solid #cccccc;border-radius:7px;padding:8px 12px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;cursor:pointer;white-space:nowrap;letter-spacing:.04em;text-transform:uppercase}
+.doc-or-divider{font-size:10px;color:#555555;flex-shrink:0}
+/* ── Inspection & Permit Tracker ── */
+.insp-section{margin-top:14px;padding-top:14px;border-top:1px solid #eeeeee}
+.insp-section-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#5aaad8;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.insp-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0f0}
+.insp-row:last-child{border-bottom:none}
+.insp-icon{font-size:14px;flex-shrink:0;width:22px;text-align:center}
+.insp-label{flex:1;font-size:12px;color:#444444;line-height:1.3}
+.insp-status-wrap{flex-shrink:0}
+/* Client read-only badge */
+.insp-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:4px 9px;border-radius:12px;letter-spacing:.04em;white-space:nowrap}
+.insp-pending{background:#f0f0f0;color:#666666;border:1px solid #cccccc}
+.insp-submitted{background:rgba(224,85,0,.2);color:#f07030;border:1px solid #e05500}
+.insp-scheduled{background:#1a2020;color:#5aaad8;border:1px solid #2a5060}
+.insp-passed{background:#1a4a10;color:#6adf40;border:1px solid #3a8a20}
+.insp-na{background:#1e1e2a;color:#555555;border:1px solid #3a3a5a}
+/* Admin select */
+.insp-select{background:#ffffff;border:1px solid #cccccc;border-radius:7px;color:#111111;font-family:'Open Sans',sans-serif;font-size:11px;padding:6px 8px;outline:none;cursor:pointer;max-width:110px}
+.insp-na-reason{background:#ffffff;border:1px solid #cccccc;border-radius:7px;color:#666666;font-family:'Open Sans',sans-serif;font-size:10px;padding:5px 7px;outline:none;cursor:pointer;width:100%;margin-top:5px}
+.insp-na-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:0}
+/* ── Scope of Work ── */
+.scope-section-card{background:#ffffff;border:1px solid #e0e0e0;border-radius:14px;margin-bottom:12px;overflow:hidden}
+.scope-section-header{padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e8e8e8}
+.scope-section-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.scope-section-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#111111;flex:1}
+.scope-count-badge{font-size:10px;font-family:'Montserrat',sans-serif;font-weight:700;padding:3px 9px;border-radius:12px;color:#ffffff}
+.scope-items-list{padding:6px 16px 12px}
+.scope-line{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid #151515}
+.scope-line:last-child{border-bottom:none}
+.scope-bullet{font-size:12px;margin-top:1px;flex-shrink:0}
+.scope-line-text{font-size:12px;color:#444444;line-height:1.45;flex:1}
+.scope-empty{font-size:12px;color:#444444;font-style:italic;padding:8px 0}
+/* Admin scope edit */
+.scope-add-row{display:flex;gap:8px;margin-top:8px}
+.scope-add-row input{flex:1;margin-bottom:0;font-size:12px;padding:9px 10px}
+.scope-add-btn{background:#e05500;color:#fff;border:none;border-radius:7px;padding:9px 14px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.scope-del-btn{background:transparent;border:none;color:#e05050;font-size:14px;cursor:pointer;padding:2px 6px;flex-shrink:0;line-height:1}
+/* Change Orders */
+.co-card{background:#ffffff;border:1px solid #e0e0e0;border-radius:14px;margin-bottom:12px;overflow:hidden}
+.co-header{background:#f8f8f8;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eeeeee}
+.co-num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:12px;color:#f07030}
+.co-status-badge{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;padding:4px 10px;border-radius:12px;letter-spacing:.04em}
+.co-status-pending{background:rgba(224,85,0,.2);color:#f07030;border:1px solid rgba(224,85,0,.5)}
+.co-status-approved{background:#1a4a10;color:#6adf40;border:1px solid #3a8a20}
+.co-status-rejected{background:#3a0a0a;color:#e05050;border:1px solid #8a2020}
+.co-body{padding:14px 16px}
+.co-desc{font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:#111111;margin-bottom:10px;line-height:1.4}
+.co-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.co-meta-item{background:#f5f5f5;border-radius:8px;padding:10px 12px}
+.co-meta-label{font-size:9px;color:#888888;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.co-meta-val{font-size:13px;color:#111111;font-weight:600}
+.co-accept-btn{width:100%;background:#2a7a20;color:#fff;border:none;border-radius:9px;padding:13px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;margin-top:4px}
+.co-reject-btn{width:100%;background:transparent;color:#e05050;border:1px solid #e05050;border-radius:9px;padding:11px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;cursor:pointer;margin-top:6px}
+.co-empty{text-align:center;color:#888888;padding:30px 20px;font-size:13px}
+/* ── Project Header Card ── */
+.job-header-card{border-radius:14px;overflow:hidden;margin-bottom:16px;border:1px solid #e0e0e0;background:#ffffff}
+.job-header-cover{width:100%;height:140px;object-fit:cover;display:block;background:#f0ede8}
+.job-header-cover-placeholder{height:140px;background:linear-gradient(135deg,#1a2a6c 0%,#e05500 100%);display:flex;align-items:center;justify-content:center}
+.job-header-body{padding:14px 16px}
+.job-header-name{font-family:'Montserrat',sans-serif;font-weight:900;font-size:16px;color:#111111;line-height:1.2;margin-bottom:4px}
+.job-header-code{font-size:11px;color:#888888;font-family:'Montserrat',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.job-header-desc{font-size:13px;color:#444444;margin-bottom:6px;line-height:1.4}
+.job-header-addr{display:flex;align-items:flex-start;gap:5px;font-size:12px;color:#666666;line-height:1.4}
+.job-header-addr-icon{flex-shrink:0;margin-top:1px;color:#e05500}
+.job-header-status-row{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+
+  </style>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
@@ -306,11 +620,2823 @@
   </div>
 </div>
 
-<script src="firebase.js"></script>
-<script src="tracker.js"></script>
-<script src="payments.js"></script>
-<script src="messages.js"></script>
-<script src="docs.js"></script>
-<script src="app.js"></script>
+<script>
+// ── Firebase ───────────────────────────────────────────────────────────────
+firebase.initializeApp({
+  apiKey: "AIzaSyD51hiCzTxbznD1S3dgYQu8oRbCxBg3giY",
+  authDomain: "lhjack-portal.firebaseapp.com",
+  projectId: "lhjack-portal",
+  storageBucket: "lhjack-portal.firebasestorage.app",
+  messagingSenderId: "299302365137",
+  appId: "1:299302365137:web:300e53ed94b87cca9f62f0",
+  measurementId: "G-BYRNJV3D87"
+});
+const db = firebase.firestore();
+
+// ── Audit trail helpers ────────────────────────────────────────────────────
+// Returns {email, uid} of the currently signed-in admin, or 'client' for
+// unauthenticated client-side actions.
+function auditActor() {
+  const user = firebase.auth().currentUser;
+  if(user) return { email: user.email || user.uid, uid: user.uid };
+  return { email: 'client', uid: 'client' };
+}
+
+// Fields to merge into a NEW document
+function auditCreate() {
+  const { email, uid } = auditActor();
+  const now = firebase.firestore.FieldValue.serverTimestamp();
+  return { createdAt: now, updatedAt: now, createdBy: email, updatedBy: email };
+}
+
+// Fields to merge into an UPDATED document
+function auditUpdate() {
+  const { email } = auditActor();
+  return { updatedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedBy: email };
+}
+
+// ── Firebase Storage — safe init ──────────────────────────────────────────
+let storage = null;
+let storageError = null;
+try {
+  storage = firebase.storage();
+} catch(e) {
+  storageError = e.message;
+  console.warn('Firebase Storage init failed:', e.message);
+}
+
+// Test if storage actually works — run this once before any upload
+async function testStorageConnection() {
+  if(!storage) return { ok: false, msg: 'Firebase Storage SDK not loaded. Check the storage compat script tag.' };
+  try {
+    const testRef = storage.ref('_test/ping.txt');
+    await testRef.putString('ping');
+    await testRef.delete();
+    return { ok: true };
+  } catch(e) {
+    console.error('Storage test failed:', e);
+    return { ok: false, code: e.code, msg: buildStorageErrMsg(e) };
+  }
+}
+
+function buildStorageErrMsg(e) {
+  const c = String(e.code || e.message || '');
+  console.error('Storage error code:', c, e);
+  if(c.includes('bucket-not-found') || c.includes('storage/bucket-not-found'))
+    return { title: 'Storage Not Enabled', steps: ['Go to console.firebase.google.com', 'Open your LHJack-Portal project', 'Left menu → Build → Storage', 'Tap Get Started → Start in test mode → Done', 'Then refresh this page'] };
+  if(c.includes('unauthorized') || c.includes('storage/unauthorized') || c.includes('permission-denied') || c.includes('403'))
+    return { title: 'Storage Rules Are Blocking Uploads', steps: ['Go to console.firebase.google.com', 'Open LHJack-Portal project', 'Left menu → Build → Storage', 'Tap the Rules tab', 'Replace ALL text with the code shown below', 'Tap Publish', 'Refresh this page'], showRules: true };
+  if(c.includes('unauthenticated') || c.includes('storage/unauthenticated'))
+    return { title: 'Storage Rules Require Login', steps: ['Go to Firebase Console → Build → Storage → Rules', 'Replace rules with the code shown below', 'Tap Publish, then refresh'], showRules: true };
+  if(c.includes('quota') || c.includes('storage/quota'))
+    return { title: 'Firebase Free Storage Quota Exceeded', steps: ['Go to Firebase Console → Upgrade to Blaze plan (pay as you go — free for small usage)'] };
+  if(c.includes('cors') || c.includes('CORS') || c.includes('Failed to fetch') || c.includes('NetworkError') || c.includes('net::') || c.includes('XMLHttpRequest'))
+    return { title: 'CORS Error — Storage Blocked by Browser', steps: ['This means Firebase Storage is enabled but needs a CORS configuration for your Vercel domain.', 'Option 1 (easiest): Go to Firebase Console → Build → Storage → Rules and set the rules shown below.', 'Option 2: Contact support or check that test mode rules have not expired.'], showRules: true };
+  return { title: 'Upload Failed (code: ' + c + ')', steps: ['Check Firebase Console → Build → Storage is enabled', 'Check the Rules tab — rules may have expired', 'Try the rules fix shown below'], showRules: true };
+}
+
+function storageErrorBanner(errObj) {
+  if(!errObj) return '';
+  const info = typeof errObj === 'string' ? { title: errObj, steps: [], showRules: false } : errObj;
+  const rules = info.showRules ? `<div style="background:#060606;border-radius:6px;padding:10px 12px;margin-top:10px;font-family:monospace;font-size:10px;color:#6adf40;line-height:1.7;white-space:pre;overflow-x:auto">rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if true;
+    }
+  }
+}</div>` : '';
+  const steps = (info.steps||[]).map((s,i)=>`<div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:#f07030;font-weight:700;flex-shrink:0">${i+1}.</span><span>${s}</span></div>`).join('');
+  return `<div id="storage-err-banner" style="background:rgba(224,85,0,.12);border:2px solid #e05500;border-radius:12px;padding:16px;margin-bottom:16px">
+    <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#f07030;margin-bottom:10px">⚠️ ${info.title}</div>
+    <div style="font-size:12px;color:#cccccc;line-height:1.8">${steps}</div>
+    ${rules}
+  </div>`;
+}
+
+function setProgress(barEl, labelEl, pct, text) {
+  if(barEl) barEl.style.width = pct + '%';
+  if(labelEl) labelEl.textContent = text;
+}
+
+function showUploadError(progEl, barEl, lblEl, errObj) {
+  const info = typeof errObj === 'object' ? errObj : { title: String(errObj), steps:[], showRules:true };
+  if(lblEl) lblEl.textContent = '⚠️ ' + info.title + ' — See instructions above';
+  if(barEl) { barEl.style.width = '0%'; barEl.style.background = '#e05050'; }
+  if(progEl) {
+    progEl.style.display = 'block';
+    progEl.style.background = 'rgba(224,85,0,0.15)';
+    progEl.style.border = '1px solid #e05500';
+  }
+  // Inject big error banner into the docs content area
+  const existing = document.getElementById('storage-err-banner');
+  if(existing) existing.remove();
+  const docsEl = document.getElementById('admin-docs-content');
+  if(docsEl) docsEl.insertAdjacentHTML('afterbegin', storageErrorBanner(info));
+}
+
+
+// ── Photo uploads (Updates tab) ───────────────────────────────────────────
+let uploadedPhotoUrls = [];
+
+function handlePhotoSelect(event) {
+  const input = event.target;
+  const files = Array.from(input.files).slice(0, 6);
+  if(!files.length) return;
+  const jobId = document.getElementById('update-job-id').value;
+  uploadPhotos(files, jobId, input);
+}
+
+async function uploadPhotos(files, jobId, inputEl) {
+  if(!storage) {
+    alert('Firebase Storage is not initialized. Enable it in Firebase Console → Build → Storage.');
+    return;
+  }
+  const prog = document.getElementById('photo-upload-progress');
+  const bar  = document.getElementById('photo-upload-bar');
+  const lbl  = document.getElementById('photo-upload-label');
+  if(prog) { prog.style.display='block'; prog.style.background=''; prog.style.border=''; }
+  if(bar) bar.style.background = '';
+  setProgress(bar, lbl, 2, 'Testing connection…');
+
+  const test = await testStorageConnection();
+  if(!test.ok) {
+    setProgress(bar, lbl, 0, '⚠️ ' + test.msg.title + ' — Check rules (see Docs tab for instructions)');
+    if(prog) { prog.style.background='rgba(224,85,0,0.15)'; prog.style.border='1px solid #e05500'; }
+    if(inputEl) inputEl.value = '';
+    return;
+  }
+
+  let uploaded = 0;
+  for(const file of files) {
+    setProgress(bar, lbl, Math.round(uploaded / files.length * 100), `Uploading ${file.name}…`);
+    try {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const path = `updates/${jobId || 'general'}/${Date.now()}_${safeName}`;
+      const ref = storage.ref(path);
+
+      await new Promise((resolve, reject) => {
+        const task = ref.put(file);
+        task.on('state_changed',
+          snap => {
+            const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+            setProgress(bar, lbl, Math.max(pct, 5), `Uploading ${file.name} — ${pct}%`);
+          },
+          err => reject(err),
+          () => resolve()
+        );
+      });
+
+      const url = await ref.getDownloadURL();
+      uploadedPhotoUrls.push(url);
+      addPhotoPreview(url, uploadedPhotoUrls.length - 1);
+      const slots = ['u-photo1', 'u-photo2', 'u-photo3'];
+      const empty = slots.find(s => !document.getElementById(s).value);
+      if(empty) document.getElementById(empty).value = url;
+      uploaded++;
+
+    } catch(e) {
+      console.error('Photo upload error:', e);
+      const errInfo = buildStorageErrMsg(e);
+      setProgress(bar, lbl, 0, '⚠️ ' + (typeof errInfo === 'object' ? errInfo.title : errInfo));
+      if(prog) { prog.style.background='rgba(224,85,0,0.15)'; prog.style.border='1px solid #e05500'; }
+    }
+  }
+
+  if(uploaded > 0) {
+    setProgress(bar, lbl, 100, `✓ ${uploaded} photo${uploaded > 1 ? 's' : ''} uploaded`);
+    if(bar) bar.style.background = 'linear-gradient(90deg,#2a7a20,#6adf40)';
+    setTimeout(() => { if(prog) prog.style.display = 'none'; }, 3000);
+  }
+  if(inputEl) inputEl.value = '';
+}
+
+function addPhotoPreview(url, idx) {
+  const grid = document.getElementById('photo-preview-grid');
+  if(!grid) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'photo-thumb-wrap';
+  wrap.id = `photo-thumb-${idx}`;
+  wrap.innerHTML = `<img class="photo-thumb" src="${url}" onerror="this.style.opacity='.3'" />
+    <button class="photo-thumb-remove" onclick="removeUploadedPhoto(${idx})">×</button>`;
+  grid.appendChild(wrap);
+}
+
+function removeUploadedPhoto(idx) {
+  uploadedPhotoUrls[idx] = null;
+  const el = document.getElementById(`photo-thumb-${idx}`);
+  if(el) el.remove();
+  const validUrls = uploadedPhotoUrls.filter(Boolean);
+  ['u-photo1', 'u-photo2', 'u-photo3'].forEach((s, i) => {
+    document.getElementById(s).value = validUrls[i] || '';
+  });
+}
+
+// ── Document uploads (Docs tab) ───────────────────────────────────────────
+async function uploadDocFile(event, jobId, catKey) {
+  const input = event.target;
+  const file = input.files[0];
+  if(!file) return;
+
+  if(!storage) {
+    const docsEl = document.getElementById('admin-docs-content');
+    if(docsEl) docsEl.insertAdjacentHTML('afterbegin', storageErrorBanner({ title:'Firebase Storage Not Initialized', steps:['Go to console.firebase.google.com → your project','Build → Storage → Get Started → Start in test mode → Done','Refresh this page'], showRules:true }));
+    input.value = '';
+    return;
+  }
+
+  const prog = document.getElementById(`doc-prog-${catKey}`);
+  const bar  = document.getElementById(`doc-prog-bar-${catKey}`);
+  const lbl  = document.getElementById(`doc-prog-label-${catKey}`);
+
+  if(prog) { prog.style.display='block'; prog.style.background=''; prog.style.border=''; }
+  if(bar) bar.style.background = '';
+  setProgress(bar, lbl, 5, `Starting upload — testing connection…`);
+
+  // Test connection first
+  const test = await testStorageConnection();
+  if(!test.ok) {
+    showUploadError(prog, bar, lbl, test.msg);
+    input.value = '';
+    return;
+  }
+
+  setProgress(bar, lbl, 10, `Uploading ${file.name}…`);
+
+  try {
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const path = `documents/${jobId}/${catKey}/${Date.now()}_${safeName}`;
+    const ref = storage.ref(path);
+
+    await new Promise((resolve, reject) => {
+      const task = ref.put(file);
+      task.on('state_changed',
+        snap => {
+          const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+          setProgress(bar, lbl, Math.max(pct, 10), `Uploading ${file.name} — ${pct}%`);
+        },
+        err => reject(err),
+        () => resolve()
+      );
+    });
+
+    const url = await ref.getDownloadURL();
+    const docRef = db.collection('jobs').doc(jobId);
+    const snap = await docRef.get();
+    const docs = (snap.data().documents) || {};
+    docs[catKey] = { url, name: file.name, savedAt: new Date().toISOString(), ...auditCreate() };
+    await docRef.update({ documents: docs, ...auditUpdate() });
+
+    setProgress(bar, lbl, 100, `✓ ${file.name} uploaded successfully`);
+    if(bar) bar.style.background = 'linear-gradient(90deg,#2a7a20,#6adf40)';
+    setTimeout(() => { if(prog) prog.style.display = 'none'; }, 3000);
+
+  } catch(e) {
+    console.error('Doc upload error:', e);
+    showUploadError(prog, bar, lbl, buildStorageErrMsg(e));
+  }
+  input.value = '';
+}
+
+
+
+// ── Phase Illustrations (animated SVG per phase) ─────────────────────────
+function phaseIllustration(idx) {
+  const n = 'pi' + idx;
+  const BG = `<linearGradient id="${n}bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a2a6c"/><stop offset="100%" stop-color="#0e1840"/></linearGradient>`;
+  const BASE = `<rect width="340" height="130" fill="url(#${n}bg)" rx="10"/><line x1="0" y1="32" x2="340" y2="32" stroke="#fff" stroke-width=".3" opacity=".06"/><line x1="0" y1="65" x2="340" y2="65" stroke="#fff" stroke-width=".3" opacity=".06"/><line x1="0" y1="98" x2="340" y2="98" stroke="#fff" stroke-width=".3" opacity=".06"/>`;
+  const DOTS = `<g transform="translate(152,118)"><circle cx="0" cy="0" r="3" fill="#e05500" style="animation:${n}dt 1.2s ease-in-out infinite 0s"/><circle cx="9" cy="0" r="3" fill="#e05500" style="animation:${n}dt 1.2s ease-in-out infinite .2s"/><circle cx="18" cy="0" r="3" fill="#e05500" style="animation:${n}dt 1.2s ease-in-out infinite .4s"/><circle cx="27" cy="0" r="3" fill="#e05500" style="animation:${n}dt 1.2s ease-in-out infinite .6s"/></g>`;
+
+  const svgFor = (styles, defs, body, label) =>
+    `<div style="margin:12px 0;overflow:hidden;border-radius:10px"><svg viewBox="0 0 340 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block"><defs><style>@keyframes ${n}dt{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}${styles}</style>${BG}${defs}</defs>${BASE}${body}<text x="170" y="108" text-anchor="middle" fill="#fff" font-size="9" font-family="Montserrat,Arial" font-weight="700" letter-spacing="2" opacity=".8">${label}</text>${DOTS}</svg></div>`;
+
+  if(idx === 0) {
+    // ── CONTRACT & MOBILIZATION ─────────────────────────────────────────
+    return svgFor(
+      `@keyframes ${n}fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes ${n}sg{0%{stroke-dashoffset:120}100%{stroke-dashoffset:0}}@keyframes ${n}ck{0%{stroke-dashoffset:40}100%{stroke-dashoffset:0}}@keyframes ${n}pn{0%,30%{transform:translate(148px,62px) rotate(-35deg)}70%,100%{transform:translate(113px,75px) rotate(-35deg)}}@keyframes ${n}ik{0%{opacity:0;stroke-dashoffset:60}40%{opacity:1}100%{opacity:1;stroke-dashoffset:0}}@keyframes ${n}pu{0%,100%{opacity:.4}50%{opacity:.8}}@keyframes ${n}sr{0%{transform:translateX(20px);opacity:0}100%{transform:translateX(0);opacity:1}}@keyframes ${n}gr{from{transform:rotate(0)}to{transform:rotate(360deg)}}`,
+      `<filter id="${n}gw"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`,
+      `<g style="animation:${n}fl 3s ease-in-out infinite;transform-origin:76px 56px"><rect x="45" y="15" width="62" height="82" rx="4" fill="#fff"/><rect x="45" y="15" width="62" height="10" rx="4" fill="#e05500"/><rect x="45" y="20" width="62" height="5" fill="#e05500"/><rect x="52" y="32" width="42" height="3" rx="1.5" fill="#e8e8e8"/><rect x="52" y="39" width="35" height="2" rx="1" fill="#e8e8e8"/><rect x="52" y="45" width="38" height="2" rx="1" fill="#e8e8e8"/><rect x="52" y="51" width="30" height="2" rx="1" fill="#e8e8e8"/><rect x="52" y="57" width="42" height="2" rx="1" fill="#e8e8e8"/><line x1="52" y1="81" x2="94" y2="81" stroke="#ccc" stroke-width="1.5" stroke-dasharray="2,2"/><path d="M54,79C57,74 60,82 63,79C66,76 68,82 72,78C75,75 78,81 82,78" stroke="#1a2a6c" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" style="animation:${n}sg 1.5s ease forwards .5s"/><circle cx="90" cy="75" r="9" fill="none" stroke="#e05500" stroke-width="1.8"/><path d="M87,75L89,77L93,72" stroke="#e05500" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="40" stroke-dashoffset="40" style="animation:${n}ck .6s ease forwards 1.8s"/></g>
+<g style="animation:${n}pn 2s ease-in-out infinite"><rect x="-6" y="-3" width="22" height="7" rx="3" fill="#e05500" transform="rotate(-35)"/><polygon points="0,-2 -8,0 0,2" fill="#888" transform="rotate(-35) translate(-9,0)"/></g>
+<circle cx="170" cy="65" r="28" fill="#e05500" opacity=".12"/>
+<circle cx="170" cy="65" r="22" fill="none" stroke="#e05500" stroke-width="1.5" opacity=".4" style="animation:${n}pu 2s ease-in-out infinite"/>
+<g transform="translate(156,55)" filter="url(#${n}gw)"><path d="M4,14C4,14,0,11,0,8C0,6,2,4,4,4C5,4,6,5,7,6L12,10" stroke="#e05500" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M24,14C24,14,28,11,28,8C28,6,26,4,24,4C23,4,22,5,21,6L16,10" stroke="#e05500" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M7,6C9,4,11,4,12,5L14,8L16,5C17,4,19,4,21,6L22,9C22,11,20,13,18,14L14,16L10,14C8,13,6,11,7,9Z" fill="#e05500" opacity=".85"/></g>
+<g style="animation:${n}sr .8s ease forwards .2s;opacity:0"><ellipse cx="262" cy="50" rx="18" ry="5" fill="#e05500" opacity=".6"/><path d="M244,50C244,38,252,30,262,30C272,30,280,38,280,50Z" fill="#e05500"/><rect x="240" y="49" width="44" height="5" rx="2.5" fill="#cc3300"/></g>
+<g transform="translate(298,40)" style="animation:${n}gr 4s linear infinite;transform-origin:16px 16px"><circle cx="16" cy="16" r="7" fill="none" stroke="#e05500" stroke-width="2.5" opacity=".7"/><circle cx="16" cy="16" r="3" fill="#e05500" opacity=".7"/><line x1="16" y1="5" x2="16" y2="9" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/><line x1="16" y1="23" x2="16" y2="27" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/><line x1="5" y1="16" x2="9" y2="16" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/><line x1="23" y1="16" x2="27" y2="16" stroke="#e05500" stroke-width="2.5" opacity=".7" stroke-linecap="round"/><line x1="8" y1="8" x2="11" y2="11" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/><line x1="21" y1="21" x2="24" y2="24" stroke="#e05500" stroke-width="2" opacity=".5" stroke-linecap="round"/></g>
+<g style="animation:${n}sr .8s ease forwards .5s;opacity:0"><rect x="242" y="75" width="32" height="38" rx="3" fill="#fff" opacity=".92"/><rect x="242" y="75" width="32" height="7" rx="3" fill="#1a2a6c"/><rect x="248" y="88" width="22" height="2" rx="1" fill="#e8e8e8"/><rect x="248" y="93" width="18" height="2" rx="1" fill="#e8e8e8"/><rect x="248" y="98" width="20" height="2" rx="1" fill="#e8e8e8"/><path d="M249,105L253,109L261,101" stroke="#e05500" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="30" stroke-dashoffset="30" style="animation:${n}ck .5s ease forwards 1.5s"/></g>`,
+      'CONTRACT &amp; MOBILIZATION'
+    );
+  }
+
+  if(idx === 1) {
+    // ── DEMO & SITE PREP ────────────────────────────────────────────────
+    return svgFor(
+      `@keyframes ${n}sw{0%,100%{transform:rotate(-28deg)}50%{transform:rotate(28deg)}}@keyframes ${n}fl{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(45px) rotate(20deg);opacity:0}}@keyframes ${n}du{0%,100%{opacity:0;r:8}50%{opacity:.5;r:14}}@keyframes ${n}cr{0%{stroke-dashoffset:60}100%{stroke-dashoffset:0}}@keyframes ${n}sh{0%,100%{transform:translateX(0)}30%{transform:translateX(-2px)}70%{transform:translateX(2px)}}@keyframes ${n}am{0%,100%{transform:rotate(0deg)}50%{transform:rotate(30deg)}}@keyframes ${n}sl{0%{opacity:0;transform:translateX(15px)}100%{opacity:1;transform:translateX(0)}}`,
+      '',
+      `<!-- Crane -->
+<rect x="38" y="10" width="5" height="82" fill="#888" opacity=".5"/>
+<rect x="38" y="10" width="45" height="4" fill="#888" opacity=".5"/>
+<g style="animation:${n}sw 1.6s ease-in-out infinite;transform-origin:60px 10px">
+  <line x1="60" y1="10" x2="60" y2="50" stroke="#aaa" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <circle cx="60" cy="58" r="12" fill="#444" opacity=".95"/>
+  <circle cx="60" cy="58" r="12" fill="none" stroke="#777" stroke-width="2" opacity=".4"/>
+  <circle cx="55" cy="54" r="2" fill="#666"/><circle cx="65" cy="54" r="2" fill="#666"/><circle cx="60" cy="64" r="2" fill="#666"/>
+</g>
+<!-- Brick wall -->
+<g style="animation:${n}sh .35s linear infinite">
+  <g fill="#b04020" opacity=".9"><rect x="100" y="18" width="16" height="9" rx="1"/><rect x="118" y="18" width="16" height="9" rx="1"/><rect x="136" y="18" width="8" height="9" rx="1"/><rect x="108" y="29" width="16" height="9" rx="1"/><rect x="126" y="29" width="16" height="9" rx="1"/><rect x="100" y="40" width="16" height="9" rx="1"/><rect x="118" y="40" width="16" height="9" rx="1"/><rect x="136" y="40" width="8" height="9" rx="1"/></g>
+  <rect x="100" y="27" width="44" height="2" fill="#777" opacity=".3"/>
+  <rect x="100" y="38" width="44" height="2" fill="#777" opacity=".3"/>
+  <path d="M116,20L112,30L119,32L115,49" stroke="#ff7733" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60" style="animation:${n}cr .9s ease forwards .4s" opacity=".9"/>
+</g>
+<!-- Falling bricks -->
+<rect x="116" y="52" width="13" height="8" rx="1" fill="#b04020" opacity=".8" style="animation:${n}fl 1.6s ease-in infinite .0s"/>
+<rect x="103" y="56" width="11" height="7" rx="1" fill="#b04020" opacity=".7" style="animation:${n}fl 1.6s ease-in infinite .3s"/>
+<rect x="130" y="54" width="10" height="7" rx="1" fill="#b04020" opacity=".7" style="animation:${n}fl 1.6s ease-in infinite .55s"/>
+<!-- Dust -->
+<circle cx="118" cy="82" r="8" fill="#aaa" opacity="0" style="animation:${n}du 1.6s ease-in-out infinite .15s"/>
+<circle cx="132" cy="80" r="6" fill="#aaa" opacity="0" style="animation:${n}du 1.6s ease-in-out infinite .45s"/>
+<!-- Rubble pile -->
+<ellipse cx="120" cy="92" rx="26" ry="5" fill="#553322" opacity=".5"/>
+<rect x="100" y="88" width="8" height="5" rx="1" fill="#994422" opacity=".7" transform="rotate(-10,104,90)"/>
+<rect x="114" y="89" width="6" height="4" rx="1" fill="#994422" opacity=".7" transform="rotate(7,117,91)"/>
+<rect x="124" y="87" width="9" height="5" rx="1" fill="#994422" opacity=".7" transform="rotate(-5,128,89)"/>
+<!-- Excavator center -->
+<g transform="translate(158,28)" style="animation:${n}sl .6s ease forwards .1s;opacity:0">
+  <circle cx="22" cy="22" r="24" fill="#e05500" opacity=".1"/>
+  <rect x="4" y="20" width="28" height="14" rx="3" fill="#e05500" opacity=".8"/>
+  <rect x="18" y="10" width="15" height="13" rx="2" fill="#e05500" opacity=".9"/>
+  <rect x="20" y="12" width="11" height="8" rx="1" fill="#1a2a6c" opacity=".6"/>
+  <rect x="1" y="32" width="34" height="6" rx="3" fill="#333" opacity=".9"/>
+  <circle cx="9" cy="35" r="3" fill="#555"/>
+  <circle cx="29" cy="35" r="3" fill="#555"/>
+  <g style="animation:${n}am 1.8s ease-in-out infinite;transform-origin:18px 16px">
+    <rect x="-3" y="-18" width="5" height="22" rx="2" fill="#e05500" opacity=".9" transform="rotate(-15)"/>
+    <path d="M-8,-20L-2,-30L8,-30L3,-18Z" fill="#cc3300" transform="rotate(-15) translate(-1,-1)"/>
+  </g>
+</g>
+<!-- Dump truck right -->
+<g style="animation:${n}sl .7s ease forwards .3s;opacity:0">
+  <rect x="245" y="50" width="52" height="24" rx="3" fill="#e05500" opacity=".7"/>
+  <rect x="272" y="38" width="25" height="20" rx="3" fill="#e05500" opacity=".9"/>
+  <rect x="274" y="40" width="21" height="13" rx="2" fill="#1a2a6c" opacity=".5"/>
+  <circle cx="255" cy="76" r="7" fill="#222"/><circle cx="255" cy="76" r="4" fill="#444"/>
+  <circle cx="282" cy="76" r="7" fill="#222"/><circle cx="282" cy="76" r="4" fill="#444"/>
+  <path d="M249,50L253,38L270,38L270,50" fill="#994422" opacity=".8"/>
+  <ellipse cx="260" cy="38" rx="10" ry="4" fill="#883311" opacity=".8"/>
+</g>`
+      , 'DEMO &amp; SITE PREP');
+  }
+
+  if(idx === 2) {
+    // ── ROUGH WORK ──────────────────────────────────────────────────────
+    return svgFor(
+      `@keyframes ${n}fr{0%{stroke-dashoffset:300}100%{stroke-dashoffset:0}}@keyframes ${n}bl{0%,100%{opacity:.1;transform:scale(.9)}45%,55%{opacity:1;transform:scale(1)}}@keyframes ${n}pp{0%{stroke-dashoffset:120}100%{stroke-dashoffset:0}}@keyframes ${n}hm{0%,100%{transform:rotate(0)}50%{transform:rotate(-45deg)}}@keyframes ${n}gw{0%,100%{filter:drop-shadow(0 0 3px #e05500)}50%{filter:drop-shadow(0 0 10px #e05500)}}@keyframes ${n}fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes ${n}sp{0%,100%{opacity:0;transform:scale(0)}50%{opacity:1;transform:scale(1)}}`,
+      `<clipPath id="${n}bc"><rect x="0" y="0" width="340" height="130"/></clipPath>`,
+      `<!-- LEFT: lumber frame rising -->
+<g style="animation:${n}fl 4s ease-in-out infinite">
+  <rect x="20" y="88" width="88" height="5" rx="2" fill="#664" opacity=".7"/>
+  <line x1="30" y1="88" x2="30" y2="26" stroke="#cc8844" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards 0s"/>
+  <line x1="55" y1="88" x2="55" y2="16" stroke="#cc8844" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards .15s"/>
+  <line x1="80" y1="88" x2="80" y2="26" stroke="#cc8844" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards .3s"/>
+  <line x1="100" y1="88" x2="100" y2="16" stroke="#cc8844" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards .45s"/>
+  <line x1="30" y1="88" x2="100" y2="88" stroke="#cc8844" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards .05s"/>
+  <line x1="30" y1="55" x2="100" y2="55" stroke="#cc8844" stroke-width="3" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards .6s"/>
+  <line x1="30" y1="26" x2="100" y2="26" stroke="#cc8844" stroke-width="3" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards .8s"/>
+  <line x1="30" y1="26" x2="55" y2="12" stroke="#cc8844" stroke-width="3" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards 1.0s"/>
+  <line x1="55" y1="12" x2="100" y2="26" stroke="#cc8844" stroke-width="3" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr 1.2s ease forwards 1.15s"/>
+  <line x1="30" y1="55" x2="55" y2="88" stroke="#aa6622" stroke-width="2" stroke-linecap="round" opacity=".45" stroke-dasharray="300" stroke-dashoffset="300" style="animation:${n}fr .8s ease forwards 1.3s"/>
+</g>
+<!-- CENTER: Electrical bolt -->
+<g transform="translate(147,18)" style="animation:${n}gw 1.4s ease-in-out infinite">
+  <polygon points="24,0 14,26 22,26 12,52 32,20 24,20" fill="#e05500" style="animation:${n}bl 1.3s ease-in-out infinite"/>
+  <circle cx="8" cy="10" r="5" fill="#ffaa44" style="animation:${n}sp 1.3s ease-in-out infinite .1s"/>
+  <circle cx="38" cy="14" r="4" fill="#ffaa44" style="animation:${n}sp 1.3s ease-in-out infinite .3s"/>
+  <circle cx="10" cy="42" r="4" fill="#ffaa44" style="animation:${n}sp 1.3s ease-in-out infinite .2s"/>
+</g>
+<!-- Plumbing pipes -->
+<path d="M120,72C133,72 138,82 150,82C162,82 167,72 180,72" stroke="#5aaad8" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" style="animation:${n}pp 1s ease forwards .6s"/>
+<path d="M120,84C133,84 138,94 150,94C162,94 167,84 180,84" stroke="#5aaad8" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" style="animation:${n}pp 1s ease forwards .9s"/>
+<!-- HVAC duct -->
+<rect x="120" y="98" width="60" height="12" rx="3" fill="none" stroke="#8adf40" stroke-width="2" stroke-dasharray="120" stroke-dashoffset="120" style="animation:${n}pp 1s ease forwards 1.2s"/>
+<!-- RIGHT: Blueprint -->
+<g transform="translate(218,14)">
+  <rect x="6" y="4" width="84" height="58" rx="3" fill="#162656" stroke="#5aaad8" stroke-width="1.5"/>
+  <line x1="6" y1="16" x2="90" y2="16" stroke="#5aaad8" stroke-width=".5" opacity=".35"/>
+  <line x1="6" y1="28" x2="90" y2="28" stroke="#5aaad8" stroke-width=".5" opacity=".35"/>
+  <line x1="6" y1="40" x2="90" y2="40" stroke="#5aaad8" stroke-width=".5" opacity=".35"/>
+  <line x1="6" y1="52" x2="90" y2="52" stroke="#5aaad8" stroke-width=".5" opacity=".35"/>
+  <line x1="24" y1="4" x2="24" y2="62" stroke="#5aaad8" stroke-width=".5" opacity=".35"/>
+  <line x1="48" y1="4" x2="48" y2="62" stroke="#5aaad8" stroke-width=".5" opacity=".35"/>
+  <line x1="72" y1="4" x2="72" y2="62" stroke="#5aaad8" stroke-width=".5" opacity=".35"/>
+  <path d="M14,56L14,22L34,10L54,22L54,56Z" fill="none" stroke="#fff" stroke-width="1.5" opacity=".6"/>
+  <rect x="24" y="40" width="12" height="16" stroke="#fff" stroke-width="1" fill="none" opacity=".6"/>
+  <ellipse cx="6" cy="33" rx="4" ry="31" fill="#2a4a8a" stroke="#5aaad8" stroke-width="1"/>
+  <ellipse cx="90" cy="33" rx="4" ry="31" fill="#2a4a8a" stroke="#5aaad8" stroke-width="1"/>
+</g>
+<!-- Hammer -->
+<g transform="translate(222,74)" style="animation:${n}hm .7s ease-in-out infinite;transform-origin:10px 5px">
+  <rect x="0" y="0" width="22" height="9" rx="2" fill="#888" opacity=".9"/>
+  <rect x="5" y="8" width="4" height="18" rx="2" fill="#cc8844"/>
+  <rect x="-2" y="1" width="11" height="7" rx="1" fill="#666"/>
+</g>`
+      , 'ROUGH WORK');
+  }
+
+  if(idx === 3) {
+    // ── FINISHES ────────────────────────────────────────────────────────
+    const tiles = [0,1,2,3,4,5,6,7,8,9,10,11].map(i => {
+      const c=i%4, r=Math.floor(i/4);
+      return `<rect x="${130+c*18+1}" y="${38+r*18+1}" width="16" height="16" rx="1.5" fill="#d4c9aa" opacity=".55" style="animation:${n}tl .35s ease forwards ${(i*0.06).toFixed(2)}s;opacity:0"/>`;
+    }).join('');
+    return svgFor(
+      `@keyframes ${n}rl{0%{transform:translateX(-100px)}100%{transform:translateX(100px)}}@keyframes ${n}pw{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0% 0 0)}}@keyframes ${n}tl{0%{opacity:0;transform:scale(.4)}100%{opacity:.55;transform:scale(1)}}@keyframes ${n}dr{0%{transform:perspective(200px) rotateY(0)}50%{transform:perspective(200px) rotateY(-55deg)}100%{transform:perspective(200px) rotateY(0)}}@keyframes ${n}sh{0%{transform:translateX(-70px)}100%{transform:translateX(70px)}}@keyframes ${n}sw{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}`,
+      `<clipPath id="${n}pc"><rect x="16" y="34" width="98" height="28" rx="2"/></clipPath><clipPath id="${n}sc"><rect x="232" y="16" width="78" height="70" rx="4"/></clipPath>`,
+      `<!-- LEFT: Paint wall + roller -->
+<rect x="16" y="34" width="98" height="28" rx="2" fill="#e0e0e0" opacity=".25"/>
+<g clip-path="url(#${n}pc)"><rect x="16" y="34" width="98" height="28" fill="#e05500" opacity=".35" style="animation:${n}pw 2.5s ease-in-out infinite"/></g>
+<rect x="16" y="34" width="98" height="28" rx="2" fill="none" stroke="#999" stroke-width="1" opacity=".3"/>
+<g style="animation:${n}rl 2.5s ease-in-out infinite">
+  <line x1="65" y1="16" x2="65" y2="33" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="65" y1="16" x2="78" y2="16" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+  <rect x="74" y="33" width="20" height="14" rx="5" fill="#e05500" opacity=".95"/>
+  <rect x="76" y="35" width="16" height="10" rx="4" fill="#cc3300"/>
+</g>
+<!-- Color swatches -->
+<rect x="18" y="70" width="13" height="17" rx="2" fill="#e05500" opacity=".85"/>
+<rect x="33" y="70" width="13" height="17" rx="2" fill="#1a2a6c" opacity=".85"/>
+<rect x="48" y="70" width="13" height="17" rx="2" fill="#6adf40" opacity=".85"/>
+<rect x="63" y="70" width="13" height="17" rx="2" fill="#f0d060" opacity=".85"/>
+<rect x="78" y="70" width="13" height="17" rx="2" fill="#ffffff" opacity=".6" stroke="#ddd" stroke-width="1"/>
+<!-- CENTER: Floor tiles -->
+<rect x="128" y="36" width="76" height="58" rx="2" fill="#c8c0a0" opacity=".2"/>
+${tiles}
+<line x1="128" y1="56" x2="204" y2="56" stroke="#888" stroke-width=".8" opacity=".25"/>
+<line x1="128" y1="74" x2="204" y2="74" stroke="#888" stroke-width=".8" opacity=".25"/>
+<line x1="146" y1="36" x2="146" y2="94" stroke="#888" stroke-width=".8" opacity=".25"/>
+<line x1="164" y1="36" x2="164" y2="94" stroke="#888" stroke-width=".8" opacity=".25"/>
+<line x1="182" y1="36" x2="182" y2="94" stroke="#888" stroke-width=".8" opacity=".25"/>
+<!-- tile trowel icon -->
+<g transform="translate(148,16)" style="animation:${n}sw 2s ease-in-out infinite">
+  <rect x="-3" y="0" width="18" height="10" rx="2" fill="#888" opacity=".8"/>
+  <rect x="6" y="10" width="3" height="10" rx="1" fill="#cc8844"/>
+  <polygon points="-3,10 0,18 15,10" fill="#777" opacity=".6"/>
+</g>
+<!-- RIGHT: Cabinet -->
+<rect x="232" y="18" width="76" height="70" rx="4" fill="#d4b06a" opacity=".75"/>
+<rect x="229" y="14" width="82" height="8" rx="3" fill="#c49050" opacity=".85"/>
+<rect x="229" y="14" width="82" height="4" rx="2" fill="#f0e8d0" opacity=".9"/>
+<g style="animation:${n}dr 3.5s ease-in-out infinite;transform-origin:270px 52px">
+  <rect x="234" y="26" width="32" height="58" rx="3" fill="#c49050" opacity=".9"/>
+  <rect x="236" y="28" width="28" height="54" rx="2" fill="#d4b06a" opacity=".55"/>
+</g>
+<rect x="270" y="26" width="32" height="58" rx="3" fill="#c49050" opacity=".9"/>
+<rect x="272" y="28" width="28" height="54" rx="2" fill="#d4b06a" opacity=".55"/>
+<rect x="262" y="52" width="14" height="4" rx="2" fill="#888" opacity=".7"/>
+<g clip-path="url(#${n}sc)"><rect x="225" y="14" width="16" height="76" fill="#fff" opacity=".15" style="animation:${n}sh 2.8s ease-in-out infinite"/></g>
+<rect x="248" y="2" width="36" height="6" rx="3" fill="#fff" opacity=".25"/>`
+      , 'FINISHES');
+  }
+
+  if(idx === 4) {
+    // ── FINAL & CLOSEOUT ─────────────────────────────────────────────────
+    return svgFor(
+      `@keyframes ${n}hg{0%,100%{filter:drop-shadow(0 0 5px #e05500);opacity:.8}50%{filter:drop-shadow(0 0 18px #e05500);opacity:1}}@keyframes ${n}kk{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}@keyframes ${n}ck{0%{stroke-dashoffset:80}100%{stroke-dashoffset:0}}@keyframes ${n}sl{0%{transform:rotate(0) scale(0)}100%{transform:rotate(360deg) scale(1)}}@keyframes ${n}st{0%,100%{opacity:0;transform:scale(0)}35%,65%{opacity:1;transform:scale(1)}}@keyframes ${n}cf{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(52px) rotate(400deg);opacity:0}}@keyframes ${n}bn{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes ${n}sh{0%{transform:translateX(-80px)}100%{transform:translateX(80px)}}`,
+      `<radialGradient id="${n}rg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e05500" stop-opacity=".35"/><stop offset="100%" stop-color="#e05500" stop-opacity="0"/></radialGradient><clipPath id="${n}hc"><rect x="14" y="6" width="110" height="100"/></clipPath>`,
+      `<!-- LEFT: Glowing completed house -->
+<g transform="translate(16,8)" style="animation:${n}bn 3s ease-in-out infinite">
+  <ellipse cx="50" cy="78" rx="48" ry="18" fill="url(#${n}rg)"/>
+  <g style="animation:${n}hg 2.2s ease-in-out infinite">
+    <rect x="12" y="46" width="76" height="44" rx="2" fill="#fff" opacity=".92"/>
+    <polygon points="2,48 50,14 98,48" fill="#e05500" opacity=".95"/>
+    <rect x="20" y="56" width="16" height="14" rx="2" fill="#1a2a6c" opacity=".7"/>
+    <rect x="62" y="56" width="16" height="14" rx="2" fill="#1a2a6c" opacity=".7"/>
+    <line x1="28" y1="56" x2="28" y2="70" stroke="#fff" stroke-width="1" opacity=".4"/>
+    <line x1="20" y1="63" x2="36" y2="63" stroke="#fff" stroke-width="1" opacity=".4"/>
+    <line x1="70" y1="56" x2="70" y2="70" stroke="#fff" stroke-width="1" opacity=".4"/>
+    <line x1="62" y1="63" x2="78" y2="63" stroke="#fff" stroke-width="1" opacity=".4"/>
+    <rect x="38" y="68" width="20" height="22" rx="2" fill="#cc8844" opacity=".9"/>
+    <circle cx="55" cy="79" r="2.5" fill="#888"/>
+    <rect x="63" y="15" width="10" height="18" rx="1" fill="#d4b878" opacity=".8"/>
+  </g>
+  <!-- Big green check -->
+  <path d="M20,72L38,90L80,50" stroke="#6adf40" stroke-width="5.5" fill="none" stroke-linecap="round" stroke-dasharray="80" stroke-dashoffset="80" style="animation:${n}ck .9s ease forwards .5s" opacity=".95"/>
+</g>
+<!-- CENTER: Spinning key -->
+<g transform="translate(148,38)" style="animation:${n}kk 3.5s linear infinite;transform-origin:24px 24px">
+  <circle cx="24" cy="24" r="17" fill="none" stroke="#e05500" stroke-width="4" opacity=".95"/>
+  <circle cx="24" cy="24" r="10" fill="none" stroke="#e05500" stroke-width="2" opacity=".4"/>
+  <rect x="36" y="22" width="38" height="5" rx="2.5" fill="#e05500" opacity=".95"/>
+  <rect x="46" y="27" width="5" height="9" rx="1" fill="#e05500" opacity=".95"/>
+  <rect x="56" y="27" width="5" height="6" rx="1" fill="#e05500" opacity=".95"/>
+  <rect x="66" y="27" width="5" height="10" rx="1" fill="#e05500" opacity=".95"/>
+</g>
+<!-- RIGHT: Certificate -->
+<g transform="translate(232,12)">
+  <rect x="0" y="0" width="82" height="68" rx="4" fill="#fffef0" opacity=".95"/>
+  <rect x="0" y="0" width="82" height="14" rx="4" fill="#1a2a6c"/>
+  <rect x="0" y="10" width="82" height="4" fill="#1a2a6c"/>
+  <text x="41" y="10" text-anchor="middle" fill="#fff" font-size="5.5" font-family="Arial" font-weight="bold" opacity=".9">CERTIFICATE OF COMPLETION</text>
+  <rect x="8" y="22" width="66" height="2" rx="1" fill="#e0e0e0"/>
+  <rect x="14" y="28" width="54" height="2" rx="1" fill="#e0e0e0"/>
+  <rect x="10" y="34" width="62" height="2" rx="1" fill="#e0e0e0"/>
+  <rect x="14" y="40" width="54" height="2" rx="1" fill="#e0e0e0"/>
+  <path d="M16,48L28,60L60,28" stroke="#e05500" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="80" stroke-dashoffset="80" style="animation:${n}ck 1s ease forwards .4s" opacity=".85"/>
+  <g style="animation:${n}sl 1.2s ease forwards .6s;transform-origin:68px 58px;transform:rotate(0) scale(0)">
+    <circle cx="68" cy="58" r="12" fill="#e05500" opacity=".9"/>
+    <circle cx="68" cy="58" r="9" fill="none" stroke="#fff" stroke-width="1.2" opacity=".5" stroke-dasharray="4,2"/>
+    <text x="68" y="62" text-anchor="middle" fill="#fff" font-size="8" font-family="Arial" font-weight="bold">✓</text>
+  </g>
+</g>
+<!-- Confetti burst -->
+<circle cx="222" cy="22" r="5" fill="#e05500" style="animation:${n}st 1.5s ease-in-out infinite 0s"/>
+<circle cx="234" cy="16" r="4" fill="#6adf40" style="animation:${n}st 1.5s ease-in-out infinite .2s"/>
+<circle cx="212" cy="18" r="4" fill="#f0d060" style="animation:${n}st 1.5s ease-in-out infinite .4s"/>
+<rect x="215" y="10" width="7" height="7" rx="1.5" fill="#e05500" style="animation:${n}cf 1.5s ease-in-out infinite .1s" transform="rotate(30,218,13)"/>
+<rect x="228" y="8" width="6" height="6" rx="1.5" fill="#6adf40" style="animation:${n}cf 1.5s ease-in-out infinite .35s" transform="rotate(-20,231,11)"/>
+<rect x="205" y="12" width="7" height="5" rx="1.5" fill="#f0d060" style="animation:${n}cf 1.5s ease-in-out infinite .55s" transform="rotate(45,208,14)"/>
+<!-- Done badge -->
+<rect x="142" y="84" width="60" height="16" rx="8" fill="#6adf40" opacity=".18"/>
+<text x="172" y="96" text-anchor="middle" fill="#6adf40" font-size="8" font-family="Montserrat,Arial" font-weight="700" letter-spacing="1">PROJECT DONE</text>`
+      , 'FINAL &amp; CLOSEOUT');
+  }
+
+  return '';
+}
+
+// ── Phase definitions ──────────────────────────────────────────────────────
+const PHASE_DEFS = [
+  { id:0, num:1, name:'Contract & Mobilization', payment:'10%', payLabel:'Payment 1 of 5 — initiates project & permitting',
+    items:[
+      {key:'contract',    label:'Contract signed & deposit received'},
+      {key:'arch_drawings',label:'Architectural drawings & measurements reviewed'},
+      {key:'design_review',label:'Designs & selections reviewed with client'},
+      {key:'design_approval',label:'Design approval meeting held & signed off'},
+      {key:'permits_app', label:'Permits applied for'},
+      {key:'preconstruct',label:'Pre-construction meeting held'},
+      {key:'schedule',    label:'Project schedule delivered to client'},
+    ]},
+  { id:1, num:2, name:'Demo & Site Prep', payment:'15%', payLabel:'Payment 2 of 5 — initiates demolition & site work',
+    items:[
+      {key:'permits_ok',  label:'Permits approved & posted on site'},
+      {key:'protection',  label:'Site & property protection in place'},
+      {key:'demo',        label:'Demolition complete'},
+      {key:'debris',      label:'Debris removed from site'},
+      {key:'materials_delivered',label:'Rough materials ordered & delivered to site'},
+    ]},
+  { id:2, num:3, name:'Rough Work', payment:'35%', payLabel:'Payment 3 of 5 — initiates rough trades & framing',
+    items:[
+      {key:'framing',     label:'Framing complete'},
+      {key:'rough_elec',  label:'Rough electrical complete'},
+      {key:'rough_plumb', label:'Rough plumbing complete'},
+      {key:'rough_hvac',  label:'Rough HVAC complete'},
+      {key:'rough_insp',  label:'Rough inspection passed & approved'},
+    ]},
+  { id:3, num:4, name:'Finishes', payment:'35%', payLabel:'Payment 4 of 5 — initiates all finish work',
+    items:[
+      {key:'insulation',  label:'Insulation installed'},
+      {key:'drywall',     label:'Drywall hung & finished'},
+      {key:'paint',       label:'Paint complete'},
+      {key:'flooring',    label:'Flooring installed'},
+      {key:'cabinets',    label:'Cabinets & millwork installed'},
+      {key:'fixtures',    label:'Fixtures & hardware installed'},
+      {key:'tile',        label:'Tile work complete'},
+    ]},
+  { id:4, num:5, name:'Final & Closeout', payment:'5%', payLabel:'Payment 5 of 5 — final payment at project completion',
+    items:[
+      {key:'final_insp',  label:'Final inspection passed'},
+      {key:'punch',       label:'Punch list complete'},
+      {key:'walkthrough', label:'Final walkthrough with client'},
+      {key:'warranty',    label:'Warranty & closeout docs delivered'},
+      {key:'closeout',    label:'Project officially closed out'},
+    ]},
+];
+
+// ── Inspection & Permit definitions per phase ─────────────────────────────
+const INSP_DEFS = [
+  // Phase 1 — Contract & Mobilization
+  [
+    {key:'permit_submitted', label:'Permit Application Submitted',  icon:'📋'},
+    {key:'permit_approved',  label:'Permit Approved & Issued',      icon:'✅'},
+  ],
+  // Phase 2 — Demo & Site Prep
+  [
+    {key:'demo_permit',      label:'Demo Permit (if required)',     icon:'🏗️'},
+    {key:'site_inspection',  label:'Site / Zoning Inspection',      icon:'📐'},
+  ],
+  // Phase 3 — Rough Work
+  [
+    {key:'rough_frame_sched',label:'Rough Framing Inspection Scheduled', icon:'📅'},
+    {key:'rough_frame_pass', label:'Rough Framing Inspection Passed',    icon:'🏠'},
+    {key:'rough_elec_sched', label:'Rough Electrical Inspection Scheduled', icon:'📅'},
+    {key:'rough_elec_pass',  label:'Rough Electrical Inspection Passed',    icon:'⚡'},
+    {key:'rough_plumb_sched',label:'Rough Plumbing Inspection Scheduled', icon:'📅'},
+    {key:'rough_plumb_pass', label:'Rough Plumbing Inspection Passed',    icon:'🔧'},
+  ],
+  // Phase 4 — Finishes
+  [
+    {key:'insulation_insp',  label:'Insulation Inspection (if required)', icon:'🧱'},
+  ],
+  // Phase 5 — Final & Closeout
+  [
+    {key:'final_sched',      label:'Final Inspection Scheduled',    icon:'📅'},
+    {key:'final_passed',     label:'Final Inspection Passed',       icon:'🎉'},
+    {key:'co_issued',        label:'Certificate of Occupancy Issued', icon:'📜'},
+  ],
+];
+
+const INSP_STATUSES = [
+  {val:'pending',   label:'Pending',   cls:'insp-pending'},
+  {val:'submitted', label:'Submitted', cls:'insp-submitted'},
+  {val:'scheduled', label:'Scheduled', cls:'insp-scheduled'},
+  {val:'passed',    label:'Passed ✓',  cls:'insp-passed'},
+  {val:'na',        label:'N/A',       cls:'insp-na'},
+];
+
+const NA_REASONS = [
+  'Not required for this project',
+  'Already permitted / approved',
+  'Jurisdiction does not require',
+  'Owner / client handles directly',
+  'Included in another inspection',
+  'Waived by inspector',
+  'Other',
+];
+
+function defaultInspections() {
+  return INSP_DEFS.map(phaseInsps=>
+    Object.fromEntries(phaseInsps.map(i=>[i.key,{status:'pending',naReason:''}]))
+  );
+}
+
+function defaultPhases() {
+  return PHASE_DEFS.map(p=>({
+    id:p.id, status:'upcoming',
+    items: Object.fromEntries(p.items.map(i=>[i.key, false]))
+  }));
+}
+
+function mergeInspections(savedPhases) {
+  const defaults=defaultInspections();
+  return defaults.map((def,idx)=>{
+    const saved=(savedPhases[idx]&&savedPhases[idx].inspections)||{};
+    const merged={};
+    Object.keys(def).forEach(k=>{
+      merged[k]={status:(saved[k]&&saved[k].status)||'pending', naReason:(saved[k]&&saved[k].naReason)||''};
+    });
+    return merged;
+  });
+}
+
+// ── Admin tracker render ───────────────────────────────────────────────────
+function renderAdminTracker(jobId, phases) {
+  const el=document.getElementById('admin-tracker-content');
+  const completedCount=phases.filter(p=>p.status==='complete').length;
+  let html=`<div class="tracker-overall">
+    <div class="tracker-overall-label">Overall Progress</div>
+    <div class="progress-bg"><div class="progress-fill" style="width:${Math.round(completedCount/5*100)}%"></div></div>
+    <div class="tracker-phase-stat">${completedCount} of 5 phases complete</div>
+  </div>`;
+
+  phases.forEach((phase,idx)=>{
+    const def=PHASE_DEFS[idx];
+    const doneItems=def.items.filter(i=>phase.items&&phase.items[i.key]).length;
+    const totalItems=def.items.length;
+    html+=`<div class="phase-card">
+      <div class="phase-header" onclick="togglePhaseExpand('admin',${idx})">
+        <div class="phase-dot ${phase.status}">${phase.status==='complete'?'✓':def.num}</div>
+        <div class="phase-info">
+          <div class="phase-name">${def.name}</div>
+          <div class="phase-meta">${doneItems}/${totalItems} items · Payment: ${def.payment}${phase.startDate?` · Start: ${esc(phase.startDate)}`:''}${phase.endDate?` · End: ${esc(phase.endDate)}`:''}</div>
+        </div>
+        <span class="phase-badge ${phase.status}">${phase.status==='upcoming'?'Upcoming':phase.status==='active'?'In Progress':'Complete'}</span>
+      </div>
+      <div class="phase-body" id="admin-phase-body-${idx}">
+        ${phaseIllustration(idx)}
+        <div class="payment-banner">
+          <div class="payment-banner-top">
+            <div class="payment-label">${def.payLabel}</div>
+            <div class="payment-pct">${def.payment}</div>
+          </div>
+          <div class="payment-trigger">⚡ Receipt of this payment initiates the next phase of work</div>
+        </div>
+        <div style="margin-top:12px">
+          ${def.items.map(item=>{
+            const done=phase.items&&phase.items[item.key];
+            return `<div class="scope-item">
+              <div class="scope-chk ${done?'done':''} clickable" onclick="toggleScopeItem('${jobId}',${idx},'${item.key}',${!done})">
+                <svg width="11" height="8" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L11.5 1" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="scope-label ${done?'done':''}">${esc(item.label)}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="admin-phase-ctrl">
+          <button class="phase-ctrl-btn set-active" onclick="setPhaseStatus('${jobId}',${idx},'active')">Set In Progress</button>
+          <button class="phase-ctrl-btn set-complete" onclick="setPhaseStatus('${jobId}',${idx},'complete')">Mark Complete</button>
+          <button class="phase-ctrl-btn set-upcoming" onclick="setPhaseStatus('${jobId}',${idx},'upcoming')">Reset</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #eeeeee">
+          <div>
+            <label style="font-size:9px;color:#888888;font-family:'Montserrat',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">Start Date</label>
+            <input type="date" id="phase-start-${idx}" value="${esc(phase.startDate||'')}"
+              style="width:100%;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:7px;padding:8px 10px;color:#fff;font-size:12px;outline:none;margin-bottom:0"
+              onchange="savePhaseDates('${jobId}',${idx})" />
+          </div>
+          <div>
+            <label style="font-size:9px;color:#888888;font-family:'Montserrat',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">End Date</label>
+            <input type="date" id="phase-end-${idx}" value="${esc(phase.endDate||'')}"
+              style="width:100%;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:7px;padding:8px 10px;color:#fff;font-size:12px;outline:none;margin-bottom:0"
+              onchange="savePhaseDates('${jobId}',${idx})" />
+          </div>
+        </div>
+        ${renderAdminInspections(jobId, idx, phase.inspections||{})}
+      </div>
+    </div>
+    ${idx<4?'<div class="phase-connector"></div>':''}`;
+  });
+  el.innerHTML=html;
+}
+
+// ── Client tracker render ──────────────────────────────────────────────────
+function renderClientTracker(phases) {
+  const el=document.getElementById('client-tracker-content');
+
+  // ── Calculate stats ──
+  const completedCount=phases.filter(p=>p.status==='complete').length;
+  const activePhaseIdx=phases.findIndex(p=>p.status==='active');
+  const activePhase=activePhaseIdx>=0?phases[activePhaseIdx]:null;
+  const activeDef=activePhase?PHASE_DEFS[activePhaseIdx]:null;
+
+  let totalItems=0, doneItems=0;
+  phases.forEach((p,idx)=>{
+    PHASE_DEFS[idx].items.forEach(item=>{
+      totalItems++;
+      if(p.items&&p.items[item.key]) doneItems++;
+    });
+  });
+  const pct=totalItems?Math.round(doneItems/totalItems*100):0;
+
+  // Status
+  let statusLabel,statusColor,statusBg,statusBorder;
+  if(completedCount===5){
+    statusLabel='Complete';statusColor='#6adf40';statusBg='#1a4a10';statusBorder='#3a8a20';
+  } else if(activePhase){
+    statusLabel='In Progress';statusColor='#f07030';statusBg='rgba(224,85,0,.15)';statusBorder='#e05500';
+  } else {
+    statusLabel='Not Started';statusColor='#888888';statusBg='#111111';statusBorder='#3a3a3a';
+  }
+
+  // Next milestone
+  let nextMilestone='Awaiting project start';
+  if(activePhase&&activeDef){
+    const nextItem=activeDef.items.find(i=>!activePhase.items||!activePhase.items[i.key]);
+    nextMilestone=nextItem?nextItem.label:`${activeDef.name} wrapping up`;
+  } else if(completedCount===5){
+    nextMilestone='Project complete — great work!';
+  } else {
+    const nextIdx=phases.findIndex(p=>p.status==='upcoming');
+    if(nextIdx>=0) nextMilestone=`Starting ${PHASE_DEFS[nextIdx].name}`;
+  }
+
+  // Upcoming payment — first non-complete phase
+  let upcomingPay=null;
+  const upcomingPayIdx=phases.findIndex(p=>p.status!=='complete');
+  if(upcomingPayIdx>=0) upcomingPay=PHASE_DEFS[upcomingPayIdx];
+
+  // Latest update — last checked scope item scanning backwards
+  let latestUpdate='No updates yet';
+  outer: for(let i=phases.length-1;i>=0;i--){
+    for(let j=PHASE_DEFS[i].items.length-1;j>=0;j--){
+      if(phases[i].items&&phases[i].items[PHASE_DEFS[i].items[j].key]){
+        latestUpdate=PHASE_DEFS[i].items[j].label;
+        break outer;
+      }
+    }
+  }
+
+  let html=`
+  <!-- ── HERO STATUS CARD ── -->
+  <div style="background:#ffffff;border:1px solid #e0e0e0;border-radius:16px;padding:20px 18px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#888888">Project Status</div>
+      <span style="background:${statusBg};color:${statusColor};border:1px solid ${statusBorder};font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;padding:5px 13px;border-radius:20px;letter-spacing:.05em">${statusLabel}</span>
+    </div>
+    <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;color:#111111;margin-bottom:3px">${activeDef?activeDef.name:(completedCount===5?'All Phases Complete':'Not Yet Started')}</div>
+    ${activeDef?`<div style="font-size:12px;color:#888888;margin-bottom:16px">Phase ${activePhaseIdx+1} of 5 &nbsp;·&nbsp; ${activeDef.payment} payment phase</div>`:`<div style="margin-bottom:16px"></div>`}
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+      <div style="font-size:11px;color:#888888">Overall Completion</div>
+      <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:16px;color:#f07030">${pct}%</div>
+    </div>
+    <div style="background:#eeeeee;border-radius:8px;height:12px;overflow:hidden;margin-bottom:8px">
+      <div style="width:${pct}%;height:100%;background:linear-gradient(90deg,#e05500,#f07030);border-radius:8px;transition:width .5s"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between">
+      ${[0,1,2,3,4].map(i=>{
+        const s=phases[i].status;
+        const color=s==='complete'?'#6adf40':s==='active'?'#f07030':'#2a3a60';
+        const bg=s==='complete'?'#1a4a10':s==='active'?'rgba(224,85,0,.2)':'transparent';
+        return `<div style="flex:1;text-align:center">
+          <div style="width:20px;height:20px;border-radius:50%;background:${bg};border:2px solid ${color};margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:9px;color:${color};font-weight:900">${s==='complete'?'✓':i+1}</div>
+          <div style="font-size:8px;color:${color};font-family:'Montserrat',sans-serif;font-weight:700">P${i+1}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <!-- ── INFO GRID ── -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+    <div style="background:#ffffff;border:1px solid #e0e0e0;border-radius:12px;padding:14px">
+      <div style="font-size:9px;color:#888888;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Next Milestone</div>
+      <div style="font-size:12px;color:#111111;line-height:1.45;font-weight:600">${nextMilestone}</div>
+    </div>
+    <div style="background:#ffffff;border:1px solid ${upcomingPay?'rgba(224,85,0,.5)':'#2e2e2e'};border-radius:12px;padding:14px">
+      <div style="font-size:9px;color:#888888;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Upcoming Payment</div>
+      ${upcomingPay
+        ?`<div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:26px;color:#f07030;line-height:1">${upcomingPay.payment}</div>
+           <div style="font-size:10px;color:#888888;margin-top:5px;line-height:1.3">${upcomingPay.name}</div>`
+        :`<div style="font-size:12px;color:#6adf40;font-weight:600;line-height:1.4">All payments received</div>`}
+    </div>
+  </div>
+
+  <!-- ── LATEST UPDATE ── -->
+  <div style="background:#f5f5f5;border:1px solid #e0e0e0;border-left:3px solid #e05500;border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:20px;display:flex;align-items:flex-start;gap:12px">
+    <div style="font-size:18px;line-height:1;margin-top:1px">📣</div>
+    <div>
+      <div style="font-size:9px;color:#888888;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Latest Update</div>
+      <div style="font-size:13px;color:#111111;font-weight:600;line-height:1.4">${latestUpdate}</div>
+    </div>
+  </div>
+
+  <!-- ── PHASE TIMELINE HEADER ── -->
+  <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#888888;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #eeeeee">Phase Timeline</div>`;
+
+  // Phase cards
+  phases.forEach((phase,idx)=>{
+    const def=PHASE_DEFS[idx];
+    const doneItems=def.items.filter(i=>phase.items&&phase.items[i.key]).length;
+    const totalItems=def.items.length;
+    html+=`<div class="phase-card">
+      <div class="phase-header" onclick="togglePhaseExpand('client',${idx})">
+        <div class="phase-dot ${phase.status}">${phase.status==='complete'?'✓':def.num}</div>
+        <div class="phase-info">
+          <div class="phase-name">${def.name}</div>
+          <div class="phase-meta">${doneItems}/${totalItems} items complete &nbsp;·&nbsp; ${def.payment}${phase.startDate||phase.endDate?`<br><span style="color:#cccccc">${phase.startDate?`Start: ${esc(phase.startDate)}`:''}${phase.startDate&&phase.endDate?' &nbsp;·&nbsp; ':''}${phase.endDate?`End: ${esc(phase.endDate)}`:''}</span>`:''}</div>
+        </div>
+        <span class="phase-badge ${phase.status}">${phase.status==='upcoming'?'Upcoming':phase.status==='active'?'In Progress':'Complete'}</span>
+      </div>
+      <div class="phase-body" id="client-phase-body-${idx}">
+        ${phaseIllustration(idx)}
+        <div class="payment-banner">
+          <div class="payment-banner-top">
+            <div class="payment-label">${def.payLabel}</div>
+            <div class="payment-pct">${def.payment}</div>
+          </div>
+          <div class="payment-trigger">⚡ Receipt of this payment initiates the next phase of work</div>
+        </div>
+        <div style="margin-top:12px">
+          ${def.items.map(item=>{
+            const done=phase.items&&phase.items[item.key];
+            return `<div class="scope-item">
+              <div class="scope-chk ${done?'done':''}">
+                <svg width="11" height="8" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L11.5 1" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="scope-label ${done?'done':''}">${esc(item.label)}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        ${renderClientInspections(idx, phase.inspections||{})}
+      </div>
+    </div>
+    ${idx<4?'<div class="phase-connector"></div>':''}`;
+  });
+
+  el.innerHTML=html;
+  const activeIdx=phases.findIndex(p=>p.status==='active');
+  if(activeIdx>=0) togglePhaseExpand('client',activeIdx,true);
+}
+
+function togglePhaseExpand(prefix,idx,forceOpen) {
+  const body=document.getElementById(`${prefix}-phase-body-${idx}`);
+  if(!body) return;
+  if(forceOpen) body.classList.add('open');
+  else body.classList.toggle('open');
+}
+
+// ── Tracker Firestore ops ──────────────────────────────────────────────────
+async function setPhaseStatus(jobId, phaseIdx, status) {
+  const doc=await db.collection('jobs').doc(jobId).get();
+  const phases=(doc.data().phases)||defaultPhases();
+  phases[phaseIdx].status=status;
+  await db.collection('jobs').doc(jobId).update({phases, ...auditUpdate()});
+}
+
+async function savePhaseDates(jobId, phaseIdx) {
+  const startEl=document.getElementById(`phase-start-${phaseIdx}`);
+  const endEl=document.getElementById(`phase-end-${phaseIdx}`);
+  if(!startEl&&!endEl) return;
+  const doc=await db.collection('jobs').doc(jobId).get();
+  const phases=(doc.data().phases)||defaultPhases();
+  if(startEl) phases[phaseIdx].startDate=startEl.value;
+  if(endEl) phases[phaseIdx].endDate=endEl.value;
+  await db.collection('jobs').doc(jobId).update({phases, ...auditUpdate()});
+}
+
+// ── Inspection render helpers ──────────────────────────────────────────────
+function inspBadge(status) {
+  const s=INSP_STATUSES.find(x=>x.val===status)||INSP_STATUSES[0];
+  return `<span class="insp-badge ${s.cls}">${s.label}</span>`;
+}
+
+function renderClientInspections(phaseIdx, savedInsps) {
+  const defs=INSP_DEFS[phaseIdx];
+  if(!defs||!defs.length) return '';
+  let html=`<div class="insp-section">
+    <div class="insp-section-title">🔍 Inspections &amp; Permits</div>`;
+  defs.forEach(insp=>{
+    const data=(savedInsps&&savedInsps[insp.key])||{status:'pending',naReason:''};
+    const naNote=data.status==='na'&&data.naReason?`<div style="font-size:10px;color:#555555;margin-top:3px;font-style:italic">${esc(data.naReason)}</div>`:'';
+    html+=`<div class="insp-row">
+      <div class="insp-icon">${insp.icon}</div>
+      <div class="insp-label">
+        ${esc(insp.label)}
+        ${naNote}
+      </div>
+      <div class="insp-status-wrap">${inspBadge(data.status)}</div>
+    </div>`;
+  });
+  html+='</div>';
+  return html;
+}
+
+function renderAdminInspections(jobId, phaseIdx, savedInsps) {
+  const defs=INSP_DEFS[phaseIdx];
+  if(!defs||!defs.length) return '';
+  let html=`<div class="insp-section">
+    <div class="insp-section-title">🔍 Inspections &amp; Permits</div>`;
+  defs.forEach(insp=>{
+    const data=(savedInsps&&savedInsps[insp.key])||{status:'pending',naReason:''};
+    const isNA=data.status==='na';
+    html+=`<div class="insp-row" style="flex-wrap:wrap">
+      <div class="insp-icon">${insp.icon}</div>
+      <div class="insp-label" style="min-width:120px">${esc(insp.label)}</div>
+      <div class="insp-na-wrap">
+        <select class="insp-select" onchange="saveInspStatus('${jobId}',${phaseIdx},'${insp.key}',this.value,document.getElementById('na-reason-${phaseIdx}-${insp.key}'))">
+          ${INSP_STATUSES.map(s=>`<option value="${s.val}" ${data.status===s.val?'selected':''}>${s.label}</option>`).join('')}
+        </select>
+        ${isNA?`<select id="na-reason-${phaseIdx}-${insp.key}" class="insp-na-reason" onchange="saveInspReason('${jobId}',${phaseIdx},'${insp.key}',this.value)">
+          ${NA_REASONS.map(r=>`<option value="${r}" ${data.naReason===r?'selected':''}>${r}</option>`).join('')}
+        </select>`:`<select id="na-reason-${phaseIdx}-${insp.key}" class="insp-na-reason" style="display:none" onchange="saveInspReason('${jobId}',${phaseIdx},'${insp.key}',this.value)">
+          ${NA_REASONS.map(r=>`<option value="${r}" ${data.naReason===r?'selected':''}>${r}</option>`).join('')}
+        </select>`}
+      </div>
+    </div>`;
+  });
+  html+='</div>';
+  return html;
+}
+
+async function saveInspStatus(jobId, phaseIdx, inspKey, status, reasonEl) {
+  if(reasonEl) reasonEl.style.display=status==='na'?'block':'none';
+  const doc=await db.collection('jobs').doc(jobId).get();
+  const phases=(doc.data().phases)||defaultPhases();
+  if(!phases[phaseIdx].inspections) phases[phaseIdx].inspections={};
+  if(!phases[phaseIdx].inspections[inspKey]) phases[phaseIdx].inspections[inspKey]={status:'pending',naReason:''};
+  phases[phaseIdx].inspections[inspKey].status=status;
+  if(status!=='na') phases[phaseIdx].inspections[inspKey].naReason='';
+  await db.collection('jobs').doc(jobId).update({phases, ...auditUpdate()});
+}
+
+async function saveInspReason(jobId, phaseIdx, inspKey, reason) {
+  const doc=await db.collection('jobs').doc(jobId).get();
+  const phases=(doc.data().phases)||defaultPhases();
+  if(!phases[phaseIdx].inspections) phases[phaseIdx].inspections={};
+  if(!phases[phaseIdx].inspections[inspKey]) phases[phaseIdx].inspections[inspKey]={status:'na',naReason:''};
+  phases[phaseIdx].inspections[inspKey].naReason=reason;
+  await db.collection('jobs').doc(jobId).update({phases, ...auditUpdate()});
+}
+
+async function toggleScopeItem(jobId, phaseIdx, itemKey, value) {
+  const doc=await db.collection('jobs').doc(jobId).get();
+  const phases=(doc.data().phases)||defaultPhases();
+  if(!phases[phaseIdx].items) phases[phaseIdx].items={};
+  phases[phaseIdx].items[itemKey]=value;
+  await db.collection('jobs').doc(jobId).update({phases, ...auditUpdate()});
+}
+
+
+// ── Payment Center ─────────────────────────────────────────────────────────
+const PAY_PHASES = [
+  {num:1, pct:.10, label:'Contract & Mobilization'},
+  {num:2, pct:.15, label:'Demo & Site Prep'},
+  {num:3, pct:.35, label:'Rough Work'},
+  {num:4, pct:.35, label:'Finishes'},
+  {num:5, pct:.05, label:'Final & Closeout'},
+];
+
+function defaultPaymentSchedule() {
+  return PAY_PHASES.map((p,i)=>({index:i,status:'upcoming',paidDate:'',invoiceNum:'',note:'',override:''}));
+}
+
+function fmt(n) {
+  if(!n&&n!==0) return '—';
+  return '$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});
+}
+
+function calcAmount(contractAmt, pctDecimal, override) {
+  if(override&&!isNaN(parseFloat(override))) return parseFloat(override);
+  if(contractAmt) return Math.round(contractAmt * pctDecimal);
+  return null;
+}
+
+// ── CLIENT payment render ──────────────────────────────────────────────────
+function renderClientPayments(jobData) {
+  const el=document.getElementById('client-payments-content');
+  const contractAmt=parseFloat(jobData.contractAmount)||0;
+  const payments=jobData.paymentSchedule||defaultPaymentSchedule();
+  const payLink=jobData.paymentLink||'';
+  const payInstructions=jobData.paymentInstructions||'Contact your contractor for payment details.';
+
+  // Calc totals
+  let totalPaid=0, totalDue=0;
+  payments.forEach((p,i)=>{
+    const amt=calcAmount(contractAmt,PAY_PHASES[i].pct,p.override);
+    if(p.status==='paid'&&amt) totalPaid+=amt;
+    if(p.status==='due'&&amt) totalDue+=amt;
+  });
+  const balance=contractAmt?contractAmt-totalPaid:0;
+  const paidPct=contractAmt?Math.round(totalPaid/contractAmt*100):0;
+
+  // Due now
+  const dueIdx=payments.findIndex(p=>p.status==='due');
+  const duePayment=dueIdx>=0?payments[dueIdx]:null;
+  const dueAmt=duePayment?calcAmount(contractAmt,PAY_PHASES[dueIdx].pct,duePayment.override):null;
+
+  // Paid history
+  const paidPayments=payments.filter(p=>p.status==='paid');
+
+  let html='';
+
+  // ── Contract Summary ──
+  if(contractAmt) {
+    html+=`<div class="pay-summary">
+      <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#888888;margin-bottom:14px">Contract Summary</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <div><div style="font-size:10px;color:#888888;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Total Contract</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;color:#111111">${fmt(contractAmt)}</div></div>
+        <div style="text-align:right"><div style="font-size:10px;color:#888888;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Balance Remaining</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;color:${balance>0?'#f07030':'#6adf40'}">${fmt(balance)}</div></div>
+      </div>
+      <div style="background:#eeeeee;border-radius:6px;height:8px;overflow:hidden;margin:10px 0 6px">
+        <div style="width:${paidPct}%;height:100%;background:linear-gradient(90deg,#3a8a20,#6adf40);border-radius:6px;transition:width .5s"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <div style="font-size:11px;color:#6adf40;font-family:'Montserrat',sans-serif;font-weight:700">Paid: ${fmt(totalPaid)} (${paidPct}%)</div>
+        <div style="font-size:11px;color:#888888">Remaining: ${fmt(balance)}</div>
+      </div>
+    </div>`;
+  } else {
+    html+=`<div class="pay-summary"><div style="color:#888888;font-size:13px;text-align:center;padding:8px 0">Contract amount not yet set. Your contractor will update this shortly.</div></div>`;
+  }
+
+  // ── Payment Due Now ──
+  if(duePayment) {
+    html+=`<div class="pay-due-card">
+      <div class="pay-due-label">💳 Payment Due Now</div>
+      <div class="pay-due-amount">${dueAmt?fmt(dueAmt):'See below'}</div>
+      <div class="pay-due-phase">Phase ${PAY_PHASES[dueIdx].num} — ${PAY_PHASES[dueIdx].label} · ${Math.round(PAY_PHASES[dueIdx].pct*100)}%</div>
+      ${payLink
+        ?`<a class="pay-now-btn" href="${payLink}" target="_blank" rel="noopener noreferrer">Pay Now →</a>`
+        :`<div class="pay-now-btn" style="background:#3a3a3a;cursor:default">Payment Portal Coming Soon</div>`}
+      <div class="pay-instructions">${esc(payInstructions)}</div>
+    </div>`;
+  } else if(paidPayments.length===5) {
+    html+=`<div style="background:#1a4a10;border:1px solid #3a8a20;border-radius:14px;padding:18px;text-align:center;margin-bottom:14px">
+      <div style="font-size:22px;margin-bottom:8px">🎉</div>
+      <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:16px;color:#6adf40">All Payments Received</div>
+      <div style="font-size:12px;color:#888888;margin-top:4px">Thank you for your business!</div>
+    </div>`;
+  } else {
+    html+=`<div style="background:#f5f5f5;border:1px solid #e0e0e0;border-radius:14px;padding:16px;text-align:center;margin-bottom:14px">
+      <div style="font-size:13px;color:#888888">No payment currently due. Your contractor will notify you when the next payment is ready.</div>
+    </div>`;
+  }
+
+  // ── Payment Schedule ──
+  html+=`<div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#888888;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #eeeeee">Payment Schedule</div>
+  <div class="pay-schedule-card">`;
+
+  payments.forEach((p,i)=>{
+    const def=PAY_PHASES[i];
+    const amt=calcAmount(contractAmt,def.pct,p.override);
+    const dotColor=p.status==='paid'?'#2a7a20':p.status==='due'?'#e05500':'#111111';
+    const dotBorder=p.status==='paid'?'#3a8a20':p.status==='due'?'#e05500':'#3a3a3a';
+    const dotText=p.status==='paid'?'✓':def.num;
+    const amtColor=p.status==='paid'?'#6adf40':p.status==='due'?'#f07030':'#ffffff';
+    const badge=p.status==='paid'?['#1a4a10','#3a8a20','#6adf40','Paid']:
+                p.status==='due'?['rgba(224,85,0,.2)','#e05500','#f07030','Due Now']:
+                ['#111111','#3a3a3a','#888888','Upcoming'];
+    html+=`<div class="pay-row">
+      <div class="pay-row-dot" style="background:${dotColor};border:2px solid ${dotBorder};color:#111111">${dotText}</div>
+      <div class="pay-row-info">
+        <div class="pay-row-name">Phase ${def.num} — ${def.label}</div>
+        <div class="pay-row-sub">${Math.round(def.pct*100)}% of contract${p.paidDate?` · Paid ${esc(p.paidDate)}`:''}</div>
+      </div>
+      <div class="pay-row-right">
+        <div class="pay-row-amount" style="color:${amtColor}">${amt?fmt(amt):'TBD'}</div>
+        <div class="pay-row-badge" style="background:${badge[0]};border:1px solid ${badge[1]};color:${badge[2]}">${badge[3]}</div>
+      </div>
+    </div>`;
+  });
+  html+='</div>';
+
+  // ── Invoice & Receipt History ──
+  if(paidPayments.length>0) {
+    html+=`<div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#888888;margin:16px 0 10px;padding-bottom:8px;border-bottom:1px solid #eeeeee">Invoice &amp; Receipt History</div>`;
+    payments.forEach((p,i)=>{
+      if(p.status!=='paid') return;
+      const def=PAY_PHASES[i];
+      const amt=calcAmount(contractAmt,def.pct,p.override);
+      html+=`<div class="pay-hist-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+          <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:#111111">Phase ${def.num} — ${def.label}</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:16px;color:#6adf40">${amt?fmt(amt):''}</div>
+        </div>
+        <div style="font-size:11px;color:#888888">
+          ${p.paidDate?`Paid: ${esc(p.paidDate)}`:''}
+          ${p.invoiceNum?` · Invoice #${esc(p.invoiceNum)}`:''}
+        </div>
+        ${p.note?`<div style="font-size:11px;color:#aaaaaa;margin-top:4px;font-style:italic">${esc(p.note)}</div>`:''}
+        <div style="margin-top:8px;display:inline-block;background:#1a4a10;border:1px solid #3a8a20;color:#6adf40;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;padding:3px 10px;border-radius:10px">✓ Payment Received</div>
+      </div>`;
+    });
+  }
+
+  el.innerHTML=html;
+}
+
+// ── ADMIN payment render ───────────────────────────────────────────────────
+function renderAdminPayments(jobId, jobData) {
+  const el=document.getElementById('admin-payments-content');
+  const contractAmt=parseFloat(jobData.contractAmount)||0;
+  const payments=jobData.paymentSchedule||defaultPaymentSchedule();
+  const payLink=jobData.paymentLink||'';
+  const payInstructions=jobData.paymentInstructions||'';
+
+  let html=`
+  <!-- Contract Setup -->
+  <div class="contract-setup">
+    <div class="contract-setup-title">Contract Settings</div>
+    <label class="lbl">Total Contract Amount ($)</label>
+    <input id="ap-contract" type="number" placeholder="e.g. 85000" value="${contractAmt||''}" style="margin-bottom:10px" />
+    <label class="lbl">Payment Portal Link</label>
+    <input id="ap-paylink" type="text" placeholder="e.g. https://venmo.com/lhjack" value="${esc(payLink)}" style="margin-bottom:10px" />
+    <label class="lbl">Payment Instructions</label>
+    <input id="ap-instructions" type="text" placeholder="e.g. Zelle to 917-750-5180 or Venmo @LHJack" value="${esc(payInstructions)}" style="margin-bottom:10px" />
+    <button onclick="saveContractSettings('${jobId}')" style="width:100%;background:#e05500;color:#fff;border:none;border-radius:7px;padding:11px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;cursor:pointer;text-transform:uppercase;letter-spacing:.04em"><span id="contract-save-spin" class="spin" style="display:none"></span>Save Contract Settings</button>
+  </div>
+
+  <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#888888;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #eeeeee">Payment Schedule — Mark &amp; Manage</div>`;
+
+  payments.forEach((p,i)=>{
+    const def=PAY_PHASES[i];
+    const amt=calcAmount(contractAmt,def.pct,p.override);
+    const dotColor=p.status==='paid'?'#2a7a20':p.status==='due'?'#e05500':'#111111';
+    const dotBorder=p.status==='paid'?'#3a8a20':p.status==='due'?'#e05500':'#3a3a3a';
+    html+=`<div class="admin-pay-row">
+      <div class="admin-pay-header">
+        <div class="admin-pay-dot" style="background:${dotColor};border:2px solid ${dotBorder};color:#fff">${p.status==='paid'?'✓':def.num}</div>
+        <div class="admin-pay-title">Phase ${def.num} — ${def.label}</div>
+        <div class="admin-pay-calc">${amt?fmt(amt):`${Math.round(def.pct*100)}%`}</div>
+      </div>
+      <div class="pay-status-btns">
+        <button class="psb psb-upcoming ${p.status==='upcoming'?'active':''}" onclick="setPaymentStatus('${jobId}',${i},'upcoming')">Upcoming</button>
+        <button class="psb psb-due ${p.status==='due'?'active':''}" onclick="setPaymentStatus('${jobId}',${i},'due')">Due Now</button>
+        <button class="psb psb-paid ${p.status==='paid'?'active':''}" onclick="setPaymentStatus('${jobId}',${i},'paid')">Paid</button>
+      </div>
+      <div class="admin-pay-fields">
+        <div><label class="lbl" style="font-size:9px">Paid Date</label>
+          <input type="date" id="ap-date-${i}" value="${esc(p.paidDate||'')}" /></div>
+        <div><label class="lbl" style="font-size:9px">Invoice #</label>
+          <input type="text" id="ap-inv-${i}" placeholder="INV-001" value="${esc(p.invoiceNum||'')}" /></div>
+      </div>
+      <div style="margin-bottom:8px"><label class="lbl" style="font-size:9px">Override Amount ($, optional)</label>
+        <input type="number" id="ap-override-${i}" placeholder="${amt?fmt(amt).replace('$',''):'auto'}" value="${esc(p.override||'')}" style="margin-bottom:0" /></div>
+      <div><label class="lbl" style="font-size:9px">Receipt Note</label>
+        <input type="text" id="ap-note-${i}" placeholder="e.g. Check #1042" value="${esc(p.note||'')}" style="margin-bottom:8px" /></div>
+      <button class="admin-pay-save" onclick="savePaymentDetails('${jobId}',${i})">Save Payment ${def.num}</button>
+    </div>`;
+  });
+
+  el.innerHTML=html;
+}
+
+async function saveContractSettings(jobId){
+  const sp=document.getElementById('contract-save-spin');sp.style.display='inline-block';
+  await db.collection('jobs').doc(jobId).update({
+    contractAmount:parseFloat(document.getElementById('ap-contract').value)||0,
+    paymentLink:document.getElementById('ap-paylink').value.trim(),
+    paymentInstructions:document.getElementById('ap-instructions').value.trim(),
+    ...auditUpdate()
+  });
+  sp.style.display='none';
+}
+
+async function setPaymentStatus(jobId,idx,status){
+  const snap=await db.collection('jobs').doc(jobId).get();
+  const payments=(snap.data().paymentSchedule)||defaultPaymentSchedule();
+  payments[idx].status=status;
+  await db.collection('jobs').doc(jobId).update({paymentSchedule:payments, ...auditUpdate()});
+}
+
+async function savePaymentDetails(jobId,idx){
+  const snap=await db.collection('jobs').doc(jobId).get();
+  const payments=(snap.data().paymentSchedule)||defaultPaymentSchedule();
+  payments[idx].paidDate=document.getElementById(`ap-date-${idx}`).value;
+  payments[idx].invoiceNum=document.getElementById(`ap-inv-${idx}`).value.trim();
+  payments[idx].override=document.getElementById(`ap-override-${idx}`).value.trim();
+  payments[idx].note=document.getElementById(`ap-note-${idx}`).value.trim();
+  await db.collection('jobs').doc(jobId).update({paymentSchedule:payments, ...auditUpdate()});
+}
+
+
+// ── Messaging / Communication Log ─────────────────────────────────────────
+function fmtMsgTime(ts) {
+  if(!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + ' at ' +
+    d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+}
+
+// ── Resolve display name from a message ───────────────────────────────────
+// Supports new schema (senderName + senderRole) and old schema (sender field).
+function resolveSenderName(msg) {
+  if(msg.senderName) return msg.senderName;
+  // Legacy fallback
+  if(msg.sender && msg.sender !== 'LHJack Contractors' && msg.sender !== 'Homeowner') return msg.sender;
+  if(msg.type === 'client') return msg.sender || 'Homeowner';
+  return msg.sender || 'LHJack Contractors';
+}
+
+function resolveSenderRole(msg) {
+  if(msg.senderRole) return msg.senderRole;
+  if(msg.type === 'client') return 'client';
+  return 'contractor';
+}
+
+// ── Admin sender presets ───────────────────────────────────────────────────
+const ADMIN_SENDERS = [
+  { name: 'August',          role: 'contractor', label: 'August (Owner)' },
+  { name: 'Office',          role: 'contractor', label: 'Office' },
+  { name: 'Project Manager', role: 'contractor', label: 'Project Manager' },
+  { name: 'LHJack Contractors', role: 'contractor', label: 'LHJack Contractors' },
+];
+let activeSenderIdx = 0; // default to August
+
+function renderMessages(prefix, jobId, msgs, isAdmin) {
+  const el = document.getElementById(`${prefix}-messages-content`);
+  if(!el) return;
+  // Reset photo state for this side whenever compose re-renders
+  const side = isAdmin ? 'admin' : 'client';
+  msgPhotos[side] = [];
+
+  const composeHtml = isAdmin ? adminComposeHtml(jobId) : clientComposeHtml(jobId);
+
+  if(!msgs.length) {
+    el.innerHTML = `<div style="font-size:12px;color:#888888;margin-bottom:16px;line-height:1.5">
+      This is your project communication log. All messages are saved here so nothing gets lost.
+    </div>
+    <div class="msg-empty">No messages yet. Start the conversation below.</div>
+    ${composeHtml}`;
+    if(isAdmin) wireAdminCompose(jobId);
+    else wireClientCompose(jobId);
+    return;
+  }
+
+  let threadHtml = '';
+  let lastDate = '';
+  msgs.forEach(msg => {
+    const d = msg.createdAt ? (msg.createdAt.toDate ? msg.createdAt.toDate() : new Date(msg.createdAt)) : new Date();
+    const dateStr = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    if(dateStr !== lastDate) {
+      threadHtml += `<div class="msg-divider">${dateStr}</div>`;
+      lastDate = dateStr;
+    }
+    threadHtml += msgBubble(msg, jobId, isAdmin);
+  });
+
+  el.innerHTML = `<div style="font-size:11px;color:#555555;margin-bottom:12px;text-align:center">Project communication log — ${msgs.length} message${msgs.length!==1?'s':''}</div>
+    <div class="msg-thread" id="${prefix}-msg-thread">${threadHtml}</div>
+    ${composeHtml}`;
+
+  if(isAdmin) wireAdminCompose(jobId);
+  else wireClientCompose(jobId);
+
+  // Restore active sender selection UI state
+  if(isAdmin) syncSenderUI();
+
+  const thread = document.getElementById(`${prefix}-msg-thread`);
+  if(thread) thread.scrollTop = thread.scrollHeight;
+}
+
+function msgBubble(msg, jobId, isAdmin) {
+  const type       = msg.type || 'contractor';
+  const role       = resolveSenderRole(msg);
+  const name       = resolveSenderName(msg);
+  const isMeeting  = type === 'meeting';
+  const time       = fmtMsgTime(msg.createdAt);
+  const delBtn     = isAdmin ? `<button class="msg-admin-del" onclick="deleteMsg('${jobId}','${msg.id}')" title="Delete">×</button>` : '';
+
+  // Inline photos
+  const photos = msg.photos && msg.photos.length ? msg.photos.filter(Boolean) : [];
+  const photosHtml = photos.length ? `<div class="msg-photos">
+    ${photos.map(p=>`<a class="msg-photo-link" href="${p.url}" target="_blank" rel="noopener noreferrer">
+      <img class="msg-photo-img" src="${p.url}" onerror="this.style.opacity='.3'" />
+      <span class="msg-photo-dl">⬇ Save</span>
+    </a>`).join('')}
+  </div>` : '';
+
+  if(isMeeting) {
+    return `<div class="msg-bubble meeting" style="position:relative">
+      ${delBtn}
+      <div class="msg-meeting-title">📋 Meeting Notes${msg.meetingTitle?' — '+esc(msg.meetingTitle):''}</div>
+      ${msg.text?`<div class="msg-meeting-notes">${esc(msg.text)}</div>`:''}
+      ${photosHtml}
+      ${msg.attachmentUrl?`<div class="msg-attachment">
+        <div class="msg-attachment-icon">📎</div>
+        <a class="msg-attachment-name" href="${msg.attachmentUrl}" target="_blank" rel="noopener noreferrer">${esc(msg.attachmentName||'Meeting Notes')}</a>
+      </div>`:''}
+      <div class="msg-time">${esc(name)} · ${time}</div>
+    </div>`;
+  }
+
+  const bubbleClass = role === 'client' ? 'client' : 'contractor';
+  return `<div class="msg-bubble ${bubbleClass}" style="position:relative">
+    ${delBtn}
+    <div class="msg-sender ${bubbleClass}">${esc(name)}</div>
+    ${msg.text?`<div class="msg-text">${esc(msg.text||'').replace(/\n/g,'<br>')}</div>`:''}
+    ${photosHtml}
+    ${msg.attachmentUrl?`<div class="msg-attachment">
+      <div class="msg-attachment-icon">📎</div>
+      <a class="msg-attachment-name" href="${msg.attachmentUrl}" target="_blank" rel="noopener noreferrer">${esc(msg.attachmentName||'Attachment')}</a>
+    </div>`:''}
+    <div class="msg-time">${time}</div>
+  </div>`;
+}
+
+// ── Admin compose ──────────────────────────────────────────────────────────
+function adminComposeHtml(jobId) {
+  const senderOptions = ADMIN_SENDERS.map((s,i) =>
+    `<option value="${i}" ${i===activeSenderIdx?'selected':''}>${esc(s.label)}</option>`
+  ).join('');
+
+  return `<div class="msg-compose">
+    <div class="msg-type-tabs">
+      <button class="msg-type-btn on" id="mtype-msg" onclick="setMsgType('contractor')">💬 Message</button>
+      <button class="msg-type-btn" id="mtype-meet" onclick="setMsgType('meeting')">📋 Meeting Notes</button>
+    </div>
+    <!-- Standard message -->
+    <div id="compose-msg-area">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <label style="font-size:10px;color:#888888;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0">Sending as:</label>
+        <select id="admin-sender-select" style="flex:1;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:6px;padding:6px 10px;font-size:12px;color:#111111;font-family:'Open Sans',sans-serif;outline:none;cursor:pointer"
+          onchange="setActiveSender(this.value)">
+          ${senderOptions}
+          <option value="custom" ${activeSenderIdx==='custom'?'selected':''}>✏️ Custom name…</option>
+        </select>
+      </div>
+      <div id="custom-sender-wrap" style="display:${activeSenderIdx==='custom'?'block':'none'};margin-bottom:8px">
+        <input id="admin-sender-custom" type="text" placeholder="Enter name (e.g. Maria, Field Crew)" style="margin-bottom:0;font-size:12px" />
+      </div>
+      <div class="msg-photo-bar">
+        <button class="msg-photo-attach-btn" onclick="document.getElementById('admin-msg-photos').click()">📷 Attach Photos</button>
+        <input type="file" id="admin-msg-photos" accept="image/*" multiple style="display:none" onchange="handleMsgPhotoSelect(event,'admin','${jobId}')" />
+        <span id="admin-msg-photo-prog" class="msg-photo-prog"></span>
+      </div>
+      <div class="msg-photo-previews" id="admin-msg-preview"></div>
+      <div class="msg-input-row">
+        <textarea id="admin-msg-text" placeholder="Type a message to your client… (Enter to send, Shift+Enter for new line)" rows="2"></textarea>
+        <button class="msg-send-btn" onclick="sendAdminMsg('${jobId}')">Send</button>
+      </div>
+    </div>
+    <!-- Meeting notes -->
+    <div id="compose-meet-area" style="display:none">
+      <input type="text" id="admin-meeting-title" placeholder="Meeting title (e.g. Design Review — April 3)" style="margin-bottom:8px" />
+      <textarea id="admin-meeting-text" placeholder="Paste Gemini notes, Google Meet transcript, or type a summary of the call…" rows="5"></textarea>
+      <div style="font-size:11px;color:#555555;margin-bottom:8px">Or upload a notes file:</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+        <input type="file" id="admin-meeting-file" accept=".pdf,.doc,.docx,.txt" style="display:none" onchange="handleMeetingFileSelect(event,'${jobId}')" />
+        <button class="doc-upload-btn" onclick="document.getElementById('admin-meeting-file').click()">📤 Upload Notes File</button>
+        <span id="meeting-file-status" style="font-size:11px;color:#6adf40"></span>
+      </div>
+      <div id="meeting-upload-prog" style="display:none;margin-bottom:8px">
+        <div style="font-size:11px;color:#888888" id="meeting-prog-lbl">Uploading…</div>
+        <div style="background:#f5f5f5;border-radius:4px;height:5px;overflow:hidden;margin-top:4px">
+          <div id="meeting-prog-bar" style="height:100%;background:linear-gradient(90deg,#e05500,#f07030);border-radius:4px;width:0%;transition:width .2s"></div>
+        </div>
+      </div>
+      <button class="msg-send-btn" style="width:100%;height:auto;padding:13px" onclick="sendMeetingNotes('${jobId}')">Post Meeting Notes</button>
+    </div>
+  </div>`;
+}
+
+function setActiveSender(val) {
+  activeSenderIdx = val === 'custom' ? 'custom' : parseInt(val);
+  const wrap = document.getElementById('custom-sender-wrap');
+  if(wrap) wrap.style.display = val === 'custom' ? 'block' : 'none';
+}
+
+function syncSenderUI() {
+  const sel = document.getElementById('admin-sender-select');
+  if(sel) sel.value = activeSenderIdx === 'custom' ? 'custom' : String(activeSenderIdx);
+  const wrap = document.getElementById('custom-sender-wrap');
+  if(wrap) wrap.style.display = activeSenderIdx === 'custom' ? 'block' : 'none';
+}
+
+function getActiveSenderName() {
+  if(activeSenderIdx === 'custom') {
+    const el = document.getElementById('admin-sender-custom');
+    return (el && el.value.trim()) || 'LHJack Contractors';
+  }
+  return ADMIN_SENDERS[activeSenderIdx]?.name || 'LHJack Contractors';
+}
+
+function getActiveSenderRole() {
+  if(activeSenderIdx === 'custom') return 'contractor';
+  return ADMIN_SENDERS[activeSenderIdx]?.role || 'contractor';
+}
+
+function wireAdminCompose(jobId) {
+  const ta = document.getElementById('admin-msg-text');
+  if(ta) ta.addEventListener('keydown', e => {
+    if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendAdminMsg(jobId); }
+  });
+}
+
+function setMsgType(type) {
+  msgType = type;
+  document.getElementById('mtype-msg').classList.toggle('on', type==='contractor');
+  document.getElementById('mtype-meet').classList.toggle('on', type==='meeting');
+  document.getElementById('compose-msg-area').style.display = type==='contractor' ? 'block' : 'none';
+  document.getElementById('compose-meet-area').style.display = type==='meeting' ? 'block' : 'none';
+}
+
+let meetingAttachmentUrl = '';
+let meetingAttachmentName = '';
+
+// ── Shared message photo upload ────────────────────────────────────────────
+let msgPhotos = { admin: [], client: [] }; // {url, name}[]
+
+async function handleMsgPhotoSelect(event, side, jobId) {
+  const input = event.target;
+  const files = Array.from(input.files).slice(0, 6);
+  if(!files.length) return;
+
+  const prog = document.getElementById(`${side}-msg-photo-prog`);
+  const preview = document.getElementById(`${side}-msg-preview`);
+  if(prog) { prog.style.display='block'; prog.textContent='Uploading…'; }
+
+  for(const file of files) {
+    if(!storage) {
+      if(prog) prog.textContent = '⚠️ Storage not enabled. Check Docs tab.';
+      break;
+    }
+    try {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+      const path = `messages/${jobId}/${side}/${Date.now()}_${safeName}`;
+      const ref = storage.ref(path);
+      await new Promise((res,rej) => {
+        const task = ref.put(file);
+        task.on('state_changed',
+          snap => { if(prog) prog.textContent = `Uploading ${file.name} (${Math.round(snap.bytesTransferred/snap.totalBytes*100)}%)…`; },
+          rej, res);
+      });
+      const url = await ref.getDownloadURL();
+      const idx = msgPhotos[side].length;
+      msgPhotos[side].push({url, name: file.name});
+      if(preview) {
+        const wrap = document.createElement('div');
+        wrap.className = 'msg-photo-thumb-wrap';
+        wrap.id = `msg-thumb-${side}-${idx}`;
+        wrap.innerHTML = `<img class="msg-photo-thumb" src="${url}" />
+          <button class="msg-photo-remove" onclick="removeMsgPhoto('${side}',${idx})">×</button>`;
+        preview.appendChild(wrap);
+      }
+    } catch(e) {
+      if(prog) prog.textContent = '⚠️ Upload failed: ' + (e.code||e.message);
+    }
+  }
+  if(prog) { prog.textContent = `✓ ${msgPhotos[side].length} photo${msgPhotos[side].length!==1?'s':''} ready`; }
+  input.value = '';
+}
+
+function removeMsgPhoto(side, idx) {
+  msgPhotos[side][idx] = null;
+  const el = document.getElementById(`msg-thumb-${side}-${idx}`);
+  if(el) el.remove();
+}
+
+function clearMsgPhotos(side) {
+  msgPhotos[side] = [];
+  const preview = document.getElementById(`${side}-msg-preview`);
+  if(preview) preview.innerHTML = '';
+  const prog = document.getElementById(`${side}-msg-photo-prog`);
+  if(prog) { prog.style.display='none'; prog.textContent=''; }
+}
+
+async function handleMeetingFileSelect(event, jobId) {
+  const file = event.target.files[0];
+  if(!file || !storage) return;
+  const prog = document.getElementById('meeting-upload-prog');
+  const bar  = document.getElementById('meeting-prog-bar');
+  const lbl  = document.getElementById('meeting-prog-lbl');
+  const status = document.getElementById('meeting-file-status');
+  if(prog) prog.style.display = 'block';
+  try {
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    const path = `meetings/${jobId}/${Date.now()}_${safeName}`;
+    const ref = storage.ref(path);
+    await new Promise((res,rej) => {
+      const task = ref.put(file);
+      task.on('state_changed', snap => {
+        const p = Math.round(snap.bytesTransferred/snap.totalBytes*100);
+        if(bar) bar.style.width=p+'%';
+        if(lbl) lbl.textContent=`Uploading ${file.name} (${p}%)…`;
+      }, rej, res);
+    });
+    meetingAttachmentUrl = await ref.getDownloadURL();
+    meetingAttachmentName = file.name;
+    if(status) status.textContent = '✓ ' + file.name;
+    if(prog) prog.style.display='none';
+  } catch(e) {
+    if(lbl) lbl.textContent = 'Upload failed: ' + (e.code||e.message);
+  }
+  event.target.value='';
+}
+
+async function sendAdminMsg(jobId) {
+  const text = document.getElementById('admin-msg-text').value.trim();
+  const photos = (msgPhotos['admin']||[]).filter(Boolean);
+  if(!text && !photos.length) return;
+  const senderName = getActiveSenderName();
+  const senderRole = getActiveSenderRole();
+  const btn = document.querySelector('#compose-msg-area .msg-send-btn');
+  if(btn) btn.disabled = true;
+  try {
+    await db.collection('jobs').doc(jobId).collection('messages').add({
+      type: 'contractor',
+      senderName,
+      senderRole,
+      // legacy field kept for backward compat
+      sender: senderName,
+      text,
+      photos: photos.map(p=>({url:p.url, name:p.name})),
+      ...auditCreate()
+    });
+    document.getElementById('admin-msg-text').value='';
+    clearMsgPhotos('admin');
+  } catch(e) { alert('Error: '+e.message); }
+  if(btn) btn.disabled = false;
+}
+
+async function sendMeetingNotes(jobId) {
+  const title      = document.getElementById('admin-meeting-title').value.trim();
+  const text       = document.getElementById('admin-meeting-text').value.trim();
+  const senderName = getActiveSenderName();
+  const senderRole = getActiveSenderRole();
+  if(!text && !meetingAttachmentUrl) { alert('Add meeting notes text or upload a file.'); return; }
+  try {
+    await db.collection('jobs').doc(jobId).collection('messages').add({
+      type: 'meeting',
+      senderName,
+      senderRole,
+      sender: senderName,
+      meetingTitle: title, text,
+      attachmentUrl: meetingAttachmentUrl,
+      attachmentName: meetingAttachmentName,
+      ...auditCreate()
+    });
+    document.getElementById('admin-meeting-title').value='';
+    document.getElementById('admin-meeting-text').value='';
+    meetingAttachmentUrl=''; meetingAttachmentName='';
+    const s=document.getElementById('meeting-file-status');if(s)s.textContent='';
+    setMsgType('contractor');
+  } catch(e) { alert('Error: '+e.message); }
+}
+
+// ── Client compose ─────────────────────────────────────────────────────────
+function clientComposeHtml(jobId) {
+  // Use the real homeowner name from the job record
+  const clientName = (typeof currentJob !== 'undefined' && currentJob && currentJob.clientName)
+    ? currentJob.clientName
+    : 'Homeowner';
+
+  return `<div class="msg-compose">
+    <div style="font-size:11px;color:#888888;margin-bottom:8px">Replying as <strong style="color:#111111">${esc(clientName)}</strong>:</div>
+    <div class="msg-photo-bar">
+      <button class="msg-photo-attach-btn" onclick="document.getElementById('client-msg-photos').click()">📷 Attach Photos</button>
+      <input type="file" id="client-msg-photos" accept="image/*" multiple style="display:none" onchange="handleMsgPhotoSelect(event,'client','${jobId}')" />
+      <span id="client-msg-photo-prog" class="msg-photo-prog"></span>
+    </div>
+    <div class="msg-photo-previews" id="client-msg-preview"></div>
+    <div class="msg-input-row">
+      <textarea id="client-msg-text" placeholder="Type a message… (Enter to send)" rows="2"></textarea>
+      <button class="msg-send-btn" onclick="sendClientMsg('${jobId}')">Send</button>
+    </div>
+    <div style="font-size:10px;color:#444444;margin-top:6px">For emergencies call 917-750-5180.</div>
+  </div>`;
+}
+
+function wireClientCompose(jobId) {
+  const ta = document.getElementById('client-msg-text');
+  if(ta) ta.addEventListener('keydown', e => {
+    if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendClientMsg(jobId); }
+  });
+}
+
+async function sendClientMsg(jobId) {
+  const ta   = document.getElementById('client-msg-text');
+  const text = ta ? ta.value.trim() : '';
+  const photos = (msgPhotos['client']||[]).filter(Boolean);
+  if(!text && !photos.length) return;
+
+  // Use the actual homeowner name from the job record
+  const clientName = (typeof currentJob !== 'undefined' && currentJob && currentJob.clientName)
+    ? currentJob.clientName
+    : 'Homeowner';
+
+  const btn = document.querySelector('#client-tab-messages .msg-send-btn');
+  if(btn) btn.disabled=true;
+  try {
+    await db.collection('jobs').doc(jobId).collection('messages').add({
+      type: 'client',
+      senderName: clientName,
+      senderRole: 'client',
+      sender: clientName,
+      text,
+      photos: photos.map(p=>({url:p.url, name:p.name})),
+      ...auditCreate()
+    });
+    if(ta) ta.value='';
+    clearMsgPhotos('client');
+  } catch(e) { alert('Error: '+e.message); }
+  if(btn) btn.disabled=false;
+}
+
+async function deleteMsg(jobId, msgId) {
+  if(!confirm('Delete this message?')) return;
+  await db.collection('jobs').doc(jobId).collection('messages').doc(msgId).delete();
+}
+
+
+function renderMessages(prefix, jobId, msgs, isAdmin) {
+  const el = document.getElementById(`${prefix}-messages-content`);
+  if(!el) return;
+  // Reset photo state for this side whenever compose re-renders
+  const side = isAdmin ? 'admin' : 'client';
+  msgPhotos[side] = [];
+
+  const composeHtml = isAdmin ? adminComposeHtml(jobId) : clientComposeHtml(jobId);
+
+  if(!msgs.length) {
+    el.innerHTML = `<div style="font-size:12px;color:#888888;margin-bottom:16px;line-height:1.5">
+      This is your project communication log. All messages are saved here so nothing gets lost.
+      Phone calls, emails, meeting notes — keep it all in one place.
+    </div>
+    <div class="msg-empty">No messages yet. Start the conversation below.</div>
+    ${composeHtml}`;
+    if(isAdmin) wireAdminCompose(jobId);
+    else wireClientCompose(jobId);
+    return;
+  }
+
+  let threadHtml = '';
+  let lastDate = '';
+  msgs.forEach(msg => {
+    const d = msg.createdAt ? (msg.createdAt.toDate ? msg.createdAt.toDate() : new Date(msg.createdAt)) : new Date();
+    const dateStr = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    if(dateStr !== lastDate) {
+      threadHtml += `<div class="msg-divider">${dateStr}</div>`;
+      lastDate = dateStr;
+    }
+    threadHtml += msgBubble(msg, jobId, isAdmin);
+  });
+
+  el.innerHTML = `<div style="font-size:11px;color:#555555;margin-bottom:12px;text-align:center">Project communication log — ${msgs.length} message${msgs.length!==1?'s':''}</div>
+    <div class="msg-thread" id="${prefix}-msg-thread">${threadHtml}</div>
+    ${composeHtml}`;
+
+  if(isAdmin) wireAdminCompose(jobId);
+  else wireClientCompose(jobId);
+
+  // Scroll thread to bottom
+  const thread = document.getElementById(`${prefix}-msg-thread`);
+  if(thread) thread.scrollTop = thread.scrollHeight;
+}
+
+function msgBubble(msg, jobId, isAdmin) {
+  const type = msg.type || 'contractor';
+  const isMeeting = type === 'meeting';
+  const time = fmtMsgTime(msg.createdAt);
+  const delBtn = isAdmin ? `<button class="msg-admin-del" onclick="deleteMsg('${jobId}','${msg.id}')" title="Delete">×</button>` : '';
+
+  // Inline photos
+  const photos = msg.photos && msg.photos.length ? msg.photos.filter(Boolean) : [];
+  const photosHtml = photos.length ? `<div class="msg-photos">
+    ${photos.map(p=>`<a class="msg-photo-link" href="${p.url}" target="_blank" rel="noopener noreferrer">
+      <img class="msg-photo-img" src="${p.url}" onerror="this.style.opacity='.3'" />
+      <span class="msg-photo-dl">⬇ Save</span>
+    </a>`).join('')}
+  </div>` : '';
+
+  if(isMeeting) {
+    return `<div class="msg-bubble meeting" style="position:relative">
+      ${delBtn}
+      <div class="msg-meeting-title">📋 Meeting Notes${msg.meetingTitle?' — '+esc(msg.meetingTitle):''}</div>
+      ${msg.text?`<div class="msg-meeting-notes">${esc(msg.text)}</div>`:''}
+      ${photosHtml}
+      ${msg.attachmentUrl?`<div class="msg-attachment">
+        <div class="msg-attachment-icon">📎</div>
+        <a class="msg-attachment-name" href="${msg.attachmentUrl}" target="_blank" rel="noopener noreferrer">${esc(msg.attachmentName||'Meeting Notes')}</a>
+      </div>`:''}
+      <div class="msg-time">${esc(msg.sender||'LHJack Contractors')} · ${time}</div>
+    </div>`;
+  }
+
+  const bubbleClass = type === 'client' ? 'client' : 'contractor';
+  const senderLabel = type === 'client' ? (msg.sender||'Homeowner') : 'LHJack Contractors';
+  return `<div class="msg-bubble ${bubbleClass}" style="position:relative">
+    ${delBtn}
+    <div class="msg-sender ${bubbleClass}">${esc(senderLabel)}</div>
+    ${msg.text?`<div class="msg-text">${esc(msg.text||'').replace(/\n/g,'<br>')}</div>`:''}
+    ${photosHtml}
+    ${msg.attachmentUrl?`<div class="msg-attachment">
+      <div class="msg-attachment-icon">📎</div>
+      <a class="msg-attachment-name" href="${msg.attachmentUrl}" target="_blank" rel="noopener noreferrer">${esc(msg.attachmentName||'Attachment')}</a>
+    </div>`:''}
+    <div class="msg-time">${time}</div>
+  </div>`;
+}
+
+// ── Admin compose ──────────────────────────────────────────────────────────
+function adminComposeHtml(jobId) {
+  return `<div class="msg-compose">
+    <div class="msg-type-tabs">
+      <button class="msg-type-btn on" id="mtype-msg" onclick="setMsgType('contractor')">💬 Message</button>
+      <button class="msg-type-btn" id="mtype-meet" onclick="setMsgType('meeting')">📋 Meeting Notes</button>
+    </div>
+    <!-- Standard message -->
+    <div id="compose-msg-area">
+      <div class="msg-photo-bar">
+        <button class="msg-photo-attach-btn" onclick="document.getElementById('admin-msg-photos').click()">📷 Attach Photos</button>
+        <input type="file" id="admin-msg-photos" accept="image/*" multiple style="display:none" onchange="handleMsgPhotoSelect(event,'admin','${jobId}')" />
+        <span id="admin-msg-photo-prog" class="msg-photo-prog"></span>
+      </div>
+      <div class="msg-photo-previews" id="admin-msg-preview"></div>
+      <div class="msg-input-row">
+        <textarea id="admin-msg-text" placeholder="Type a message to your client… (Enter to send, Shift+Enter for new line)" rows="2"></textarea>
+        <button class="msg-send-btn" onclick="sendAdminMsg('${jobId}')">Send</button>
+      </div>
+    </div>
+    <!-- Meeting notes -->
+    <div id="compose-meet-area" style="display:none">
+      <input type="text" id="admin-meeting-title" placeholder="Meeting title (e.g. Design Review — April 3)" style="margin-bottom:8px" />
+      <textarea id="admin-meeting-text" placeholder="Paste Gemini notes, Google Meet transcript, or type a summary of the call…" rows="5"></textarea>
+      <div style="font-size:11px;color:#555555;margin-bottom:8px">Or upload a notes file:</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+        <input type="file" id="admin-meeting-file" accept=".pdf,.doc,.docx,.txt" style="display:none" onchange="handleMeetingFileSelect(event,'${jobId}')" />
+        <button class="doc-upload-btn" onclick="document.getElementById('admin-meeting-file').click()">📤 Upload Notes File</button>
+        <span id="meeting-file-status" style="font-size:11px;color:#6adf40"></span>
+      </div>
+      <div id="meeting-upload-prog" style="display:none;margin-bottom:8px">
+        <div style="font-size:11px;color:#888888" id="meeting-prog-lbl">Uploading…</div>
+        <div style="background:#f5f5f5;border-radius:4px;height:5px;overflow:hidden;margin-top:4px">
+          <div id="meeting-prog-bar" style="height:100%;background:linear-gradient(90deg,#e05500,#f07030);border-radius:4px;width:0%;transition:width .2s"></div>
+        </div>
+      </div>
+      <button class="msg-send-btn" style="width:100%;height:auto;padding:13px" onclick="sendMeetingNotes('${jobId}')">Post Meeting Notes</button>
+    </div>
+  </div>`;
+}
+
+function wireAdminCompose(jobId) {
+  // Enter key sends message
+  const ta = document.getElementById('admin-msg-text');
+  if(ta) ta.addEventListener('keydown', e => {
+    if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendAdminMsg(jobId); }
+  });
+}
+
+function setMsgType(type) {
+  msgType = type;
+  document.getElementById('mtype-msg').classList.toggle('on', type==='contractor');
+  document.getElementById('mtype-meet').classList.toggle('on', type==='meeting');
+  document.getElementById('compose-msg-area').style.display = type==='contractor' ? 'block' : 'none';
+  document.getElementById('compose-meet-area').style.display = type==='meeting' ? 'block' : 'none';
+}
+
+
+// ── Document categories ────────────────────────────────────────────────────
+const DOC_CATS = [
+  {key:'proposal',   label:'Proposal',                icon:'📋', color:'#1a2a2a'},
+  {key:'nextsteps',  label:'Next Steps',              icon:'📌', color:'#1a4a2a'},
+  {key:'clientprep', label:'Client Prep Guidelines',  icon:'📝', color:'#201828'},
+  {key:'contract',   label:'Contract',                icon:'📄', color:'#4a1a1a'},
+  {key:'permits',    label:'Permits',                 icon:'🏛️', color:'#0f2028'},
+  {key:'license',    label:'License & Insurance',     icon:'🛡️', color:'#252512'},
+  {key:'drawings',   label:'Drawings & Plans',        icon:'📐', color:'#1a1a20'},
+  {key:'warranty',   label:'Warranty Info',           icon:'🔒', color:'#2a1a4a'},
+];
+
+function renderClientDocs(docs) {
+  const el=document.getElementById('client-docs-content');
+  const available=DOC_CATS.filter(c=>docs&&docs[c.key]&&docs[c.key].url);
+  let html=`<div class="doc-vault-header">Your project documents are stored here by your contractor. Tap any document to view or download.</div>`;
+  if(!available.length){
+    html+='<div class="empty" style="padding:40px 20px">No documents uploaded yet.<br>Check back as your project progresses.</div>';
+    el.innerHTML=html; return;
+  }
+  html+=DOC_CATS.map(cat=>{
+    const doc=docs&&docs[cat.key];
+    const hasDoc=doc&&doc.url;
+    return `<div class="doc-category">
+      <div class="doc-icon" style="background:${cat.color}">${cat.icon}</div>
+      <div class="doc-info">
+        <div class="doc-name">${cat.label}</div>
+        ${hasDoc
+          ?`<div class="doc-status" style="color:#4aaf30;font-size:11px">Available</div>`
+          :`<div class="doc-status doc-unavailable">Not yet uploaded</div>`}
+      </div>
+      <div class="doc-action">
+        ${hasDoc
+          ?`<a class="doc-view-btn" href="${doc.url}" target="_blank" rel="noopener noreferrer">View</a>`
+          :`<span style="font-size:11px;color:#333333">Pending</span>`}
+      </div>
+    </div>`;
+  }).join('');
+  el.innerHTML=html;
+}
+
+function renderAdminDocs(jobId, docs) {
+  const el=document.getElementById('admin-docs-content');
+  const noStorage = !storage;
+  const staticBanner = noStorage ? storageErrorBanner({ title:'Firebase Storage Not Enabled', steps:['Go to console.firebase.google.com → your project','Build → Storage → Get Started → Start in test mode → Done','Refresh this page'], showRules:true }) : '';
+
+  let html=staticBanner+`<div class="doc-vault-header" style="color:#888888;margin-bottom:14px">Upload files directly from your device, or paste a shareable link. Clients see a View button instantly.</div>`;
+  html+=DOC_CATS.map(cat=>{
+    const doc=docs&&docs[cat.key];
+    const savedUrl=doc&&doc.url?doc.url:'';
+    const savedName=doc&&doc.name?doc.name:'';
+    return `<div class="admin-doc-row">
+      <div class="admin-doc-top">
+        <div class="admin-doc-icon" style="background:${cat.color}">${cat.icon}</div>
+        <div style="flex:1">
+          <div class="admin-doc-name">${cat.label}</div>
+          ${savedName?`<div style="font-size:10px;color:#5aaad8;margin-top:2px">📎 ${esc(savedName)}</div>`:''}
+        </div>
+        ${savedUrl?`<span class="admin-doc-saved">✓ Saved</span>`:''}
+      </div>
+      <!-- Upload from device -->
+      <div style="margin-bottom:8px">
+        <input type="file" id="doc-file-${cat.key}" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.heic,image/*" style="display:none"
+          onchange="uploadDocFile(event,'${jobId}','${cat.key}')" />
+        <div class="upload-progress" id="doc-prog-${cat.key}">
+          <div class="upload-progress-label" id="doc-prog-label-${cat.key}">Uploading…</div>
+          <div class="upload-progress-bar-bg"><div class="upload-progress-fill" id="doc-prog-bar-${cat.key}" style="width:0%"></div></div>
+        </div>
+        <button class="doc-upload-btn" onclick="document.getElementById('doc-file-${cat.key}').click()">
+          📤 Upload from Device
+        </button>
+      </div>
+      <!-- Or paste link -->
+      <div class="admin-doc-input-row">
+        <input type="text" id="doc-input-${cat.key}" placeholder="Or paste shareable link (Drive, Dropbox…)" value="${esc(savedUrl)}" />
+        <button class="admin-doc-save-btn" onclick="saveDocLink('${jobId}','${cat.key}')">Save</button>
+        ${savedUrl?`<button class="admin-doc-remove-btn" onclick="removeDocLink('${jobId}','${cat.key}')">✕</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  el.innerHTML=html;
+}
+
+async function saveDocLink(jobId, catKey) {
+  const url=document.getElementById('doc-input-'+catKey).value.trim();
+  if(!url) return;
+  const docRef=db.collection('jobs').doc(jobId);
+  const snap=await docRef.get();
+  const docs=(snap.data().documents)||{};
+  docs[catKey]={url, savedAt:new Date().toISOString(), ...auditCreate()};
+  await docRef.update({documents:docs, ...auditUpdate()});
+}
+
+async function removeDocLink(jobId, catKey) {
+  const docRef=db.collection('jobs').doc(jobId);
+  const snap=await docRef.get();
+  const docs=(snap.data().documents)||{};
+  delete docs[catKey];
+  await docRef.update({documents:docs, ...auditUpdate()});
+}
+
+function subscribeClientDocs() {
+  // Reuse the existing job snapshot (unsubClientTracker covers the job doc)
+  // renderClientDocs is called from job doc snapshot
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function getDomain(url){
+  if(!url) return '';
+  try{return new URL(url.startsWith('http')?url:'https://'+url).hostname.replace('www.','');}catch{return url;}
+}
+function esc(s){
+  if(!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+document.getElementById('item-overlay').addEventListener('click',function(e){if(e.target===this)closeItemForm();});
+document.getElementById('co-overlay').addEventListener('click',function(e){if(e.target===this)closeCOForm();});
+document.getElementById('update-overlay').addEventListener('click',function(e){if(e.target===this)closeUpdateForm();});
+document.getElementById('newjob-overlay').addEventListener('click',function(e){if(e.target===this)closeNewJobSheet();});
+
+// ── State ──────────────────────────────────────────────────────────────────
+// ── Auth ────────────────────────────────────────────────────────────────────
+const auth = firebase.auth();
+
+// Persist auth state — keep contractor signed in across page reloads
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
+
+// Re-enter admin dashboard if already signed in when page loads
+auth.onAuthStateChanged(user => {
+  if(user && document.getElementById('screen-admin').classList.contains('active') === false) {
+    // Only auto-restore if we're on the landing or login screen
+    const landing = document.getElementById('screen-landing');
+    const loginScr = document.getElementById('screen-adminlogin');
+    if(landing.classList.contains('active') || loginScr.classList.contains('active')) {
+      show('admin');
+    }
+  }
+});
+
+async function adminLogin() {
+  const email    = (document.getElementById('admin-email').value || '').trim();
+  const password = document.getElementById('admin-password').value;
+  const err      = document.getElementById('pin-err');
+  const spin     = document.getElementById('admin-login-spin');
+  if(!email || !password) { err.style.display='block'; setTimeout(()=>err.style.display='none',2500); return; }
+  err.style.display='none';
+  spin.style.display='inline-block';
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+    document.getElementById('admin-password').value = '';
+    show('admin');
+  } catch(e) {
+    err.textContent = e.code==='auth/user-not-found'||e.code==='auth/wrong-password'||e.code==='auth/invalid-credential'
+      ? 'Invalid email or password — please try again'
+      : (e.message||'Login failed — please try again');
+    err.style.display = 'block';
+    setTimeout(()=>err.style.display='none', 3000);
+  }
+  spin.style.display = 'none';
+}
+
+async function adminLogout() {
+  if(unsubAdmin){unsubAdmin();unsubAdmin=null;}
+  if(unsubDetail){unsubDetail();unsubDetail=null;}
+  if(unsubAdminTracker){unsubAdminTracker();unsubAdminTracker=null;}
+  if(unsubAdminUpdates){unsubAdminUpdates();unsubAdminUpdates=null;}
+  if(unsubAdminCO){unsubAdminCO();unsubAdminCO=null;}
+  if(unsubAdminMessages){unsubAdminMessages();unsubAdminMessages=null;}
+  try { await auth.signOut(); } catch(e) {}
+  show('landing');
+}
+
+let currentJob = null;
+let clientFilter = 'all';
+let clientTab = 'tracker';
+let adminTab = 'tracker';
+let currentAdminJobId = null;
+let fFulfillment = 'Delivery';
+let fStatus = 'Not Purchased';
+let unsubClient = null;
+let unsubClientTracker = null;
+let unsubClientUpdates = null;
+let unsubAdmin = null;
+let unsubDetail = null;
+let unsubAdminTracker = null;
+let unsubAdminUpdates = null;
+let unsubAdminCO = null;
+let unsubClientCO = null;
+let unsubClientMessages = null;
+let unsubAdminMessages = null;
+let allClientItems = [];
+let msgType = 'contractor'; // for admin compose: contractor | meeting
+
+// ── Routing ────────────────────────────────────────────────────────────────
+function show(s) {
+  document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
+  document.getElementById('screen-'+s).classList.add('active');
+  const subs={landing:'Client & Contractor Portal',adminlogin:'Contractor Access',admin:'Contractor Dashboard',client:'Client Portal'};
+  document.getElementById('head-sub').textContent=subs[s]||'';
+  if(s==='admin') startAdminListener();
+  if(s!=='client') clientReset(true);
+}
+
+// ── Tab switching ──────────────────────────────────────────────────────────
+function setClientTab(tab) {
+  clientTab=tab;
+  ['tracker','updates','messages','payments','scope','materials','docs'].forEach(t=>{
+    document.getElementById('ctab-'+t).classList.toggle('on',t===tab);
+    document.getElementById('client-tab-'+t).style.display=t===tab?'block':'none';
+  });
+}
+
+function setAdminTab(tab) {
+  adminTab=tab;
+  ['tracker','updates','messages','payments','scope','materials','docs'].forEach(t=>{
+    document.getElementById('atab-'+t).classList.toggle('on',t===tab);
+    document.getElementById('admin-tab-'+t).style.display=t===tab?'block':'none';
+  });
+}
+
+// ── Admin auth ─────────────────────────────────────────────────────────────
+// ── Admin jobs list ────────────────────────────────────────────────────────
+function startAdminListener() {
+  document.getElementById('admin-detail-view').style.display='none';
+  document.getElementById('admin-jobs-view').style.display='block';
+  if(unsubAdmin) unsubAdmin();
+  unsubAdmin=db.collection('jobs').orderBy('createdAt','desc').onSnapshot(snap=>{
+    renderAdminList(snap.docs.map(d=>({id:d.id,...d.data()})));
+  });
+}
+
+// ── Shared job header card ─────────────────────────────────────────────────
+function jobHeaderHtml(job, extraPills) {
+  const cover = job.coverPhotoUrl
+    ? `<img class="job-header-cover" src="${esc(job.coverPhotoUrl)}" alt="Project photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+       <div class="job-header-cover-placeholder" style="display:none"><svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="4" y="10" width="40" height="30" rx="4" stroke="#ffffff" stroke-width="2.5" opacity=".5"/><circle cx="17" cy="21" r="4" stroke="#ffffff" stroke-width="2" opacity=".6"/><path d="M4 34l10-9 7 7 6-6 17 9" stroke="#ffffff" stroke-width="2" stroke-linejoin="round" opacity=".5"/></svg></div>`
+    : `<div class="job-header-cover-placeholder"><svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="4" y="10" width="40" height="30" rx="4" stroke="#ffffff" stroke-width="2.5" opacity=".4"/><circle cx="17" cy="21" r="4" stroke="#ffffff" stroke-width="2" opacity=".5"/><path d="M4 34l10-9 7 7 6-6 17 9" stroke="#ffffff" stroke-width="2" stroke-linejoin="round" opacity=".4"/></svg></div>`;
+  const addrLine = job.projectAddress
+    ? `<div class="job-header-addr"><span class="job-header-addr-icon">📍</span><span>${esc(job.projectAddress)}</span></div>`
+    : '';
+  const statusRow = extraPills
+    ? `<div class="job-header-status-row">${extraPills}</div>` : '';
+  return `<div class="job-header-card">
+    ${cover}
+    <div class="job-header-body">
+      <div class="job-header-name">${esc(job.clientName)}</div>
+      <div class="job-header-code">Job #${esc(job.code)}</div>
+      ${job.description?`<div class="job-header-desc">${esc(job.description)}</div>`:''}
+      ${addrLine}
+      ${statusRow}
+    </div>
+  </div>`;
+}
+
+async function renderAdminList(jobs) {
+  const list=document.getElementById('admin-jobs-list');
+  if(!jobs.length){list.innerHTML='<div class="empty">No jobs yet — tap + New Job to create one.</div>';return;}
+  const rows=await Promise.all(jobs.map(async job=>{
+    const snap=await db.collection('jobs').doc(job.id).collection('items').get();
+    const items=snap.docs.map(d=>d.data());
+    const done=items.filter(i=>i.status==='Purchased').length;
+    const total=items.length;
+    const phases=job.phases||defaultPhases();
+    const activePhase=phases.find(p=>p.status==='active');
+    const completedCount=phases.filter(p=>p.status==='complete').length;
+    const phaseName=activePhase?PHASE_DEFS[activePhase.id].name:(completedCount===5?'All Phases Complete':'Not Started');
+    const pills=`<span class="pill" style="background:${completedCount===5?'#1a4a10':'rgba(224,85,0,.15)'};color:${completedCount===5?'#6adf40':'#e05500'}">Phase ${completedCount}/5</span>
+      ${activePhase?`<span class="pill" style="background:#eef2ff;color:#1a2a6c">${esc(phaseName)}</span>`:''}
+      <span class="pill" style="background:#f5f5f5;color:#888888">${total===0?'No materials':`${done}/${total} purchased`}</span>`;
+    return `<div style="cursor:pointer;position:relative" onclick="openJobDetail('${job.id}')">
+      ${jobHeaderHtml(job, pills)}
+      <button class="obtn obtn-red" style="position:absolute;top:10px;right:10px;font-size:10px;padding:4px 10px;z-index:2;background:#fff" onclick="event.stopPropagation();deleteJob('${job.id}')">Remove</button>
+    </div>`;
+  }));
+  list.innerHTML=rows.join('');
+}
+
+async function openJobDetail(jobId) {
+  currentAdminJobId=jobId;
+  const doc=await db.collection('jobs').doc(jobId).get();
+  const job={id:doc.id,...doc.data()};
+  document.getElementById('admin-jobs-view').style.display='none';
+  document.getElementById('admin-detail-view').style.display='block';
+  setAdminTab('tracker');
+
+  // Rich header — live-updated via snapshot
+  function renderAdminDetailHeader(data) {
+    const phases = data.phases||defaultPhases();
+    const completedCount = phases.filter(p=>p.status==='complete').length;
+    const activePhase = phases.find(p=>p.status==='active');
+    const statusLabel = completedCount===5?'Complete':activePhase?'In Progress':'Not Started';
+    const statusColor = completedCount===5?'#6adf40':activePhase?'#e05500':'#888888';
+    const pills = `<span class="pill" style="background:#f0f0f0;color:#111111">Phase ${completedCount}/5 Complete</span>
+      <span class="pill" style="background:#fff0ea;color:${statusColor};border:1px solid ${statusColor}">${statusLabel}</span>`;
+    document.getElementById('admin-detail-header').innerHTML = jobHeaderHtml({...data, id:jobId}, pills);
+  }
+
+  if(unsubAdminTracker){unsubAdminTracker();unsubAdminTracker=null;}
+  unsubAdminTracker=db.collection('jobs').doc(jobId).onSnapshot(snap=>{
+    const data=snap.data()||{};
+    renderAdminDetailHeader(data);
+    renderAdminTracker(jobId, data.phases||defaultPhases());
+    renderAdminDocs(jobId, data.documents||{});
+    renderAdminPayments(jobId, data);
+    renderAdminScope(jobId, data.scope||defaultScope());
+  });
+
+  // Subscribe to change orders
+  if(unsubAdminCO){unsubAdminCO();unsubAdminCO=null;}
+  unsubAdminCO=db.collection('jobs').doc(jobId).collection('changeOrders')
+    .orderBy('createdAt','desc').onSnapshot(snap=>{
+      renderAdminChangeOrders(jobId, snap.docs.map(d=>({id:d.id,...d.data()})));
+    });
+
+  // Subscribe to messages
+  if(unsubAdminMessages){unsubAdminMessages();unsubAdminMessages=null;}
+  unsubAdminMessages=db.collection('jobs').doc(jobId).collection('messages')
+    .orderBy('createdAt','asc').onSnapshot(snap=>{
+      const msgs=snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderMessages('admin', jobId, msgs, true);
+    });
+
+  // Subscribe to updates
+  if(unsubAdminUpdates){unsubAdminUpdates();unsubAdminUpdates=null;}
+  unsubAdminUpdates=db.collection('jobs').doc(jobId).collection('updates')
+    .orderBy('createdAt','desc').onSnapshot(snap=>{
+      const updates=snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderAdminUpdates(jobId,updates);
+    });
+
+  // Set post update button
+  document.getElementById('post-update-btn').onclick=()=>openUpdateForm(jobId);
+  unsubDetail=db.collection('jobs').doc(jobId).collection('items').orderBy('createdAt','asc').onSnapshot(snap=>{
+    const items=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const done=items.filter(i=>i.status==='Purchased').length;
+    const total=items.length;
+    document.getElementById('admin-detail-stats').innerHTML=`
+      <div class="stat"><div class="stat-n">${total}</div><div class="stat-l">Total</div></div>
+      <div class="stat"><div class="stat-n" style="color:#4aaf30">${done}</div><div class="stat-l">Purchased</div></div>
+      <div class="stat"><div class="stat-n" style="color:#e05500">${total-done}</div><div class="stat-l">Pending</div></div>`;
+    const el=document.getElementById('admin-detail-items');
+    el.innerHTML=total===0?'<div class="empty">No materials added yet.</div>'
+      :items.map(item=>renderItemCard(item,jobId,true)).join('');
+  });
+}
+
+function closeJobDetail() {
+  if(unsubDetail){unsubDetail();unsubDetail=null;}
+  if(unsubAdminTracker){unsubAdminTracker();unsubAdminTracker=null;}
+  if(unsubAdminUpdates){unsubAdminUpdates();unsubAdminUpdates=null;}
+  if(unsubAdminCO){unsubAdminCO();unsubAdminCO=null;}
+  if(unsubAdminMessages){unsubAdminMessages();unsubAdminMessages=null;}
+  currentAdminJobId=null;
+  document.getElementById('admin-detail-view').style.display='none';
+  document.getElementById('admin-jobs-view').style.display='block';
+}
+
+// ── Job CRUD ───────────────────────────────────────────────────────────────
+function openNewJobSheet(){
+  document.getElementById('nj-client').value='';
+  document.getElementById('nj-code').value='';
+  document.getElementById('nj-pin').value='';
+  document.getElementById('nj-desc').value='';
+  document.getElementById('nj-addr').value='';
+  document.getElementById('nj-cover').value='';
+  const st=document.getElementById('nj-cover-status');
+  if(st){st.textContent='or paste a URL below';st.style.color='#888888';}
+  document.getElementById('newjob-overlay').classList.add('open');
+}
+function closeNewJobSheet(){document.getElementById('newjob-overlay').classList.remove('open');}
+
+async function handleCoverPhotoUpload(event) {
+  const file = event.target.files[0];
+  if(!file) return;
+  const st = document.getElementById('nj-cover-status');
+  if(!storage){ if(st) st.textContent='Storage not enabled'; return; }
+  if(st){ st.textContent='Uploading…'; st.style.color='#e05500'; }
+  try {
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    const ref = storage.ref(`covers/${Date.now()}_${safeName}`);
+    await ref.put(file);
+    const url = await ref.getDownloadURL();
+    document.getElementById('nj-cover').value = url;
+    if(st){ st.textContent='✓ Photo ready'; st.style.color='#2a7a20'; }
+  } catch(e) {
+    if(st){ st.textContent='Upload failed'; st.style.color='#e05050'; }
+  }
+  event.target.value='';
+}
+
+async function createJob(){
+  const clientName    = document.getElementById('nj-client').value.trim();
+  const code          = document.getElementById('nj-code').value.trim().toUpperCase();
+  const clientPin     = document.getElementById('nj-pin').value.trim();
+  const description   = document.getElementById('nj-desc').value.trim();
+  const projectAddress= document.getElementById('nj-addr').value.trim();
+  const coverPhotoUrl = document.getElementById('nj-cover').value.trim();
+  if(!clientName||!code||!clientPin) return;
+  const sp=document.getElementById('save-job-spin');sp.style.display='inline-block';
+  await db.collection('jobs').add({
+    clientName, code, clientPin, description,
+    projectAddress, coverPhotoUrl,
+    phases:defaultPhases(), ...auditCreate()
+  });
+  sp.style.display='none';
+  closeNewJobSheet();
+}
+async function deleteJob(jobId){
+  if(!confirm('Remove this job and all its data? This cannot be undone.')) return;
+  const snap=await db.collection('jobs').doc(jobId).collection('items').get();
+  const batch=db.batch();
+  snap.docs.forEach(d=>batch.delete(d.ref));
+  batch.delete(db.collection('jobs').doc(jobId));
+  await batch.commit();
+}
+
+// ── Client portal ──────────────────────────────────────────────────────────
+async function clientLookup(){
+  const code=document.getElementById('job-code-input').value.trim().toUpperCase();
+  const pin=document.getElementById('client-pin-input').value.trim();
+  const err=document.getElementById('code-err');
+  const sp=document.getElementById('lookup-spin');
+  if(!code||!pin){err.style.display='block';setTimeout(()=>err.style.display='none',2500);return;}
+  sp.style.display='inline-block';err.style.display='none';
+  try{
+    const snap=await db.collection('jobs').where('code','==',code).limit(1).get();
+    if(snap.empty||snap.docs[0].data().clientPin!==pin){
+      err.textContent='Job code or PIN is incorrect. Check with your contractor.';
+      err.style.display='block';
+      sp.style.display='none';
+      return;
+    }
+    currentJob={id:snap.docs[0].id,...snap.docs[0].data()};
+    document.getElementById('client-lookup').style.display='none';
+    document.getElementById('client-job').style.display='block';
+    renderClientHeader();
+    subscribeClientTracker();
+    subscribeClientItems();
+    subscribeClientUpdates();
+    if(unsubClientMessages){unsubClientMessages();unsubClientMessages=null;}
+    unsubClientMessages=db.collection('jobs').doc(currentJob.id).collection('messages')
+      .orderBy('createdAt','asc').onSnapshot(snap=>{
+        const msgs=snap.docs.map(d=>({id:d.id,...d.data()}));
+        renderMessages('client', currentJob.id, msgs, false);
+      });
+    setClientTab('tracker');
+  }catch(e){err.textContent='Connection error — please try again.';err.style.display='block';}
+  sp.style.display='none';
+}
+
+function clientReset(silent){
+  if(unsubClient){unsubClient();unsubClient=null;}
+  if(unsubClientTracker){unsubClientTracker();unsubClientTracker=null;}
+  if(unsubClientUpdates){unsubClientUpdates();unsubClientUpdates=null;}
+  if(unsubClientCO){unsubClientCO();unsubClientCO=null;}
+  if(unsubClientMessages){unsubClientMessages();unsubClientMessages=null;}
+  currentJob=null;clientFilter='all';allClientItems=[];
+  document.getElementById('client-lookup').style.display='block';
+  document.getElementById('client-job').style.display='none';
+  document.getElementById('job-code-input').value='';
+  document.getElementById('client-pin-input').value='';
+  document.getElementById('code-err').style.display='none';
+  if(!silent) show('client');
+}
+
+function renderClientHeader(){
+  const phases = currentJob.phases||defaultPhases();
+  const completedCount = phases.filter(p=>p.status==='complete').length;
+  const activePhase = phases.find(p=>p.status==='active');
+  const statusLabel = completedCount===5?'✓ Complete':activePhase?'In Progress':'Not Started';
+  const statusColor = completedCount===5?'#6adf40':activePhase?'#e05500':'#888888';
+  const pills = `<span class="pill" style="background:#f0f0f0;color:#111111">Phase ${completedCount}/5</span>
+    <span class="pill" style="background:#fff0ea;color:${statusColor};border:1px solid ${statusColor}">${statusLabel}</span>`;
+  document.getElementById('client-job-header').innerHTML = jobHeaderHtml(currentJob, pills);
+}
+
+function subscribeClientTracker(){
+  if(unsubClientTracker){unsubClientTracker();unsubClientTracker=null;}
+  unsubClientTracker=db.collection('jobs').doc(currentJob.id).onSnapshot(snap=>{
+    const data=snap.data()||{};
+    renderClientTracker(data.phases||defaultPhases());
+    renderClientDocs(data.documents||{});
+    renderClientPayments(data);
+    renderClientScope(data.scope||defaultScope());
+  });
+
+  // Subscribe to client change orders
+  if(unsubClientCO){unsubClientCO();unsubClientCO=null;}
+  unsubClientCO=db.collection('jobs').doc(currentJob.id).collection('changeOrders')
+    .orderBy('createdAt','desc').onSnapshot(snap=>{
+      renderClientChangeOrders(currentJob.id, snap.docs.map(d=>({id:d.id,...d.data()})));
+    });
+}
+
+function subscribeClientItems(){
+  if(unsubClient) unsubClient();
+  unsubClient=db.collection('jobs').doc(currentJob.id).collection('items').orderBy('createdAt','asc').onSnapshot(snap=>{
+    allClientItems=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderClientItems();
+  });
+}
+
+function setFilter(f){
+  clientFilter=f;
+  ['all','pending','purchased'].forEach(x=>document.getElementById('cf-'+x).classList.toggle('on',x===f));
+  renderClientItems();
+}
+
+function renderClientItems(){
+  const list=document.getElementById('client-items-list');
+  let items=allClientItems;
+  if(clientFilter==='pending') items=allClientItems.filter(i=>i.status!=='Purchased');
+  if(clientFilter==='purchased') items=allClientItems.filter(i=>i.status==='Purchased');
+
+  // Budget calc from ALL items (not filtered)
+  const totalBudget=allClientItems.reduce((sum,i)=>sum+(i.price?(i.price*(i.qty||1)):0),0);
+  const spentBudget=allClientItems.filter(i=>i.status==='Purchased').reduce((sum,i)=>sum+(i.price?(i.price*(i.qty||1)):0),0);
+  const remaining=totalBudget-spentBudget;
+  const spentPct=totalBudget?Math.round(spentBudget/totalBudget*100):0;
+
+  let budgetHtml='';
+  if(totalBudget>0){
+    budgetHtml=`<div style="background:#f5f5f5;border:1px solid #e0e0e0;border-radius:12px;padding:14px 16px;margin-bottom:14px">
+      <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#888888;margin-bottom:10px">Decor Budget Summary</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <div><div style="font-size:9px;color:#888888;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px">Total Estimated</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:18px;color:#111111">$${totalBudget.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div>
+        <div style="text-align:right"><div style="font-size:9px;color:#888888;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px">Remaining</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:18px;color:${remaining>0?'#f07030':'#6adf40'}">$${remaining.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div>
+      </div>
+      <div style="background:#eeeeee;border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px">
+        <div style="width:${spentPct}%;height:100%;background:linear-gradient(90deg,#3a8a20,#6adf40);border-radius:6px;transition:width .5s"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <div style="font-size:11px;color:#6adf40;font-family:'Montserrat',sans-serif;font-weight:700">Purchased: $${spentBudget.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})} (${spentPct}%)</div>
+        <div style="font-size:11px;color:#888888">${allClientItems.length} items</div>
+      </div>
+    </div>`;
+  }
+
+  if(!items.length){list.innerHTML=budgetHtml+`<div class="empty">${allClientItems.length===0?'No materials added yet.':'No items match this filter.'}</div>`;return;}
+  list.innerHTML=budgetHtml+items.map(item=>renderItemCard(item,currentJob.id,false)).join('');
+}
+
+// ── Item card ──────────────────────────────────────────────────────────────
+function renderItemCard(item,jobId,adminView){
+  const bought=item.status==='Purchased';
+  const domain=getDomain(item.link);
+  let faviconHTML='';
+  if(item.link){try{const host=new URL(item.link.startsWith('http')?item.link:'https://'+item.link).hostname;faviconHTML=`<img src="https://www.google.com/s2/favicons?sz=32&domain=${host}" onerror="this.style.display='none'" />`;}catch{}}
+  const itemJson=adminView?'':JSON.stringify(item).replace(/\\/g,'\\\\').replace(/"/g,'&quot;');
+  const actions=adminView?'':`<div class="item-actions">
+    <button class="obtn obtn-blue" style="font-size:11px;padding:5px 12px" onclick='openItemForm(${itemJson})'>Edit</button>
+    <button class="obtn obtn-red" style="font-size:11px;padding:5px 12px" onclick="delItem('${jobId}','${item.id}')">Remove</button>
+  </div>`;
+  const chkClick=adminView?'':`onclick="toggleStatus('${jobId}','${item.id}','${item.status}')"`;
+  return `<div class="card" style="opacity:${bought?.72:1};border-left:3px solid ${bought?'#3a7a20':'#e05500'}">
+    <div class="item-top">
+      <div class="chk ${bought?'on':''}" ${chkClick}>
+        <svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L11.5 1" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="item-body">
+        <div class="item-name ${bought?'done':''}">${esc(item.itemName||domain||'Item')}</div>
+        ${item.link?`<div class="item-link">${faviconHTML}<a href="${item.link}" target="_blank" rel="noopener noreferrer">${esc(domain)}</a></div>`:''}
+        <div>
+          <span class="pill" style="background:#1e1e1e">Qty ${item.qty||1}</span>
+          ${item.price?`<span class="pill" style="background:#1a2020">$${(item.price*(item.qty||1)).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>`:''}
+          <span class="pill" style="background:${item.fulfillment==='Delivery'?'#1a4a6a':'#1a5a3a'}">${esc(item.fulfillment||'Delivery')}</span>
+          ${item.date?`<span class="pill" style="background:#2a1a1a">${esc(item.date)}</span>`:''}
+          <span class="pill" style="background:${bought?'#2a5a20':'#5a2a10'}">${esc(item.status||'Not Purchased')}</span>
+        </div>
+        ${item.notes?`<div class="item-notes">${esc(item.notes)}</div>`:''}
+        ${actions}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── Item form ──────────────────────────────────────────────────────────────
+function openItemForm(item){
+  document.getElementById('item-form-title').textContent=item?'Edit Item':'Add Material Item';
+  document.getElementById('edit-item-id').value=item?item.id:'';
+  document.getElementById('f-link').value=item?(item.link||''):'';
+  document.getElementById('f-name').value=item?(item.itemName||''):'';
+  document.getElementById('f-qty').value=item?(item.qty||1):1;
+  document.getElementById('f-price').value=item?(item.price||''):'';
+  document.getElementById('f-date').value=item?(item.date||''):'';
+  document.getElementById('f-notes').value=item?(item.notes||''):'';
+  fFulfillment=item?(item.fulfillment||'Delivery'):'Delivery';
+  fStatus=item?(item.status||'Not Purchased'):'Not Purchased';
+  refreshSegs();
+  document.getElementById('item-overlay').classList.add('open');
+}
+function closeItemForm(){document.getElementById('item-overlay').classList.remove('open');}
+function setSeg(field,val){if(field==='fulfillment')fFulfillment=val;if(field==='status')fStatus=val;refreshSegs();}
+function refreshSegs(){
+  document.getElementById('seg-delivery').classList.toggle('on',fFulfillment==='Delivery');
+  document.getElementById('seg-pickup').classList.toggle('on',fFulfillment==='Pickup');
+  document.getElementById('seg-pending').classList.toggle('on',fStatus==='Not Purchased');
+  document.getElementById('seg-purchased').classList.toggle('on',fStatus==='Purchased');
+}
+async function saveItem(){
+  if(!currentJob) return;
+  const link=document.getElementById('f-link').value.trim();
+  const itemName=document.getElementById('f-name').value.trim();
+  if(!link&&!itemName) return;
+  const sp=document.getElementById('save-item-spin');sp.style.display='inline-block';
+  const data={link,itemName,qty:parseInt(document.getElementById('f-qty').value)||1,price:parseFloat(document.getElementById('f-price').value)||0,date:document.getElementById('f-date').value,notes:document.getElementById('f-notes').value.trim(),fulfillment:fFulfillment,status:fStatus};
+  const editId=document.getElementById('edit-item-id').value;
+  const ref=db.collection('jobs').doc(currentJob.id).collection('items');
+  if(editId) await ref.doc(editId).update({...data, ...auditUpdate()});
+  else{ await ref.add({...data, ...auditCreate()}); }
+  sp.style.display='none';
+  closeItemForm();
+}
+async function toggleStatus(jobId,itemId,cur){
+  await db.collection('jobs').doc(jobId).collection('items').doc(itemId).update({
+    status: cur==='Purchased'?'Not Purchased':'Purchased',
+    ...auditUpdate()
+  });
+}
+async function delItem(jobId,itemId){
+  await db.collection('jobs').doc(jobId).collection('items').doc(itemId).delete();
+}
+
+// ── Updates feed ──────────────────────────────────────────────────────────
+function subscribeClientUpdates(){
+  if(unsubClientUpdates){unsubClientUpdates();unsubClientUpdates=null;}
+  unsubClientUpdates=db.collection('jobs').doc(currentJob.id).collection('updates')
+    .orderBy('createdAt','desc').onSnapshot(snap=>{
+      renderClientUpdates(snap.docs.map(d=>({id:d.id,...d.data()})));
+    });
+}
+
+function renderClientUpdates(updates){
+  const el=document.getElementById('client-updates-content');
+  if(!updates.length){
+    el.innerHTML='<div class="update-feed-empty">No updates yet.<br>Check back — your contractor will post progress here.</div>';
+    return;
+  }
+  el.innerHTML=updates.map(u=>updateCard(u,false)).join('');
+}
+
+function renderAdminUpdates(jobId,updates){
+  const el=document.getElementById('admin-updates-content');
+  if(!updates.length){
+    el.innerHTML='<div class="update-feed-empty">No updates posted yet. Tap + Post Update to share progress with your client.</div>';
+    return;
+  }
+  el.innerHTML=updates.map(u=>updateCard(u,true,jobId)).join('');
+}
+
+function updateCard(u,adminView,jobId){
+  const photos=[u.photo1,u.photo2,u.photo3].filter(Boolean);
+  const photoHtml=photos.length?`<div class="update-photos">
+    ${photos.map(p=>`<a class="update-photo-link" href="${p}" target="_blank" rel="noopener noreferrer">
+      <img class="update-photo" src="${convertPhotoUrl(p)}" onerror="this.parentElement.style.display='none'" />
+    </a>`).join('')}
+  </div>`:'';
+  return `<div class="update-card">
+    <div class="update-card-header">
+      <div class="update-date">${esc(u.date||'')}</div>
+      <span class="update-badge">Progress Update</span>
+    </div>
+    <div class="update-body">
+      ${u.summary?`<div class="update-summary">${esc(u.summary)}</div>`:''}
+      ${u.done?`<div class="update-section">
+        <div class="update-section-label" style="color:#4aaf30">✅ What Got Done</div>
+        <div class="update-section-text">${esc(u.done).replace(/\n/g,'<br>')}</div>
+      </div>`:''}
+      ${u.next?`<div class="update-section">
+        <div class="update-section-label" style="color:#5aaad8">➜ What's Next</div>
+        <div class="update-section-text">${esc(u.next).replace(/\n/g,'<br>')}</div>
+      </div>`:''}
+      ${u.blockers?`<div class="update-section">
+        <div class="update-section-label" style="color:#ff8870">⚠️ Road Blockers</div>
+        <div class="update-blocker">${esc(u.blockers).replace(/\n/g,'<br>')}</div>
+      </div>`:''}
+      ${photoHtml}
+      ${adminView?`<div style="display:flex;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid #eeeeee">
+        <button class="obtn obtn-blue" style="font-size:10px;padding:5px 12px" onclick="openUpdateForm('${jobId}','${u.id}')">Edit</button>
+        <button class="obtn obtn-red" style="font-size:10px;padding:5px 12px" onclick="deleteUpdate('${jobId}','${u.id}')">Delete</button>
+      </div>`:''}
+    </div>
+  </div>`;
+}
+
+function convertPhotoUrl(url){
+  if(!url) return url;
+  // Convert Google Drive share link to direct image
+  const match=url.match(/\/file\/d\/([^\/]+)/);
+  if(match) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  return url;
+}
+
+function openUpdateForm(jobId,updateId){
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('update-job-id').value=jobId;
+  document.getElementById('edit-update-id').value=updateId||'';
+  document.getElementById('update-form-title').textContent=updateId?'Edit Update':'Post Update';
+  document.getElementById('u-date').value=today;
+  document.getElementById('u-summary').value='';
+  document.getElementById('u-done').value='';
+  document.getElementById('u-next').value='';
+  document.getElementById('u-blockers').value='';
+  document.getElementById('u-photo1').value='';
+  document.getElementById('u-photo2').value='';
+  document.getElementById('u-photo3').value='';
+  // Reset photo uploads
+  uploadedPhotoUrls=[];
+  const grid=document.getElementById('photo-preview-grid');
+  if(grid) grid.innerHTML='';
+  const prog=document.getElementById('photo-upload-progress');
+  if(prog) prog.style.display='none';
+
+  // If editing, load existing data
+  if(updateId){
+    db.collection('jobs').doc(jobId).collection('updates').doc(updateId).get().then(doc=>{
+      const d=doc.data();
+      if(d.date) document.getElementById('u-date').value=d.date;
+      if(d.summary) document.getElementById('u-summary').value=d.summary;
+      if(d.done) document.getElementById('u-done').value=d.done;
+      if(d.next) document.getElementById('u-next').value=d.next;
+      if(d.blockers) document.getElementById('u-blockers').value=d.blockers;
+      if(d.photo1) document.getElementById('u-photo1').value=d.photo1;
+      if(d.photo2) document.getElementById('u-photo2').value=d.photo2;
+      if(d.photo3) document.getElementById('u-photo3').value=d.photo3;
+    });
+  }
+  document.getElementById('update-overlay').classList.add('open');
+}
+
+function closeUpdateForm(){document.getElementById('update-overlay').classList.remove('open');}
+
+async function saveUpdate(){
+  const jobId=document.getElementById('update-job-id').value;
+  const editId=document.getElementById('edit-update-id').value;
+  const summary=document.getElementById('u-summary').value.trim();
+  const done=document.getElementById('u-done').value.trim();
+  const photo1=document.getElementById('u-photo1').value.trim();
+  const photo2=document.getElementById('u-photo2').value.trim();
+  const photo3=document.getElementById('u-photo3').value.trim();
+
+  // Need at least a summary, some work done, OR a photo
+  const hasContent = summary || done || photo1 || photo2 || photo3;
+  if(!hasContent){
+    // Show a visible error instead of silently doing nothing
+    const btn=document.getElementById('save-update-spin');
+    const errEl=document.getElementById('update-form-err');
+    if(errEl){ errEl.style.display='block'; setTimeout(()=>errEl.style.display='none',3000); }
+    return;
+  }
+
+  const sp=document.getElementById('save-update-spin');
+  sp.style.display='inline-block';
+
+  try {
+    const data={
+      date:document.getElementById('u-date').value,
+      summary, done,
+      next:document.getElementById('u-next').value.trim(),
+      blockers:document.getElementById('u-blockers').value.trim(),
+      photo1, photo2, photo3,
+    };
+    const ref=db.collection('jobs').doc(jobId).collection('updates');
+    if(editId) await ref.doc(editId).update({...data, ...auditUpdate()});
+    else{ await ref.add({...data, ...auditCreate()}); }
+    sp.style.display='none';
+    closeUpdateForm();
+  } catch(e) {
+    console.error('Save update error:', e);
+    sp.style.display='none';
+    alert('Error saving update: ' + (e.message||e.code||'unknown error'));
+  }
+}
+
+async function deleteUpdate(jobId,updateId){
+  if(!confirm('Delete this update?')) return;
+  await db.collection('jobs').doc(jobId).collection('updates').doc(updateId).delete();
+}
+
+// ── Scope of Work ──────────────────────────────────────────────────────────
+const SCOPE_CATS = [
+  {key:'included',  label:'What Is Included',       icon:'✅', color:'#1a4a10', border:'#3a8a20', bullet:'✓', bulletColor:'#6adf40'},
+  {key:'excluded',  label:'What Is NOT Included',   icon:'🚫', color:'#3a0a0a', border:'#8a2020', bullet:'✕', bulletColor:'#e05050'},
+  {key:'allowances',label:'Allowances',             icon:'💰', color:'#3a2a0a', border:'#8a6020', bullet:'$', bulletColor:'#e0a040'},
+  {key:'client',    label:'Client-Supplied Items',  icon:'📦', color:'#1a1a20', border:'#3a3a3a', bullet:'→', bulletColor:'#6ab4f0'},
+];
+
+function defaultScope() {
+  return Object.fromEntries(SCOPE_CATS.map(c=>[c.key,[]]));
+}
+
+// ── CLIENT scope render ────────────────────────────────────────────────────
+function renderClientScope(scope) {
+  const el=document.getElementById('client-scope-content');
+  // Count total change orders pending from client-scope-co-list if present
+  let html=`<div style="font-size:12px;color:#888888;margin-bottom:16px;line-height:1.5">Your approved project scope is documented here. Any changes to scope require a signed Change Order.</div>`;
+
+  SCOPE_CATS.forEach(cat=>{
+    const items=scope[cat.key]||[];
+    html+=`<div class="scope-section-card">
+      <div class="scope-section-header" style="background:${cat.color}22;border-bottom:1px solid ${cat.border}44">
+        <div class="scope-section-icon" style="background:${cat.color};border:1px solid ${cat.border}">${cat.icon}</div>
+        <div class="scope-section-title">${cat.label}</div>
+        <span class="scope-count-badge" style="background:${cat.color};border:1px solid ${cat.border}">${items.length}</span>
+      </div>
+      <div class="scope-items-list">
+        ${items.length===0
+          ?`<div class="scope-empty">No items listed yet.</div>`
+          :items.map(item=>`<div class="scope-line">
+            <div class="scope-bullet" style="color:${cat.bulletColor}">${cat.bullet}</div>
+            <div class="scope-line-text">${esc(item)}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  });
+
+  html+=`<div id="client-scope-co-list"></div>`;
+  el.innerHTML=html;
+}
+
+// ── ADMIN scope render ─────────────────────────────────────────────────────
+function renderAdminScope(jobId, scope) {
+  const el=document.getElementById('admin-scope-content');
+  let html=`<div style="font-size:12px;color:#888888;margin-bottom:14px">Add scope items per category — clients see these in real time.</div>`;
+
+  SCOPE_CATS.forEach(cat=>{
+    const items=scope[cat.key]||[];
+    html+=`<div class="scope-section-card" style="margin-bottom:14px">
+      <div class="scope-section-header" style="background:${cat.color}22;border-bottom:1px solid ${cat.border}44">
+        <div class="scope-section-icon" style="background:${cat.color};border:1px solid ${cat.border}">${cat.icon}</div>
+        <div class="scope-section-title">${cat.label}</div>
+        <span class="scope-count-badge" style="background:${cat.color};border:1px solid ${cat.border}">${items.length}</span>
+      </div>
+      <div class="scope-items-list">
+        ${items.length===0?`<div class="scope-empty">No items yet.</div>`:items.map((item,i)=>`<div class="scope-line">
+          <div class="scope-bullet" style="color:${cat.bulletColor}">${cat.bullet}</div>
+          <div class="scope-line-text">${esc(item)}</div>
+          <button class="scope-del-btn" onclick="deleteScopeItem('${jobId}','${cat.key}',${i})">×</button>
+        </div>`).join('')}
+        <div class="scope-add-row">
+          <input type="text" id="scope-input-${cat.key}" placeholder="Add item…" onkeydown="if(event.key==='Enter')addScopeItem('${jobId}','${cat.key}')" />
+          <button class="scope-add-btn" onclick="addScopeItem('${jobId}','${cat.key}')">Add</button>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // Change Orders section header
+  html+=`<div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#888888;margin:6px 0 12px;padding-bottom:8px;border-bottom:1px solid #eeeeee">Change Orders</div>
+  <button class="btn" style="margin-bottom:14px" onclick="openCOForm('${jobId}')">+ New Change Order</button>
+  <div id="admin-co-list"></div>`;
+
+  el.innerHTML=html;
+}
+
+async function addScopeItem(jobId, catKey) {
+  const input=document.getElementById(`scope-input-${catKey}`);
+  const text=input.value.trim();
+  if(!text) return;
+  const snap=await db.collection('jobs').doc(jobId).get();
+  const scope=(snap.data().scope)||defaultScope();
+  scope[catKey]=[...(scope[catKey]||[]),text];
+  await db.collection('jobs').doc(jobId).update({scope, ...auditUpdate()});
+  input.value='';
+}
+
+async function deleteScopeItem(jobId, catKey, idx) {
+  const snap=await db.collection('jobs').doc(jobId).get();
+  const scope=(snap.data().scope)||defaultScope();
+  scope[catKey]=(scope[catKey]||[]).filter((_,i)=>i!==idx);
+  await db.collection('jobs').doc(jobId).update({scope, ...auditUpdate()});
+}
+
+// ── Change Orders ──────────────────────────────────────────────────────────
+let coType='add';
+
+function setCOType(t){
+  coType=t;
+  document.getElementById('coseg-add').classList.toggle('on',t==='add');
+  document.getElementById('coseg-red').classList.toggle('on',t==='reduce');
+}
+
+function openCOForm(jobId, coId) {
+  document.getElementById('co-job-id').value=jobId;
+  document.getElementById('co-edit-id').value=coId||'';
+  document.getElementById('co-form-title').textContent=coId?'Edit Change Order':'New Change Order';
+  document.getElementById('co-desc').value='';
+  document.getElementById('co-cost').value='';
+  document.getElementById('co-time').value='';
+  document.getElementById('co-notes').value='';
+  coType='add'; setCOType('add');
+  if(coId){
+    db.collection('jobs').doc(jobId).collection('changeOrders').doc(coId).get().then(doc=>{
+      const d=doc.data();
+      document.getElementById('co-desc').value=d.desc||'';
+      document.getElementById('co-cost').value=d.cost||'';
+      document.getElementById('co-time').value=d.timeImpact||'';
+      document.getElementById('co-notes').value=d.notes||'';
+      coType=d.costType||'add'; setCOType(coType);
+    });
+  }
+  document.getElementById('co-overlay').classList.add('open');
+}
+function closeCOForm(){document.getElementById('co-overlay').classList.remove('open');}
+
+async function saveCO(){
+  const jobId=document.getElementById('co-job-id').value;
+  const editId=document.getElementById('co-edit-id').value;
+  const desc=document.getElementById('co-desc').value.trim();
+  if(!desc) return;
+  const sp=document.getElementById('co-save-spin');sp.style.display='inline-block';
+  const data={
+    desc, cost:document.getElementById('co-cost').value.trim(),
+    costType:coType, timeImpact:document.getElementById('co-time').value.trim(),
+    notes:document.getElementById('co-notes').value.trim(),
+  };
+  const ref=db.collection('jobs').doc(jobId).collection('changeOrders');
+  if(editId) await ref.doc(editId).update({...data, ...auditUpdate()});
+  else { await ref.add({...data, status:'pending', ...auditCreate()}); }
+  sp.style.display='none';
+  closeCOForm();
+}
+
+async function setCOStatus(jobId, coId, status){
+  const { email } = auditActor();
+  await db.collection('jobs').doc(jobId).collection('changeOrders').doc(coId).update({
+    status,
+    approvedAt: new Date().toISOString(),
+    approvedBy: email,
+    ...auditUpdate()
+  });
+}
+
+async function deleteCO(jobId, coId){
+  if(!confirm('Delete this change order?')) return;
+  await db.collection('jobs').doc(jobId).collection('changeOrders').doc(coId).delete();
+}
+
+function coStatusStyle(status){
+  if(status==='approved') return ['co-status-approved','Approved ✓'];
+  if(status==='rejected') return ['co-status-rejected','Declined'];
+  return ['co-status-pending','Pending Approval'];
+}
+
+function coCard(co, jobId, adminView) {
+  const [badgeClass, badgeLabel]=coStatusStyle(co.status);
+  const costNum=parseFloat(co.cost);
+  const costStr=co.cost?`${co.costType==='add'?'+':'-'}$${Math.abs(costNum).toLocaleString()}`:'—';
+  const costColor=co.costType==='add'?'#f07030':'#6adf40';
+  return `<div class="co-card">
+    <div class="co-header">
+      <div class="co-num">${new Date(co.createdAt?.toDate?.()??co.createdAt??Date.now()).toLocaleDateString()}</div>
+      <span class="co-status-badge ${badgeClass}">${badgeLabel}</span>
+    </div>
+    <div class="co-body">
+      <div class="co-desc">${esc(co.desc)}</div>
+      <div class="co-meta-grid">
+        <div class="co-meta-item">
+          <div class="co-meta-label">Cost Impact</div>
+          <div class="co-meta-val" style="color:${costColor};font-family:'Montserrat',sans-serif;font-weight:900;font-size:18px">${costStr}</div>
+        </div>
+        <div class="co-meta-item">
+          <div class="co-meta-label">Time Impact</div>
+          <div class="co-meta-val">${esc(co.timeImpact||'—')}</div>
+        </div>
+      </div>
+      ${co.notes?`<div style="background:#f5f5f5;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#aaaaaa;line-height:1.45">${esc(co.notes)}</div>`:''}
+      ${adminView
+        ?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+            ${co.status!=='approved'?`<button style="padding:7px 12px;background:#1a4a10;color:#6adf40;border:1px solid #3a8a20;border-radius:7px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;cursor:pointer" onclick="setCOStatus('${jobId}','${co.id}','approved')">Approve</button>`:''}
+            ${co.status!=='rejected'?`<button style="padding:7px 12px;background:transparent;color:#e05050;border:1px solid #e05050;border-radius:7px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;cursor:pointer" onclick="setCOStatus('${jobId}','${co.id}','rejected')">Decline</button>`:''}
+            <button style="padding:7px 12px;background:transparent;color:#5aaad8;border:1px solid #5aaad8;border-radius:7px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;cursor:pointer" onclick="openCOForm('${jobId}','${co.id}')">Edit</button>
+            <button style="padding:7px 12px;background:transparent;color:#e05050;border:1px solid #e05050;border-radius:7px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;cursor:pointer" onclick="deleteCO('${jobId}','${co.id}')">Delete</button>
+          </div>`
+        :co.status==='pending'
+          ?`<button class="co-accept-btn" onclick="setCOStatus('${jobId}','${co.id}','approved')">Accept Change Order</button>
+             <div style="font-size:11px;color:#888888;text-align:center;margin-top:6px">By tapping Accept, you approve this change to your project scope and cost</div>`
+          :''}
+    </div>
+  </div>`;
+}
+
+function renderAdminChangeOrders(jobId, orders) {
+  const el=document.getElementById('admin-co-list');
+  if(!el) return;
+  el.innerHTML=orders.length===0?'<div class="co-empty">No change orders yet.</div>'
+    :orders.map(co=>coCard(co,jobId,true)).join('');
+}
+
+function renderClientChangeOrders(jobId, orders) {
+  // Show in scope tab
+  const el=document.getElementById('client-scope-co-list');
+  if(!el) return;
+  if(orders.length===0){el.innerHTML='';return;}
+  let html=`<div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#888888;margin:18px 0 12px;padding-bottom:8px;border-bottom:1px solid #eeeeee">Change Orders</div>`;
+  html+=orders.map(co=>coCard(co,jobId,false)).join('');
+  el.innerHTML=html;
+}
+
+
+</script>
 </body>
 </html>
