@@ -8,6 +8,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{background:#f4f4f4 !important;min-height:100%}
@@ -341,10 +342,12 @@
   <div class="screen" id="screen-adminlogin" style="padding-top:40px">
     <button class="obtn" style="margin-bottom:22px" onclick="show('landing')">← Back</button>
     <h2 class="sec">Contractor Login</h2>
-    <label class="lbl">Access PIN</label>
-    <input id="pin-input" type="password" placeholder="••••••" style="letter-spacing:.3em;font-size:18px;text-align:center;margin-bottom:10px" onkeydown="if(event.key==='Enter')adminLogin()" />
-    <div class="err" id="pin-err">Incorrect PIN — try again</div>
-    <button class="btn" onclick="adminLogin()">Enter</button>
+    <label class="lbl">Email</label>
+    <input id="admin-email" type="email" placeholder="your@email.com" autocomplete="username" style="margin-bottom:10px" onkeydown="if(event.key==='Enter')document.getElementById('admin-password').focus()" />
+    <label class="lbl">Password</label>
+    <input id="admin-password" type="password" placeholder="••••••••" autocomplete="current-password" style="margin-bottom:10px" onkeydown="if(event.key==='Enter')adminLogin()" />
+    <div class="err" id="pin-err">Invalid email or password — please try again</div>
+    <button class="btn" onclick="adminLogin()"><span id="admin-login-spin" class="spin" style="display:none"></span>Sign In</button>
   </div>
 
   <!-- CLIENT PORTAL -->
@@ -1236,7 +1239,57 @@ function mergeInspections(savedPhases) {
 }
 
 // ── State ──────────────────────────────────────────────────────────────────
-const PIN = "lhjack2025";
+// ── Auth ────────────────────────────────────────────────────────────────────
+const auth = firebase.auth();
+
+// Persist auth state — keep contractor signed in across page reloads
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
+
+// Re-enter admin dashboard if already signed in when page loads
+auth.onAuthStateChanged(user => {
+  if(user && document.getElementById('screen-admin').classList.contains('active') === false) {
+    // Only auto-restore if we're on the landing or login screen
+    const landing = document.getElementById('screen-landing');
+    const loginScr = document.getElementById('screen-adminlogin');
+    if(landing.classList.contains('active') || loginScr.classList.contains('active')) {
+      show('admin');
+    }
+  }
+});
+
+async function adminLogin() {
+  const email    = (document.getElementById('admin-email').value || '').trim();
+  const password = document.getElementById('admin-password').value;
+  const err      = document.getElementById('pin-err');
+  const spin     = document.getElementById('admin-login-spin');
+  if(!email || !password) { err.style.display='block'; setTimeout(()=>err.style.display='none',2500); return; }
+  err.style.display='none';
+  spin.style.display='inline-block';
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+    document.getElementById('admin-password').value = '';
+    show('admin');
+  } catch(e) {
+    err.textContent = e.code==='auth/user-not-found'||e.code==='auth/wrong-password'||e.code==='auth/invalid-credential'
+      ? 'Invalid email or password — please try again'
+      : (e.message||'Login failed — please try again');
+    err.style.display = 'block';
+    setTimeout(()=>err.style.display='none', 3000);
+  }
+  spin.style.display = 'none';
+}
+
+async function adminLogout() {
+  if(unsubAdmin){unsubAdmin();unsubAdmin=null;}
+  if(unsubDetail){unsubDetail();unsubDetail=null;}
+  if(unsubAdminTracker){unsubAdminTracker();unsubAdminTracker=null;}
+  if(unsubAdminUpdates){unsubAdminUpdates();unsubAdminUpdates=null;}
+  if(unsubAdminCO){unsubAdminCO();unsubAdminCO=null;}
+  if(unsubAdminMessages){unsubAdminMessages();unsubAdminMessages=null;}
+  try { await auth.signOut(); } catch(e) {}
+  show('landing');
+}
+
 let currentJob = null;
 let clientFilter = 'all';
 let clientTab = 'tracker';
@@ -1286,20 +1339,6 @@ function setAdminTab(tab) {
 }
 
 // ── Admin auth ─────────────────────────────────────────────────────────────
-function adminLogin() {
-  const pin=document.getElementById('pin-input').value;
-  const err=document.getElementById('pin-err');
-  if(pin===PIN){err.style.display='none';document.getElementById('pin-input').value='';show('admin');}
-  else{err.style.display='block';setTimeout(()=>err.style.display='none',1800);}
-}
-function adminLogout() {
-  if(unsubAdmin){unsubAdmin();unsubAdmin=null;}
-  if(unsubDetail){unsubDetail();unsubDetail=null;}
-  if(unsubAdminTracker){unsubAdminTracker();unsubAdminTracker=null;}
-  if(unsubAdminUpdates){unsubAdminUpdates();unsubAdminUpdates=null;}
-  show('landing');
-}
-
 // ── Admin jobs list ────────────────────────────────────────────────────────
 function startAdminListener() {
   document.getElementById('admin-detail-view').style.display='none';
