@@ -362,6 +362,47 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <button class="btn" onclick="adminLogin()"><span id="admin-login-spin" class="spin" style="display:none"></span>Sign In</button>
   </div>
 
+
+  <!-- USER MANAGEMENT (owner only) -->
+  <div class="screen" id="screen-users" style="padding-top:40px">
+    <button class="obtn" style="margin-bottom:22px" onclick="show('admin')">← Back to Jobs</button>
+    <div class="top-row" style="margin-bottom:18px">
+      <h2 class="sec" style="margin-bottom:0">Team &amp; Users</h2>
+      <button class="obtn obtn-orange" style="font-weight:900;font-size:12px" onclick="openAddUserSheet()">+ Add User</button>
+    </div>
+    <div style="font-size:12px;color:#888888;margin-bottom:18px;line-height:1.55">
+      Manage who can access the contractor portal and what they can do.
+    </div>
+    <div id="users-list"><div class="loading"><span class="spin"></span> Loading…</div></div>
+  </div>
+
+  <!-- ADD / EDIT USER SHEET -->
+  <div class="overlay" id="adduser-overlay">
+    <div class="sheet">
+      <h2 class="sec" id="adduser-title">Add Team Member</h2>
+      <input type="hidden" id="edit-user-uid" />
+      <label class="lbl">Email Address</label>
+      <input id="au-email" type="email" placeholder="e.g. maria@lhjack.com" />
+      <label class="lbl">Display Name</label>
+      <input id="au-name" type="text" placeholder="e.g. Maria Rodriguez" />
+      <label class="lbl">Role</label>
+      <div class="seg-wrap" style="margin-bottom:4px">
+        <button class="seg on"    id="role-seg-pm"    onclick="setRoleSeg('project_manager')">Project Manager</button>
+        <button class="seg"       id="role-seg-oa"    onclick="setRoleSeg('office_admin')">Office Admin</button>
+        <button class="seg"       id="role-seg-owner" onclick="setRoleSeg('owner')">Owner</button>
+      </div>
+      <input type="hidden" id="au-role" value="project_manager" />
+      <div id="au-role-desc" style="font-size:11px;color:#888888;margin-bottom:14px;line-height:1.55">
+        Can view all jobs, post updates, send messages, manage scope and change orders.
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-dark btn-cancel" onclick="closeAddUserSheet()">Cancel</button>
+        <button class="btn" onclick="saveUser()"><span id="save-user-spin" class="spin" style="display:none"></span>Save</button>
+      </div>
+      <div id="au-err" class="err" style="display:none">Could not save user.</div>
+    </div>
+  </div>
+
   <!-- CLIENT PORTAL -->
   <div class="screen" id="screen-client" style="padding-top:32px">
     <div id="client-lookup">
@@ -381,23 +422,22 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <!-- Tab bar -->
       <div class="tab-bar">
         <button class="tab-btn on" id="ctab-tracker" onclick="setClientTab('tracker')">Project Tracker</button>
-        <button class="tab-btn" id="ctab-updates" onclick="setClientTab('updates')">Updates</button>
-        <button class="tab-btn" id="ctab-messages" onclick="setClientTab('messages')">Messages</button>
+        <button class="tab-btn" id="ctab-messages" onclick="setClientTab('messages')">Updates &amp; Messages</button>
         <button class="tab-btn" id="ctab-payments" onclick="setClientTab('payments')">Payments</button>
         <button class="tab-btn" id="ctab-scope" onclick="setClientTab('scope')">Scope of Work</button>
         <button class="tab-btn" id="ctab-materials" onclick="setClientTab('materials')">Materials</button>
         <button class="tab-btn" id="ctab-docs" onclick="setClientTab('docs')">Documents</button>
+        <button class="tab-btn" id="ctab-decisions" onclick="setClientTab('decisions')">Decisions</button>
       </div>
       <!-- Tracker tab -->
       <div id="client-tab-tracker">
         <div id="client-tracker-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
-      <!-- Updates tab -->
-      <div id="client-tab-updates" style="display:none">
-        <div id="client-updates-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
-      </div>
-      <!-- Messages tab -->
+      <!-- Updates & Messages tab -->
       <div id="client-tab-messages" style="display:none">
+        <div id="client-updates-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
+        <div style="height:1px;background:#e8e8e8;margin:20px 0"></div>
+        <h2 class="sec" style="font-size:12px;margin-bottom:12px">Communication Log</h2>
         <div id="client-messages-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
       <!-- Payments tab -->
@@ -422,6 +462,10 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <div id="client-tab-docs" style="display:none">
         <div id="client-docs-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
+      <!-- Decisions tab -->
+      <div id="client-tab-decisions" style="display:none">
+        <div id="client-decisions-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
+      </div>
     </div>
   </div>
 
@@ -432,7 +476,8 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
         <h2 class="sec" style="margin-bottom:0">All Jobs</h2>
         <div class="top-actions">
           <button class="obtn" onclick="adminLogout()">Log Out</button>
-          <button class="obtn obtn-orange" style="font-weight:900;font-size:12px" onclick="openNewJobSheet()">+ New Job</button>
+          <button class="obtn" id="team-btn" style="display:none" onclick="show('users')">Team</button>
+          <button class="obtn obtn-orange" style="font-weight:900;font-size:12px" id="new-job-btn" onclick="openNewJobSheet()">+ New Job</button>
         </div>
       </div>
       <div id="admin-jobs-list"><div class="loading"><span class="spin"></span> Loading jobs…</div></div>
@@ -443,24 +488,23 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <!-- Admin tab bar -->
       <div class="tab-bar">
         <button class="tab-btn on" id="atab-tracker" onclick="setAdminTab('tracker')">Project Tracker</button>
-        <button class="tab-btn" id="atab-updates" onclick="setAdminTab('updates')">Updates</button>
-        <button class="tab-btn" id="atab-messages" onclick="setAdminTab('messages')">Messages</button>
+        <button class="tab-btn" id="atab-messages" onclick="setAdminTab('messages')">Updates &amp; Messages</button>
         <button class="tab-btn" id="atab-payments" onclick="setAdminTab('payments')">Payments</button>
         <button class="tab-btn" id="atab-scope" onclick="setAdminTab('scope')">Scope of Work</button>
         <button class="tab-btn" id="atab-materials" onclick="setAdminTab('materials')">Materials</button>
         <button class="tab-btn" id="atab-docs" onclick="setAdminTab('docs')">Documents</button>
+        <button class="tab-btn" id="atab-decisions" onclick="setAdminTab('decisions')">Decisions</button>
       </div>
       <!-- Admin tracker tab -->
       <div id="admin-tab-tracker">
         <div id="admin-tracker-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
-      <!-- Admin updates tab -->
-      <div id="admin-tab-updates" style="display:none">
+      <!-- Updates & Messages tab -->
+      <div id="admin-tab-messages" style="display:none">
         <button class="btn" style="margin-bottom:16px" id="post-update-btn" onclick="">+ Post Update</button>
         <div id="admin-updates-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
-      </div>
-      <!-- Admin messages tab -->
-      <div id="admin-tab-messages" style="display:none">
+        <div style="height:1px;background:#e8e8e8;margin:20px 0"></div>
+        <h2 class="sec" style="font-size:12px;margin-bottom:12px">Communication Log</h2>
         <div id="admin-messages-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
       <!-- Admin payments tab -->
@@ -480,10 +524,66 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <div id="admin-tab-docs" style="display:none">
         <div id="admin-docs-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
       </div>
+      <!-- Decisions tab -->
+      <div id="admin-tab-decisions" style="display:none">
+        <button class="btn" style="margin-bottom:16px" onclick="openDecisionForm(currentAdminJobId)">+ New Decision Item</button>
+        <div id="admin-decisions-content"><div class="loading"><span class="spin"></span> Loading…</div></div>
+      </div>
     </div>
   </div>
 
 </div><!-- /body -->
+
+<!-- DECISION FORM SHEET -->
+<div class="overlay" id="decision-overlay">
+  <div class="sheet">
+    <h2 class="sec" id="decision-form-title">New Decision Item</h2>
+    <input type="hidden" id="decision-job-id" />
+    <input type="hidden" id="edit-decision-id" />
+
+    <label class="lbl">Category</label>
+    <div class="seg-wrap" style="margin-bottom:6px">
+      <button class="seg on"  id="dcat-tile"      onclick="setDecisionCat('tile')">🪟 Tile</button>
+      <button class="seg"     id="dcat-paint"     onclick="setDecisionCat('paint')">🎨 Paint</button>
+      <button class="seg"     id="dcat-lighting"  onclick="setDecisionCat('lighting')">💡 Lighting</button>
+      <button class="seg"     id="dcat-vanity"    onclick="setDecisionCat('vanity')">🚿 Vanity</button>
+      <button class="seg"     id="dcat-appliance" onclick="setDecisionCat('appliance')">🏠 Appliance</button>
+      <button class="seg"     id="dcat-other"     onclick="setDecisionCat('other')">✏️ Other</button>
+    </div>
+    <input type="hidden" id="d-category" value="tile" />
+
+    <label class="lbl">Item / Description</label>
+    <input id="d-item" type="text" placeholder="e.g. Master bath floor tile" />
+
+    <label class="lbl">Details &amp; Options</label>
+    <textarea id="d-details" placeholder="Describe the selection needed, options to consider, link to products, etc." rows="3"></textarea>
+
+    <div class="grid2">
+      <div>
+        <label class="lbl">Decision Due Date</label>
+        <input id="d-due" type="date" />
+      </div>
+      <div>
+        <label class="lbl">Status</label>
+        <div class="seg-wrap" style="margin-top:0;margin-bottom:0">
+          <button class="seg on" id="dst-pending"  onclick="setDecisionStatus('pending')">Pending</button>
+          <button class="seg"    id="dst-decided"  onclick="setDecisionStatus('decided')">Decided</button>
+        </div>
+        <input type="hidden" id="d-status" value="pending" />
+      </div>
+    </div>
+
+    <div id="d-decision-wrap" style="display:none;margin-top:10px">
+      <label class="lbl">Client's Selection / Decision Made</label>
+      <input id="d-decision" type="text" placeholder="e.g. Carrara marble mosaic, 2×2 — Home Depot SKU #12345" />
+    </div>
+
+    <div class="btn-row" style="margin-top:14px">
+      <button class="btn btn-dark btn-cancel" onclick="closeDecisionForm()">Cancel</button>
+      <button class="btn" onclick="saveDecision()"><span id="save-decision-spin" class="spin" style="display:none"></span>Save</button>
+    </div>
+  </div>
+</div>
 
 <!-- UPDATE FORM SHEET -->
 <div class="overlay" id="update-overlay">
@@ -499,8 +599,19 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <textarea id="u-done" placeholder="Describe completed work…"></textarea>
     <label class="lbl">What's Next</label>
     <textarea id="u-next" placeholder="What's coming up next…"></textarea>
-    <label class="lbl">Road Blockers (Optional)</label>
-    <input id="u-blockers" type="text" placeholder="Any delays, issues, or client actions needed…" />
+    <label class="lbl">Road Blockers / Delays (Optional)</label>
+    <input id="u-blockers" type="text" placeholder="Describe the delay or blocker…" />
+    <div style="margin:-6px 0 12px">
+      <div style="font-size:9px;color:#888888;font-family:'Montserrat',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">Tag responsible party (select all that apply)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:7px">
+        <button type="button" id="dtag-contractor"   class="delay-tag delay-tag-contractor"   onclick="toggleDelayTag('contractor')"  >🔨 Contractor</button>
+        <button type="button" id="dtag-client"       class="delay-tag delay-tag-client"       onclick="toggleDelayTag('client')"      >🏠 Client</button>
+        <button type="button" id="dtag-municipality" class="delay-tag delay-tag-municipality" onclick="toggleDelayTag('municipality')" >🏛️ Municipality</button>
+        <button type="button" id="dtag-supplier"     class="delay-tag delay-tag-supplier"     onclick="toggleDelayTag('supplier')"    >📦 Supplier</button>
+        <button type="button" id="dtag-weather"      class="delay-tag delay-tag-weather"      onclick="toggleDelayTag('weather')"     >🌧️ Weather</button>
+        <button type="button" id="dtag-other"        class="delay-tag delay-tag-other"        onclick="toggleDelayTag('other')"       >⚠️ Other</button>
+      </div>
+    </div>
     <label class="lbl">Photos</label>
     <div class="upload-zone" onclick="document.getElementById('photo-file-input').click()" id="photo-upload-zone">
       <div class="upload-zone-icon">📷</div>
@@ -587,6 +698,57 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <div class="btn-row">
       <button class="btn btn-dark btn-cancel" onclick="closeItemForm()">Cancel</button>
       <button class="btn" onclick="saveItem()"><span id="save-item-spin" class="spin" style="display:none"></span>Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE ORDER CONFIRM MODAL -->
+<div class="overlay" id="co-confirm-overlay">
+  <div class="sheet" style="max-width:520px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+      <div style="width:36px;height:36px;border-radius:50%;background:#fff0ea;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📋</div>
+      <div>
+        <h2 class="sec" style="margin:0;font-size:14px">Confirm Change Order</h2>
+        <div style="font-size:11px;color:#888888;margin-top:2px">Please review carefully before accepting</div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div style="background:#f8f8f8;border-radius:10px;padding:14px 16px;margin-bottom:12px">
+      <div class="lbl" style="margin-bottom:6px">Scope Change</div>
+      <div id="co-confirm-desc" style="font-size:14px;color:#111111;line-height:1.5;font-weight:600"></div>
+    </div>
+
+    <!-- Cost + Time grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div style="background:#f8f8f8;border-radius:10px;padding:14px 16px">
+        <div class="lbl" style="margin-bottom:6px">Cost Impact</div>
+        <div id="co-confirm-cost" style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:22px"></div>
+      </div>
+      <div style="background:#f8f8f8;border-radius:10px;padding:14px 16px">
+        <div class="lbl" style="margin-bottom:6px">Time Impact</div>
+        <div id="co-confirm-time" style="font-size:14px;color:#111111;font-weight:600;line-height:1.4;padding-top:3px"></div>
+      </div>
+    </div>
+
+    <!-- Notes (shown if present) -->
+    <div id="co-confirm-notes-wrap" style="display:none;margin-bottom:12px">
+      <div class="lbl" style="margin-bottom:6px">Additional Notes</div>
+      <div id="co-confirm-notes" style="background:#f8f8f8;border-radius:10px;padding:12px 14px;font-size:12px;color:#555555;line-height:1.5"></div>
+    </div>
+
+    <!-- Acknowledgment -->
+    <div style="background:#fff0ea;border:1px solid #e05500;border-radius:10px;padding:12px 14px;margin-bottom:18px">
+      <div style="font-size:12px;color:#444444;line-height:1.55">
+        By tapping <strong>Confirm &amp; Accept</strong> below, you agree to this change in project scope, cost, and schedule. This approval will be saved to your project record.
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-dark btn-cancel" onclick="closeCOConfirm()">Cancel</button>
+      <button class="btn" id="co-confirm-submit" onclick="confirmCOAccept()" style="background:#2a7a20">
+        <span id="co-confirm-spin" class="spin" style="display:none"></span>Confirm &amp; Accept
+      </button>
     </div>
   </div>
 </div>
@@ -886,6 +1048,7 @@ async function uploadDocFile(event, jobId, catKey) {
     const docs = (snap.data().documents) || {};
     docs[catKey] = { url, name: file.name, savedAt: new Date().toISOString(), ...auditCreate() };
     await docRef.update({ documents: docs, ...auditUpdate() });
+    notify(() => notifyDocUploaded(jobId, catKey, file.name, url)); // 🔔 Trigger: doc uploaded
 
     setProgress(bar, lbl, 100, `✓ ${file.name} uploaded successfully`);
     if(bar) bar.style.background = 'linear-gradient(90deg,#2a7a20,#6adf40)';
@@ -1524,6 +1687,7 @@ function togglePhaseExpand(prefix,idx,forceOpen) {
 
 // ── Tracker Firestore ops ──────────────────────────────────────────────────
 async function setPhaseStatus(jobId, phaseIdx, status) {
+  if(!requirePermission('change_phase_status', 'Change Phase Status')) return;
   const doc=await db.collection('jobs').doc(jobId).get();
   const phases=(doc.data().phases)||defaultPhases();
   phases[phaseIdx].status=status;
@@ -1766,7 +1930,13 @@ function renderClientPayments(jobData) {
           ${p.invoiceNum?` · Invoice #${esc(p.invoiceNum)}`:''}
         </div>
         ${p.note?`<div style="font-size:11px;color:#aaaaaa;margin-top:4px;font-style:italic">${esc(p.note)}</div>`:''}
-        <div style="margin-top:8px;display:inline-block;background:#1a4a10;border:1px solid #3a8a20;color:#6adf40;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;padding:3px 10px;border-radius:10px">✓ Payment Received</div>
+        <div style="margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div style="display:inline-block;background:#1a4a10;border:1px solid #3a8a20;color:#6adf40;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;padding:3px 10px;border-radius:10px">✓ Payment Received</div>
+          ${p.receiptUrl
+            ? `<a href="${p.receiptUrl}" target="_blank" rel="noopener noreferrer"
+                style="display:inline-flex;align-items:center;gap:5px;background:#eef2ff;border:1px solid #5aaad8;color:#1a5a8a;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;padding:3px 10px;border-radius:10px;text-decoration:none">📄 View Receipt</a>`
+            : ''}
+        </div>
       </div>`;
     });
   }
@@ -1823,6 +1993,21 @@ function renderAdminPayments(jobId, jobData) {
         <input type="number" id="ap-override-${i}" placeholder="${amt?fmt(amt).replace('$',''):'auto'}" value="${esc(p.override||'')}" style="margin-bottom:0" /></div>
       <div><label class="lbl" style="font-size:9px">Receipt Note</label>
         <input type="text" id="ap-note-${i}" placeholder="e.g. Check #1042" value="${esc(p.note||'')}" style="margin-bottom:8px" /></div>
+      <div style="margin-bottom:10px">
+        <label class="lbl" style="font-size:9px">Payment Receipt</label>
+        <input type="file" id="ap-receipt-file-${i}" accept="image/*,.pdf" style="display:none"
+          onchange="uploadPaymentReceipt('${jobId}',${i})" />
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="doc-upload-btn" onclick="document.getElementById('ap-receipt-file-${i}').click()">
+            📎 ${p.receiptUrl ? 'Replace Receipt' : 'Upload Receipt'}
+          </button>
+          ${p.receiptUrl
+            ? `<a href="${p.receiptUrl}" target="_blank" rel="noopener noreferrer"
+                style="font-size:11px;color:#2a7a20;font-family:'Montserrat',sans-serif;font-weight:700;text-decoration:none">✓ View Receipt</a>`
+            : `<span style="font-size:11px;color:#aaaaaa">No receipt uploaded</span>`}
+        </div>
+        <div id="ap-receipt-prog-${i}" style="display:none;font-size:11px;color:#e05500;margin-top:5px"></div>
+      </div>
       <button class="admin-pay-save" onclick="savePaymentDetails('${jobId}',${i})">Save Payment ${def.num}</button>
     </div>`;
   });
@@ -1846,6 +2031,7 @@ async function setPaymentStatus(jobId,idx,status){
   const payments=(snap.data().paymentSchedule)||defaultPaymentSchedule();
   payments[idx].status=status;
   await db.collection('jobs').doc(jobId).update({paymentSchedule:payments, ...auditUpdate()});
+  if(status==='due') notify(() => notifyPaymentDue(jobId, idx, snap.data())); // 🔔 Trigger: payment due
 }
 
 async function savePaymentDetails(jobId,idx){
@@ -1855,7 +2041,52 @@ async function savePaymentDetails(jobId,idx){
   payments[idx].invoiceNum=document.getElementById(`ap-inv-${idx}`).value.trim();
   payments[idx].override=document.getElementById(`ap-override-${idx}`).value.trim();
   payments[idx].note=document.getElementById(`ap-note-${idx}`).value.trim();
+  // receiptUrl is managed by uploadPaymentReceipt — never overwrite it here
   await db.collection('jobs').doc(jobId).update({paymentSchedule:payments, ...auditUpdate()});
+}
+
+async function uploadPaymentReceipt(jobId, idx) {
+  const fileInput = document.getElementById(`ap-receipt-file-${idx}`);
+  const file = fileInput.files[0];
+  if(!file) return;
+  const progEl = document.getElementById(`ap-receipt-prog-${idx}`);
+  progEl.style.display = 'block';
+  progEl.textContent = 'Uploading…';
+
+  if(!storage) {
+    progEl.textContent = '⚠️ Storage not enabled — check Firebase Storage rules.';
+    return;
+  }
+
+  try {
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const path = `receipts/${jobId}/phase-${idx}-${Date.now()}-${safeName}`;
+    const ref = storage.ref(path);
+    await new Promise((resolve, reject) => {
+      const task = ref.put(file);
+      task.on('state_changed',
+        snap => {
+          const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+          progEl.textContent = `Uploading… ${pct}%`;
+        },
+        reject, resolve);
+    });
+    const url = await ref.getDownloadURL();
+
+    // Save URL into paymentSchedule[idx].receiptUrl
+    const snap2 = await db.collection('jobs').doc(jobId).get();
+    const payments = (snap2.data().paymentSchedule) || defaultPaymentSchedule();
+    payments[idx].receiptUrl = url;
+    await db.collection('jobs').doc(jobId).update({paymentSchedule: payments, ...auditUpdate()});
+
+    progEl.textContent = '✓ Receipt uploaded';
+    progEl.style.color = '#2a7a20';
+    setTimeout(() => { progEl.style.display = 'none'; progEl.style.color = '#e05500'; }, 3000);
+  } catch(e) {
+    progEl.textContent = '⚠️ Upload failed: ' + (e.code || e.message);
+    console.error('Receipt upload error:', e);
+  }
+  fileInput.value = '';
 }
 
 
@@ -1892,51 +2123,7 @@ const ADMIN_SENDERS = [
 ];
 let activeSenderIdx = 0; // default to August
 
-function renderMessages(prefix, jobId, msgs, isAdmin) {
-  const el = document.getElementById(`${prefix}-messages-content`);
-  if(!el) return;
-  // Reset photo state for this side whenever compose re-renders
-  const side = isAdmin ? 'admin' : 'client';
-  msgPhotos[side] = [];
 
-  const composeHtml = isAdmin ? adminComposeHtml(jobId) : clientComposeHtml(jobId);
-
-  if(!msgs.length) {
-    el.innerHTML = `<div style="font-size:12px;color:#888888;margin-bottom:16px;line-height:1.5">
-      This is your project communication log. All messages are saved here so nothing gets lost.
-    </div>
-    <div class="msg-empty">No messages yet. Start the conversation below.</div>
-    ${composeHtml}`;
-    if(isAdmin) wireAdminCompose(jobId);
-    else wireClientCompose(jobId);
-    return;
-  }
-
-  let threadHtml = '';
-  let lastDate = '';
-  msgs.forEach(msg => {
-    const d = msg.createdAt ? (msg.createdAt.toDate ? msg.createdAt.toDate() : new Date(msg.createdAt)) : new Date();
-    const dateStr = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-    if(dateStr !== lastDate) {
-      threadHtml += `<div class="msg-divider">${dateStr}</div>`;
-      lastDate = dateStr;
-    }
-    threadHtml += msgBubble(msg, jobId, isAdmin);
-  });
-
-  el.innerHTML = `<div style="font-size:11px;color:#555555;margin-bottom:12px;text-align:center">Project communication log — ${msgs.length} message${msgs.length!==1?'s':''}</div>
-    <div class="msg-thread" id="${prefix}-msg-thread">${threadHtml}</div>
-    ${composeHtml}`;
-
-  if(isAdmin) wireAdminCompose(jobId);
-  else wireClientCompose(jobId);
-
-  // Restore active sender selection UI state
-  if(isAdmin) syncSenderUI();
-
-  const thread = document.getElementById(`${prefix}-msg-thread`);
-  if(thread) thread.scrollTop = thread.scrollHeight;
-}
 
 function msgBubble(msg, jobId, isAdmin) {
   const type       = msg.type || 'contractor';
@@ -2291,47 +2478,114 @@ async function deleteMsg(jobId, msgId) {
 function renderMessages(prefix, jobId, msgs, isAdmin) {
   const el = document.getElementById(`${prefix}-messages-content`);
   if(!el) return;
-  // Reset photo state for this side whenever compose re-renders
   const side = isAdmin ? 'admin' : 'client';
-  msgPhotos[side] = [];
 
-  const composeHtml = isAdmin ? adminComposeHtml(jobId) : clientComposeHtml(jobId);
+  // ── Per-prefix state: tracks which message IDs are already in the DOM ──
+  if(!renderMessages._ctx) renderMessages._ctx = {};
+  const ctx = renderMessages._ctx;
 
-  if(!msgs.length) {
-    el.innerHTML = `<div style="font-size:12px;color:#888888;margin-bottom:16px;line-height:1.5">
-      This is your project communication log. All messages are saved here so nothing gets lost.
-      Phone calls, emails, meeting notes — keep it all in one place.
-    </div>
-    <div class="msg-empty">No messages yet. Start the conversation below.</div>
-    ${composeHtml}`;
-    if(isAdmin) wireAdminCompose(jobId);
+  // Detect a job switch or cold start — do a full reset
+  const needsFullRender = !ctx[prefix] || ctx[prefix].jobId !== jobId;
+
+  if(needsFullRender) {
+    // Full reset of compose photo state only on cold start
+    msgPhotos[side] = [];
+    ctx[prefix] = { jobId, ids: new Set(), lastDate: '' };
+
+    const composeHtml = isAdmin ? adminComposeHtml(jobId) : clientComposeHtml(jobId);
+
+    if(!msgs.length) {
+      el.innerHTML = `<div style="font-size:12px;color:#888888;margin-bottom:16px;line-height:1.5">
+        This is your project communication log. All messages are saved here so nothing gets lost.
+      </div>
+      <div class="msg-empty">No messages yet. Start the conversation below.</div>
+      ${composeHtml}`;
+      if(isAdmin) { wireAdminCompose(jobId); syncSenderUI(); }
+      else wireClientCompose(jobId);
+      return;
+    }
+
+    let threadHtml = '';
+    let lastDate = '';
+    msgs.forEach(msg => {
+      const d = msg.createdAt ? (msg.createdAt.toDate ? msg.createdAt.toDate() : new Date(msg.createdAt)) : new Date();
+      const dateStr = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+      if(dateStr !== lastDate) {
+        threadHtml += `<div class="msg-divider">${dateStr}</div>`;
+        lastDate = dateStr;
+      }
+      threadHtml += msgBubble(msg, jobId, isAdmin);
+      ctx[prefix].ids.add(msg.id);
+    });
+    ctx[prefix].lastDate = lastDate;
+
+    el.innerHTML = `<div id="${prefix}-msg-count" style="font-size:11px;color:#555555;margin-bottom:12px;text-align:center">Project communication log — ${msgs.length} message${msgs.length!==1?'s':''}</div>
+      <div class="msg-thread" id="${prefix}-msg-thread">${threadHtml}</div>
+      ${composeHtml}`;
+
+    if(isAdmin) { wireAdminCompose(jobId); syncSenderUI(); }
     else wireClientCompose(jobId);
+
+    // Always scroll to bottom on cold start
+    requestAnimationFrame(() => {
+      const thread = document.getElementById(`${prefix}-msg-thread`);
+      if(thread) thread.scrollTop = thread.scrollHeight;
+    });
     return;
   }
 
-  let threadHtml = '';
-  let lastDate = '';
-  msgs.forEach(msg => {
+  // ── Incremental update ─────────────────────────────────────────────────
+  const thread = document.getElementById(`${prefix}-msg-thread`);
+  const countEl = document.getElementById(`${prefix}-msg-count`);
+
+  // Snapshot scroll position BEFORE touching the DOM
+  const wasNearBottom = !thread ||
+    (thread.scrollHeight - thread.scrollTop - thread.clientHeight < 120);
+
+  // If thread element is gone (was showing empty state), force full re-render
+  if(!thread) {
+    ctx[prefix] = null;
+    return renderMessages(prefix, jobId, msgs, isAdmin);
+  }
+
+  // Find truly new messages not yet in the DOM
+  const newMsgs = msgs.filter(m => m.id && !ctx[prefix].ids.has(m.id));
+  if(!newMsgs.length) return; // Nothing to do
+
+  // Update count label (no jitter — just text change)
+  if(countEl) {
+    countEl.textContent = `Project communication log — ${msgs.length} message${msgs.length!==1?'s':''}`;
+  }
+
+  // Append only new bubbles
+  newMsgs.forEach(msg => {
     const d = msg.createdAt ? (msg.createdAt.toDate ? msg.createdAt.toDate() : new Date(msg.createdAt)) : new Date();
     const dateStr = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-    if(dateStr !== lastDate) {
-      threadHtml += `<div class="msg-divider">${dateStr}</div>`;
-      lastDate = dateStr;
+
+    if(dateStr !== ctx[prefix].lastDate) {
+      const div = document.createElement('div');
+      div.className = 'msg-divider';
+      div.textContent = dateStr;
+      thread.appendChild(div);
+      ctx[prefix].lastDate = dateStr;
     }
-    threadHtml += msgBubble(msg, jobId, isAdmin);
+
+    const wrap = document.createElement('div');
+    wrap.innerHTML = msgBubble(msg, jobId, isAdmin);
+    // Append each child node (bubble may be a single div)
+    while(wrap.firstChild) thread.appendChild(wrap.firstChild);
+
+    ctx[prefix].ids.add(msg.id);
   });
 
-  el.innerHTML = `<div style="font-size:11px;color:#555555;margin-bottom:12px;text-align:center">Project communication log — ${msgs.length} message${msgs.length!==1?'s':''}</div>
-    <div class="msg-thread" id="${prefix}-msg-thread">${threadHtml}</div>
-    ${composeHtml}`;
-
-  if(isAdmin) wireAdminCompose(jobId);
-  else wireClientCompose(jobId);
-
-  // Scroll thread to bottom
-  const thread = document.getElementById(`${prefix}-msg-thread`);
-  if(thread) thread.scrollTop = thread.scrollHeight;
+  // Auto-scroll only when user was already at (or near) the bottom
+  if(wasNearBottom) {
+    requestAnimationFrame(() => {
+      thread.scrollTop = thread.scrollHeight;
+    });
+  }
 }
+
 
 function msgBubble(msg, jobId, isAdmin) {
   const type = msg.type || 'contractor';
@@ -2526,6 +2780,7 @@ async function saveDocLink(jobId, catKey) {
   const docs=(snap.data().documents)||{};
   docs[catKey]={url, savedAt:new Date().toISOString(), ...auditCreate()};
   await docRef.update({documents:docs, ...auditUpdate()});
+  notify(() => notifyDocUploaded(jobId, catKey, url, url)); // 🔔 Trigger: doc linked
 }
 
 async function removeDocLink(jobId, catKey) {
@@ -2552,6 +2807,9 @@ function esc(s){
 }
 document.getElementById('item-overlay').addEventListener('click',function(e){if(e.target===this)closeItemForm();});
 document.getElementById('co-overlay').addEventListener('click',function(e){if(e.target===this)closeCOForm();});
+document.getElementById('co-confirm-overlay').addEventListener('click',function(e){if(e.target===this)closeCOConfirm();});
+document.getElementById('adduser-overlay').addEventListener('click',function(e){if(e.target===this)closeAddUserSheet();});
+document.getElementById('co-confirm-overlay').addEventListener('click',function(e){if(e.target===this)closeCOConfirm();});
 document.getElementById('update-overlay').addEventListener('click',function(e){if(e.target===this)closeUpdateForm();});
 document.getElementById('newjob-overlay').addEventListener('click',function(e){if(e.target===this)closeNewJobSheet();});
 
@@ -2563,14 +2821,19 @@ const auth = firebase.auth();
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
 
 // Re-enter admin dashboard if already signed in when page loads
-auth.onAuthStateChanged(user => {
+auth.onAuthStateChanged(async user => {
   if(user && document.getElementById('screen-admin').classList.contains('active') === false) {
     // Only auto-restore if we're on the landing or login screen
     const landing = document.getElementById('screen-landing');
     const loginScr = document.getElementById('screen-adminlogin');
     if(landing.classList.contains('active') || loginScr.classList.contains('active')) {
+      await loadCurrentUserRole(user.uid); // 🔑 restore role on page refresh
       show('admin');
     }
+  }
+  if(!user) {
+    currentUserRole = null;
+    if(unsubUserRole) { unsubUserRole(); unsubUserRole = null; }
   }
 });
 
@@ -2583,8 +2846,10 @@ async function adminLogin() {
   err.style.display='none';
   spin.style.display='inline-block';
   try {
-    await auth.signInWithEmailAndPassword(email, password);
+    const userCred = await auth.signInWithEmailAndPassword(email, password);
     document.getElementById('admin-password').value = '';
+    await linkUidToUserRecord(userCred.user);          // 🔑 link email→UID on first login
+    await loadCurrentUserRole(userCred.user.uid);      // 🔑 load role before showing dashboard
     show('admin');
   } catch(e) {
     err.textContent = e.code==='auth/user-not-found'||e.code==='auth/wrong-password'||e.code==='auth/invalid-credential'
@@ -2597,11 +2862,15 @@ async function adminLogin() {
 }
 
 async function adminLogout() {
+  currentUserRole = null;
+  if(unsubUserRole){unsubUserRole();unsubUserRole=null;}
+  if(unsubUsers){unsubUsers();unsubUsers=null;}
   if(unsubAdmin){unsubAdmin();unsubAdmin=null;}
   if(unsubDetail){unsubDetail();unsubDetail=null;}
   if(unsubAdminTracker){unsubAdminTracker();unsubAdminTracker=null;}
   if(unsubAdminUpdates){unsubAdminUpdates();unsubAdminUpdates=null;}
   if(unsubAdminCO){unsubAdminCO();unsubAdminCO=null;}
+  if(unsubAdminDecisions){unsubAdminDecisions();unsubAdminDecisions=null;}
   if(unsubAdminMessages){unsubAdminMessages();unsubAdminMessages=null;}
   try { await auth.signOut(); } catch(e) {}
   show('landing');
@@ -2622,6 +2891,8 @@ let unsubDetail = null;
 let unsubAdminTracker = null;
 let unsubAdminUpdates = null;
 let unsubAdminCO = null;
+let unsubAdminDecisions = null;
+let unsubClientDecisions = null;
 let unsubClientCO = null;
 let unsubClientMessages = null;
 let unsubAdminMessages = null;
@@ -2630,18 +2901,21 @@ let msgType = 'contractor'; // for admin compose: contractor | meeting
 
 // ── Routing ────────────────────────────────────────────────────────────────
 function show(s) {
+  if(s==='users' && !can('manage_users')) { s='admin'; } // guard non-owners
   document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
   document.getElementById('screen-'+s).classList.add('active');
-  const subs={landing:'Client & Contractor Portal',adminlogin:'Contractor Access',admin:'Contractor Dashboard',client:'Client Portal'};
+  const subs={landing:'Client & Contractor Portal',adminlogin:'Contractor Access',admin:'Contractor Dashboard',client:'Client Portal',users:'Team & Users'};
   document.getElementById('head-sub').textContent=subs[s]||'';
   if(s==='admin') startAdminListener();
+  if(s==='users') setTimeout(startUsersListener, 0);
+  if(s==='admin' || s==='users') applyRoleToUI(); // re-apply role badges/visibility
   if(s!=='client') clientReset(true);
 }
 
 // ── Tab switching ──────────────────────────────────────────────────────────
 function setClientTab(tab) {
   clientTab=tab;
-  ['tracker','updates','messages','payments','scope','materials','docs'].forEach(t=>{
+  ['tracker','messages','payments','scope','materials','docs','decisions'].forEach(t=>{
     document.getElementById('ctab-'+t).classList.toggle('on',t===tab);
     document.getElementById('client-tab-'+t).style.display=t===tab?'block':'none';
   });
@@ -2649,7 +2923,7 @@ function setClientTab(tab) {
 
 function setAdminTab(tab) {
   adminTab=tab;
-  ['tracker','updates','messages','payments','scope','materials','docs'].forEach(t=>{
+  ['tracker','messages','payments','scope','materials','docs','decisions'].forEach(t=>{
     document.getElementById('atab-'+t).classList.toggle('on',t===tab);
     document.getElementById('admin-tab-'+t).style.display=t===tab?'block':'none';
   });
@@ -2749,6 +3023,12 @@ async function openJobDetail(jobId) {
       renderAdminChangeOrders(jobId, snap.docs.map(d=>({id:d.id,...d.data()})));
     });
 
+  if(unsubAdminDecisions){unsubAdminDecisions();unsubAdminDecisions=null;}
+  unsubAdminDecisions=db.collection('jobs').doc(jobId).collection('decisions')
+    .orderBy('createdAt','desc').onSnapshot(snap=>{
+      renderAdminDecisions(jobId, snap.docs.map(d=>({id:d.id,...d.data()})));
+    });
+
   // Subscribe to messages
   if(unsubAdminMessages){unsubAdminMessages();unsubAdminMessages=null;}
   unsubAdminMessages=db.collection('jobs').doc(jobId).collection('messages')
@@ -2767,6 +3047,7 @@ async function openJobDetail(jobId) {
 
   // Set post update button
   document.getElementById('post-update-btn').onclick=()=>openUpdateForm(jobId);
+  document.getElementById('post-update-btn').style.display = can('post_updates') ? '' : 'none';
   unsubDetail=db.collection('jobs').doc(jobId).collection('items').orderBy('createdAt','asc').onSnapshot(snap=>{
     const items=snap.docs.map(d=>({id:d.id,...d.data()}));
     const done=items.filter(i=>i.status==='Purchased').length;
@@ -2787,6 +3068,7 @@ function closeJobDetail() {
   if(unsubAdminUpdates){unsubAdminUpdates();unsubAdminUpdates=null;}
   if(unsubAdminCO){unsubAdminCO();unsubAdminCO=null;}
   if(unsubAdminMessages){unsubAdminMessages();unsubAdminMessages=null;}
+  if(renderMessages._ctx) delete renderMessages._ctx['admin'];
   currentAdminJobId=null;
   document.getElementById('admin-detail-view').style.display='none';
   document.getElementById('admin-jobs-view').style.display='block';
@@ -2843,6 +3125,7 @@ async function createJob(){
   closeNewJobSheet();
 }
 async function deleteJob(jobId){
+  if(!requirePermission('delete_jobs', 'Delete Jobs')) return;
   if(!confirm('Remove this job and all its data? This cannot be undone.')) return;
   const snap=await db.collection('jobs').doc(jobId).collection('items').get();
   const batch=db.batch();
@@ -2874,6 +3157,7 @@ async function clientLookup(){
     subscribeClientTracker();
     subscribeClientItems();
     subscribeClientUpdates();
+    subscribeClientDecisions();
     if(unsubClientMessages){unsubClientMessages();unsubClientMessages=null;}
     unsubClientMessages=db.collection('jobs').doc(currentJob.id).collection('messages')
       .orderBy('createdAt','asc').onSnapshot(snap=>{
@@ -2890,7 +3174,9 @@ function clientReset(silent){
   if(unsubClientTracker){unsubClientTracker();unsubClientTracker=null;}
   if(unsubClientUpdates){unsubClientUpdates();unsubClientUpdates=null;}
   if(unsubClientCO){unsubClientCO();unsubClientCO=null;}
+  if(unsubClientDecisions){unsubClientDecisions();unsubClientDecisions=null;}
   if(unsubClientMessages){unsubClientMessages();unsubClientMessages=null;}
+  if(renderMessages._ctx) delete renderMessages._ctx['client'];
   currentJob=null;clientFilter='all';allClientItems=[];
   document.getElementById('client-lookup').style.display='block';
   document.getElementById('client-job').style.display='none';
@@ -3109,9 +3395,10 @@ function updateCard(u,adminView,jobId){
         <div class="update-section-label" style="color:#5aaad8">➜ What's Next</div>
         <div class="update-section-text">${esc(u.next).replace(/\n/g,'<br>')}</div>
       </div>`:''}
-      ${u.blockers?`<div class="update-section">
+      ${(u.blockers||u.delayTags?.length)?`<div class="update-section">
         <div class="update-section-label" style="color:#ff8870">⚠️ Road Blockers</div>
-        <div class="update-blocker">${esc(u.blockers).replace(/\n/g,'<br>')}</div>
+        ${u.blockers?`<div class="update-blocker">${esc(u.blockers).replace(/\n/g,'<br>')}</div>`:''}
+        ${u.delayTags&&u.delayTags.length?renderDelayTags(u.delayTags):''}
       </div>`:''}
       ${photoHtml}
       ${adminView?`<div style="display:flex;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid #eeeeee">
@@ -3140,6 +3427,7 @@ function openUpdateForm(jobId,updateId){
   document.getElementById('u-done').value='';
   document.getElementById('u-next').value='';
   document.getElementById('u-blockers').value='';
+  resetDelayTags();
   document.getElementById('u-photo1').value='';
   document.getElementById('u-photo2').value='';
   document.getElementById('u-photo3').value='';
@@ -3159,6 +3447,7 @@ function openUpdateForm(jobId,updateId){
       if(d.done) document.getElementById('u-done').value=d.done;
       if(d.next) document.getElementById('u-next').value=d.next;
       if(d.blockers) document.getElementById('u-blockers').value=d.blockers;
+      if(d.delayTags) loadDelayTags(d.delayTags);
       if(d.photo1) document.getElementById('u-photo1').value=d.photo1;
       if(d.photo2) document.getElementById('u-photo2').value=d.photo2;
       if(d.photo3) document.getElementById('u-photo3').value=d.photo3;
@@ -3170,6 +3459,7 @@ function openUpdateForm(jobId,updateId){
 function closeUpdateForm(){document.getElementById('update-overlay').classList.remove('open');}
 
 async function saveUpdate(){
+  if(!requirePermission('post_updates', 'Post Updates')) return;
   const jobId=document.getElementById('update-job-id').value;
   const editId=document.getElementById('edit-update-id').value;
   const summary=document.getElementById('u-summary').value.trim();
@@ -3197,11 +3487,15 @@ async function saveUpdate(){
       summary, done,
       next:document.getElementById('u-next').value.trim(),
       blockers:document.getElementById('u-blockers').value.trim(),
+      delayTags: getSelectedDelayTags(),
       photo1, photo2, photo3,
     };
     const ref=db.collection('jobs').doc(jobId).collection('updates');
     if(editId) await ref.doc(editId).update({...data, ...auditUpdate()});
-    else{ await ref.add({...data, ...auditCreate()}); }
+    else{
+      await ref.add({...data, ...auditCreate()});
+      notify(() => notifyUpdatePosted(jobId, data)); // 🔔 Trigger: update posted
+    }
     sp.style.display='none';
     closeUpdateForm();
   } catch(e) {
@@ -3212,6 +3506,7 @@ async function saveUpdate(){
 }
 
 async function deleteUpdate(jobId,updateId){
+  if(!requirePermission('delete_content', 'Delete Updates')) return;
   if(!confirm('Delete this update?')) return;
   await db.collection('jobs').doc(jobId).collection('updates').doc(updateId).delete();
 }
@@ -3293,6 +3588,7 @@ function renderAdminScope(jobId, scope) {
 }
 
 async function addScopeItem(jobId, catKey) {
+  if(!requirePermission('manage_scope_co', 'Manage Scope')) return;
   const input=document.getElementById(`scope-input-${catKey}`);
   const text=input.value.trim();
   if(!text) return;
@@ -3304,6 +3600,7 @@ async function addScopeItem(jobId, catKey) {
 }
 
 async function deleteScopeItem(jobId, catKey, idx) {
+  if(!requirePermission('manage_scope_co', 'Manage Scope')) return;
   const snap=await db.collection('jobs').doc(jobId).get();
   const scope=(snap.data().scope)||defaultScope();
   scope[catKey]=(scope[catKey]||[]).filter((_,i)=>i!==idx);
@@ -3343,6 +3640,7 @@ function openCOForm(jobId, coId) {
 function closeCOForm(){document.getElementById('co-overlay').classList.remove('open');}
 
 async function saveCO(){
+  if(!requirePermission('manage_scope_co', 'Manage Change Orders')) return;
   const jobId=document.getElementById('co-job-id').value;
   const editId=document.getElementById('co-edit-id').value;
   const desc=document.getElementById('co-desc').value.trim();
@@ -3355,7 +3653,10 @@ async function saveCO(){
   };
   const ref=db.collection('jobs').doc(jobId).collection('changeOrders');
   if(editId) await ref.doc(editId).update({...data, ...auditUpdate()});
-  else { await ref.add({...data, status:'pending', ...auditCreate()}); }
+  else {
+    await ref.add({...data, status:'pending', ...auditCreate()});
+    notify(() => notifyCOIssued(jobId, data)); // 🔔 Trigger: change order issued
+  }
   sp.style.display='none';
   closeCOForm();
 }
@@ -3371,6 +3672,7 @@ async function setCOStatus(jobId, coId, status){
 }
 
 async function deleteCO(jobId, coId){
+  if(!requirePermission('delete_content', 'Delete Change Orders')) return;
   if(!confirm('Delete this change order?')) return;
   await db.collection('jobs').doc(jobId).collection('changeOrders').doc(coId).delete();
 }
@@ -3412,8 +3714,8 @@ function coCard(co, jobId, adminView) {
             <button style="padding:7px 12px;background:transparent;color:#e05050;border:1px solid #e05050;border-radius:7px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;cursor:pointer" onclick="deleteCO('${jobId}','${co.id}')">Delete</button>
           </div>`
         :co.status==='pending'
-          ?`<button class="co-accept-btn" onclick="setCOStatus('${jobId}','${co.id}','approved')">Accept Change Order</button>
-             <div style="font-size:11px;color:#888888;text-align:center;margin-top:6px">By tapping Accept, you approve this change to your project scope and cost</div>`
+          ?`<button class="co-accept-btn" onclick="openCOConfirm('${jobId}','${co.id}')">Review &amp; Accept Change Order</button>
+             <div style="font-size:11px;color:#888888;text-align:center;margin-top:6px">You'll be asked to review details before accepting</div>`
           :''}
     </div>
   </div>`;
@@ -3426,7 +3728,13 @@ function renderAdminChangeOrders(jobId, orders) {
     :orders.map(co=>coCard(co,jobId,true)).join('');
 }
 
+// ── CO confirmation cache: keyed by coId ─────────────────────────────────
+const _coCache = {};
+
 function renderClientChangeOrders(jobId, orders) {
+  // Cache CO data for the confirm modal
+  orders.forEach(co => { _coCache[co.id] = { ...co, jobId }; });
+
   // Show in scope tab
   const el=document.getElementById('client-scope-co-list');
   if(!el) return;
@@ -3436,7 +3744,909 @@ function renderClientChangeOrders(jobId, orders) {
   el.innerHTML=html;
 }
 
+function openCOConfirm(jobId, coId) {
+  const co = _coCache[coId];
+  if(!co) return; // safety guard
 
+  // Populate description
+  document.getElementById('co-confirm-desc').textContent = co.desc || '';
+
+  // Populate cost — styled by type
+  const costNum = parseFloat(co.cost);
+  const costStr = co.cost
+    ? `${co.costType === 'add' ? '+' : '-'}$${Math.abs(costNum).toLocaleString()}`
+    : 'No cost change';
+  const costEl = document.getElementById('co-confirm-cost');
+  costEl.textContent = costStr;
+  costEl.style.color = co.costType === 'add' ? '#e05500' : '#2a7a20';
+
+  // Populate time
+  document.getElementById('co-confirm-time').textContent = co.timeImpact || 'No schedule change';
+
+  // Populate notes
+  const notesWrap = document.getElementById('co-confirm-notes-wrap');
+  const notesEl   = document.getElementById('co-confirm-notes');
+  if(co.notes && co.notes.trim()) {
+    notesEl.textContent = co.notes;
+    notesWrap.style.display = 'block';
+  } else {
+    notesWrap.style.display = 'none';
+  }
+
+  // Store pending IDs on the submit button as data attributes
+  const btn = document.getElementById('co-confirm-submit');
+  btn.dataset.jobId = jobId;
+  btn.dataset.coId  = coId;
+
+  document.getElementById('co-confirm-overlay').classList.add('open');
+}
+
+function closeCOConfirm() {
+  document.getElementById('co-confirm-overlay').classList.remove('open');
+}
+
+async function confirmCOAccept() {
+  const btn  = document.getElementById('co-confirm-submit');
+  const spin = document.getElementById('co-confirm-spin');
+  const jobId = btn.dataset.jobId;
+  const coId  = btn.dataset.coId;
+  if(!jobId || !coId) return;
+
+  btn.disabled = true;
+  spin.style.display = 'inline-block';
+  try {
+    await setCOStatus(jobId, coId, 'approved');
+    closeCOConfirm();
+  } catch(e) {
+    console.error('CO accept failed:', e);
+    alert('Could not save your approval. Please try again.');
+  }
+  spin.style.display = 'none';
+  btn.disabled = false;
+}
+
+
+
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║  NOTIFICATION SERVICE                                                    ║
+// ║  Stub layer for Twilio · SendGrid · Zapier · Make · n8n                 ║
+// ║                                                                          ║
+// ║  HOW IT WORKS                                                            ║
+// ║  Every trigger writes a structured record to:                           ║
+// ║    Firestore:  notifications/{auto-id}   (status: 'pending')            ║
+// ║    Webhook:    NOTIFY_CONFIG.webhookUrl  (POST, JSON body)              ║
+// ║                                                                          ║
+// ║  TO CONNECT ZAPIER / MAKE / n8n                                         ║
+// ║    1. Create a "Catch Hook" trigger in Zapier (or equivalent)           ║
+// ║    2. Paste the webhook URL into NOTIFY_CONFIG.webhookUrl below         ║
+// ║    3. Add steps: send SMS via Twilio, send email via SendGrid, etc.     ║
+// ║                                                                          ║
+// ║  TO CONNECT TWILIO / SENDGRID DIRECTLY (server-side)                   ║
+// ║    1. Keep NOTIFY_CONFIG.writeToFirestore = true                        ║
+// ║    2. Deploy a Firebase Cloud Function that:                            ║
+// ║         - listens to onCreate on 'notifications'                        ║
+// ║         - reads the payload, calls Twilio/SendGrid APIs                 ║
+// ║         - updates doc status to 'sent' or 'failed'                     ║
+// ║    See: https://firebase.google.com/docs/functions/firestore-events     ║
+// ║                                                                          ║
+// ║  ADDING CLIENT CONTACT INFO                                             ║
+// ║    Store clientPhone and clientEmail on each job document.              ║
+// ║    They will automatically appear in every notification payload.        ║
+// ╚══════════════════════════════════════════════════════════════════════════╝
+
+// ── Configuration ──────────────────────────────────────────────────────────
+const NOTIFY_CONFIG = {
+
+  // ── Webhook endpoint (Zapier Catch Hook, Make, n8n trigger URL, etc.) ──
+  // Leave empty to disable webhook delivery.
+  // Example: 'https://hooks.zapier.com/hooks/catch/12345/abcxyz/'
+  webhookUrl: '',
+
+  // ── Write a record to Firestore notifications collection ───────────────
+  // Recommended: lets Firebase Cloud Functions pick up events for
+  // Twilio / SendGrid without exposing API keys in client code.
+  writeToFirestore: true,
+
+  // ── Which events are active ─────────────────────────────────────────────
+  // Set any to false to silence a specific trigger without removing code.
+  events: {
+    update_posted:       true,
+    payment_due:         true,
+    change_order_issued: true,
+    document_uploaded:   true,
+  },
+};
+
+// ── Fire-and-forget wrapper ────────────────────────────────────────────────
+// Prevents notification errors from breaking any portal operation.
+function notify(asyncFn) {
+  try { asyncFn().catch(e => console.warn('[LHJack Notify]', e.message)); }
+  catch(e) { console.warn('[LHJack Notify]', e.message); }
+}
+
+// ── Core dispatcher ────────────────────────────────────────────────────────
+// All triggers funnel through here. Override this function if you want
+// a fully custom delivery mechanism.
+async function _dispatchNotification(type, jobId, payload) {
+  if(!NOTIFY_CONFIG.events[type]) return; // event type disabled
+
+  const record = {
+    type,
+    jobId,
+    payload,
+    status: 'pending',
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+
+  // 1️⃣  Write to Firestore — Cloud Functions / backend services read this
+  if(NOTIFY_CONFIG.writeToFirestore) {
+    try {
+      await db.collection('notifications').add(record);
+    } catch(e) {
+      console.warn('[LHJack Notify] Firestore write failed:', e.message);
+    }
+  }
+
+  // 2️⃣  POST to webhook — Zapier / Make / n8n pick this up directly
+  if(NOTIFY_CONFIG.webhookUrl) {
+    try {
+      await fetch(NOTIFY_CONFIG.webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type,
+          jobId,
+          timestamp: new Date().toISOString(),
+          ...payload,
+        }),
+      });
+    } catch(e) {
+      console.warn('[LHJack Notify] Webhook POST failed:', e.message);
+    }
+  }
+
+  // 3️⃣  Console log — always runs, useful during development
+  console.log(`[LHJack Notify] ${type}`, { jobId, payload });
+}
+
+// ── Helper: resolve client contact info from a job document ───────────────
+// Extend this when you add clientPhone / clientEmail fields to job records.
+function _clientContact(jobData) {
+  return {
+    clientName:  jobData.clientName  || '',
+    clientPhone: jobData.clientPhone || '', // add to job form when ready
+    clientEmail: jobData.clientEmail || '', // add to job form when ready
+    jobCode:     jobData.code        || '',
+  };
+}
+
+// ── Trigger 1: Progress update posted ─────────────────────────────────────
+// Called after a NEW update is saved (not on edits).
+// Recommended action: SMS / email the client with a summary + portal link.
+//
+// Payload fields:
+//   clientName, clientPhone, clientEmail, jobCode,
+//   summary, workDone, whatsNext, date, photos[]
+async function notifyUpdatePosted(jobId, updateData) {
+  let jobData = {};
+  try {
+    const snap = await db.collection('jobs').doc(jobId).get();
+    jobData = snap.data() || {};
+  } catch(e) { /* non-fatal */ }
+
+  await _dispatchNotification('update_posted', jobId, {
+    event:       'Progress Update Posted',
+    ..._clientContact(jobData),
+    summary:     updateData.summary  || '(no summary)',
+    workDone:    updateData.done     || '',
+    whatsNext:   updateData.next     || '',
+    blockers:    updateData.blockers || '',
+    date:        updateData.date     || new Date().toLocaleDateString(),
+    photos:      [updateData.photo1, updateData.photo2, updateData.photo3].filter(Boolean),
+    delayTags:   updateData.delayTags || [],
+    portalLink:  `https://lhjack-portal.vercel.app`,
+  });
+}
+
+// ── Trigger 2: Payment marked Due Now ─────────────────────────────────────
+// Called when the contractor sets a payment phase to 'due'.
+// Recommended action: SMS / email the client with amount + pay-now link.
+//
+// Payload fields:
+//   clientName, clientPhone, clientEmail, jobCode,
+//   phase, amount, paymentLink, paymentInstructions
+async function notifyPaymentDue(jobId, phaseIdx, jobData) {
+  const phaseDef  = (typeof PAY_PHASES !== 'undefined') ? PAY_PHASES[phaseIdx] : null;
+  const contractAmt = parseFloat(jobData.contractAmount) || 0;
+  const payments    = jobData.paymentSchedule || [];
+  const p           = payments[phaseIdx] || {};
+  const amt         = (typeof calcAmount === 'function')
+    ? calcAmount(contractAmt, phaseDef ? phaseDef.pct : 0, p.override)
+    : null;
+
+  await _dispatchNotification('payment_due', jobId, {
+    event:               'Payment Due',
+    ..._clientContact(jobData),
+    phase:               phaseDef
+                           ? `Phase ${phaseDef.num} — ${phaseDef.label}`
+                           : `Phase ${phaseIdx + 1}`,
+    phasePercent:        phaseDef ? `${Math.round(phaseDef.pct * 100)}%` : '',
+    amount:              amt ? `$${amt.toLocaleString()}` : 'See portal',
+    paymentLink:         jobData.paymentLink         || '',
+    paymentInstructions: jobData.paymentInstructions || '',
+    portalLink:          `https://lhjack-portal.vercel.app`,
+  });
+}
+
+// ── Trigger 3: Change order issued ────────────────────────────────────────
+// Called after a NEW change order is created with status 'pending'.
+// Recommended action: SMS / email the client with description + review link.
+//
+// Payload fields:
+//   clientName, clientPhone, clientEmail, jobCode,
+//   description, costImpact, timeImpact, notes, portalLink
+async function notifyCOIssued(jobId, coData) {
+  let jobData = {};
+  try {
+    const snap = await db.collection('jobs').doc(jobId).get();
+    jobData = snap.data() || {};
+  } catch(e) { /* non-fatal */ }
+
+  const costNum = parseFloat(coData.cost);
+  const costStr = coData.cost
+    ? `${coData.costType === 'add' ? '+' : '-'}$${Math.abs(costNum).toLocaleString()}`
+    : 'No cost change';
+
+  await _dispatchNotification('change_order_issued', jobId, {
+    event:       'Change Order Issued',
+    ..._clientContact(jobData),
+    description: coData.desc        || '',
+    costImpact:  costStr,
+    costType:    coData.costType    || 'add',
+    timeImpact:  coData.timeImpact  || 'None',
+    notes:       coData.notes       || '',
+    portalLink:  `https://lhjack-portal.vercel.app`,
+  });
+}
+
+// ── Trigger 4: Document uploaded / linked ─────────────────────────────────
+// Called after a document is saved (file upload or link paste).
+// Recommended action: SMS / email the client that a new document is ready.
+//
+// Payload fields:
+//   clientName, clientPhone, clientEmail, jobCode,
+//   category, documentName, url, portalLink
+async function notifyDocUploaded(jobId, catKey, docName, url) {
+  let jobData = {};
+  try {
+    const snap = await db.collection('jobs').doc(jobId).get();
+    jobData = snap.data() || {};
+  } catch(e) { /* non-fatal */ }
+
+  const catLabel = (typeof DOC_CATS !== 'undefined')
+    ? ((DOC_CATS.find(c => c.key === catKey) || {}).label || catKey)
+    : catKey;
+
+  await _dispatchNotification('document_uploaded', jobId, {
+    event:        'Document Added',
+    ..._clientContact(jobData),
+    category:     catLabel,
+    documentName: docName || catLabel,
+    url:          url     || '',
+    portalLink:   `https://lhjack-portal.vercel.app`,
+  });
+}
+
+// ── END NOTIFICATION SERVICE ───────────────────────────────────────────────
+
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║  ROLE-BASED ACCESS CONTROL (RBAC)                                       ║
+// ║                                                                          ║
+// ║  Roles (stored in Firestore users/{uid}.role):                          ║
+// ║    owner           — full access; manage users, delete jobs              ║
+// ║    project_manager — view & edit all job content; no user management    ║
+// ║    office_admin    — view all jobs; can edit payments & docs only        ║
+// ║                                                                          ║
+// ║  Permission matrix:                                                      ║
+// ║    Action                  owner   pm      oa                            ║
+// ║    ─────────────────────── ──────  ──────  ──────                        ║
+// ║    View all jobs           ✓       ✓       ✓                             ║
+// ║    Post / edit updates     ✓       ✓       ✗                             ║
+// ║    Manage scope / CO       ✓       ✓       ✗                             ║
+// ║    Manage payments/docs    ✓       ✓       ✓                             ║
+// ║    Delete jobs             ✓       ✗       ✗                             ║
+// ║    Delete updates/msgs/CO  ✓       ✓       ✗                             ║
+// ║    Create/delete users     ✓       ✗       ✗                             ║
+// ║    Change phase status     ✓       ✓       ✗                             ║
+// ╚══════════════════════════════════════════════════════════════════════════╝
+
+// ── Role state ──────────────────────────────────────────────────────────────
+let currentUserRole = null;   // set after login
+let unsubUserRole   = null;   // Firestore listener for role changes
+
+const ROLE_DESCS = {
+  owner:           'Full access — create/delete jobs, manage team, all edits.',
+  project_manager: 'Can view all jobs, post updates, send messages, manage scope and change orders.',
+  office_admin:    'Can view all jobs and manage payments and documents. Cannot post updates or edit scope.',
+};
+
+// ── Permission helpers ───────────────────────────────────────────────────────
+function can(action) {
+  switch(action) {
+    case 'view_jobs':          return ['owner','project_manager','office_admin'].includes(currentUserRole);
+    case 'post_updates':       return ['owner','project_manager'].includes(currentUserRole);
+    case 'manage_scope_co':    return ['owner','project_manager'].includes(currentUserRole);
+    case 'manage_payments':    return ['owner','project_manager','office_admin'].includes(currentUserRole);
+    case 'manage_docs':        return ['owner','project_manager','office_admin'].includes(currentUserRole);
+    case 'delete_jobs':        return currentUserRole === 'owner';
+    case 'delete_content':     return ['owner','project_manager'].includes(currentUserRole);
+    case 'manage_users':       return currentUserRole === 'owner';
+    case 'change_phase_status':return ['owner','project_manager'].includes(currentUserRole);
+    default:                   return currentUserRole === 'owner';
+  }
+}
+
+// ── Load role from Firestore after login ─────────────────────────────────────
+async function loadCurrentUserRole(uid) {
+  if(unsubUserRole) { unsubUserRole(); unsubUserRole = null; }
+
+  // Subscribe so role changes take effect without re-login
+  unsubUserRole = db.collection('users').doc(uid).onSnapshot(snap => {
+    const data = snap.data() || {};
+    currentUserRole = data.role || 'project_manager'; // safe default
+
+    applyRoleToUI();
+    console.log(`[RBAC] Role loaded: ${currentUserRole}`);
+  });
+}
+
+// ── Apply role restrictions to static UI elements ────────────────────────────
+function applyRoleToUI() {
+  // Team button: owner only
+  const teamBtn = document.getElementById('team-btn');
+  if(teamBtn) teamBtn.style.display = can('manage_users') ? 'inline-block' : 'none';
+
+  // + New Job button: everyone can create jobs
+  const newJobBtn = document.getElementById('new-job-btn');
+  if(newJobBtn) newJobBtn.style.display = can('view_jobs') ? 'inline-block' : 'none';
+
+  // + Post Update button (set when job detail opens)
+  const postUpdateBtn = document.getElementById('post-update-btn');
+  if(postUpdateBtn) postUpdateBtn.style.display = can('post_updates') ? '' : 'none';
+
+  // Role badge in header subtitle
+  const headSub = document.getElementById('head-sub');
+  if(headSub && currentUserRole) {
+    const labels = { owner:'Owner', project_manager:'Project Manager', office_admin:'Office Admin' };
+    const label = labels[currentUserRole] || currentUserRole;
+    const user  = firebase.auth().currentUser;
+    headSub.textContent = user ? `${user.email} — ${label}` : label;
+  }
+}
+
+// ── Guard function: shows a brief "Access restricted" notice ─────────────────
+function requirePermission(action, friendlyName) {
+  if(can(action)) return true;
+  const labels = { owner:'Owner', project_manager:'Project Manager', office_admin:'Office Admin' };
+  const label  = labels[currentUserRole] || currentUserRole;
+  alert(`Access restricted.\n\n"${friendlyName}" requires a higher permission level.\nYour role: ${label}`);
+  return false;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  USER MANAGEMENT (owner only)
+// ════════════════════════════════════════════════════════════════════════════
+
+let selectedRole = 'project_manager';
+let unsubUsers   = null;
+
+function openAddUserSheet(uid) {
+  if(!requirePermission('manage_users', 'Manage Users')) return;
+  document.getElementById('edit-user-uid').value = uid || '';
+  document.getElementById('adduser-title').textContent = uid ? 'Edit Team Member' : 'Add Team Member';
+  document.getElementById('au-email').value = '';
+  document.getElementById('au-name').value  = '';
+  document.getElementById('au-err').style.display = 'none';
+
+  if(uid) {
+    // Load existing data
+    db.collection('users').doc(uid).get().then(snap => {
+      const d = snap.data() || {};
+      document.getElementById('au-email').value = d.email || '';
+      document.getElementById('au-name').value  = d.displayName || '';
+      setRoleSeg(d.role || 'project_manager');
+    });
+  } else {
+    setRoleSeg('project_manager');
+  }
+  document.getElementById('adduser-overlay').classList.add('open');
+}
+
+function closeAddUserSheet() {
+  document.getElementById('adduser-overlay').classList.remove('open');
+}
+
+function setRoleSeg(role) {
+  selectedRole = role;
+  document.getElementById('au-role').value = role;
+  ['pm','oa','owner'].forEach(k => {
+    const id = `role-seg-${k}`;
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('on');
+  });
+  const segMap = { project_manager:'pm', office_admin:'oa', owner:'owner' };
+  const btn = document.getElementById(`role-seg-${segMap[role]}`);
+  if(btn) btn.classList.add('on');
+  const desc = document.getElementById('au-role-desc');
+  if(desc) desc.textContent = ROLE_DESCS[role] || '';
+}
+
+async function saveUser() {
+  if(!requirePermission('manage_users', 'Manage Users')) return;
+  const uid   = document.getElementById('edit-user-uid').value.trim();
+  const email = document.getElementById('au-email').value.trim();
+  const name  = document.getElementById('au-name').value.trim();
+  const role  = document.getElementById('au-role').value;
+  const errEl = document.getElementById('au-err');
+  const spin  = document.getElementById('save-user-spin');
+
+  if(!email || !name) {
+    errEl.textContent = 'Email and name are required.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  spin.style.display = 'inline-block';
+  errEl.style.display = 'none';
+
+  try {
+    if(uid) {
+      // Update existing user record
+      await db.collection('users').doc(uid).update({
+        email, displayName: name, role,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    } else {
+      // Create new user record (keyed by email slug — real UID set on first login)
+      // The actual Firebase Auth user must be created separately in the Firebase Console.
+      const docId = email.replace(/[^a-zA-Z0-9]/g, '_');
+      await db.collection('users').doc(docId).set({
+        email, displayName: name, role,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        linked: false, // becomes true when user logs in and UID is resolved
+      }, { merge: true });
+    }
+    closeAddUserSheet();
+  } catch(e) {
+    errEl.textContent = 'Could not save: ' + (e.message || e.code);
+    errEl.style.display = 'block';
+  }
+  spin.style.display = 'none';
+}
+
+async function deleteUser(uid) {
+  if(!requirePermission('manage_users', 'Manage Users')) return;
+  if(!confirm('Remove this team member? This only removes their role record — their Firebase Auth account remains active and must be deleted separately in the Firebase Console.')) return;
+  await db.collection('users').doc(uid).delete();
+}
+
+function startUsersListener() {
+  if(unsubUsers) { unsubUsers(); unsubUsers = null; }
+  const el = document.getElementById('users-list');
+  if(!el) return;
+  el.innerHTML = '<div class="loading"><span class="spin"></span> Loading…</div>';
+
+  unsubUsers = db.collection('users').orderBy('createdAt', 'desc').onSnapshot(snap => {
+    if(snap.empty) {
+      el.innerHTML = '<div class="empty">No team members yet. Tap + Add User to invite someone.</div>';
+      return;
+    }
+    const roleLabel = { owner:'Owner', project_manager:'Project Manager', office_admin:'Office Admin' };
+    const roleColor = { owner:'#e05500', project_manager:'#5aaad8', office_admin:'#888888' };
+
+    el.innerHTML = snap.docs.map(d => {
+      const u = d.data();
+      const label = roleLabel[u.role] || u.role;
+      const color = roleColor[u.role] || '#888888';
+      const isMe  = firebase.auth().currentUser?.uid === d.id;
+      return `<div class="card" style="display:flex;align-items:center;gap:12px">
+        <div style="width:40px;height:40px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:15px;color:#888888;flex-shrink:0">
+          ${esc((u.displayName||u.email||'?')[0].toUpperCase())}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:#111111">
+            ${esc(u.displayName||'Unknown')}${isMe?' <span style="font-size:10px;color:#888888">(you)</span>':''}
+          </div>
+          <div style="font-size:11px;color:#888888;margin-top:2px">${esc(u.email||'')}</div>
+          <span style="display:inline-block;margin-top:5px;font-size:10px;font-family:'Montserrat',sans-serif;font-weight:700;padding:2px 8px;border-radius:10px;background:${color}22;color:${color};border:1px solid ${color}44">
+            ${esc(label)}
+          </span>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button class="obtn obtn-blue" style="font-size:10px;padding:4px 10px" onclick="openAddUserSheet('${d.id}')">Edit</button>
+          ${!isMe ? `<button class="obtn obtn-red" style="font-size:10px;padding:4px 10px" onclick="deleteUser('${d.id}')">Remove</button>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  });
+}
+
+// ── Wire users listener when screen is shown ─────────────────────────────────
+const _origShow = show;
+// (show is already defined — we patch it after definition via a post-login hook)
+
+// ── Link UID to user record on first login ───────────────────────────────────
+// When a Firebase Auth user logs in, find their record by email and update UID.
+async function linkUidToUserRecord(user) {
+  try {
+    const snap = await db.collection('users').where('email', '==', user.email).limit(1).get();
+    if(!snap.empty) {
+      const docRef = snap.docs[0].ref;
+      const data   = snap.docs[0].data();
+      // If doc ID isn't the real UID yet, migrate it
+      if(snap.docs[0].id !== user.uid) {
+        await db.collection('users').doc(user.uid).set({ ...data, linked: true }, { merge: true });
+        await docRef.delete();
+      } else {
+        await docRef.update({ linked: true, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      }
+    }
+  } catch(e) {
+    console.warn('[RBAC] linkUidToUserRecord failed:', e.message);
+  }
+}
+
+
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║  CLIENT DECISIONS                                                        ║
+// ║  Contractor posts required selections (tile, paint, etc.)                ║
+// ║  Client views pending vs. decided items                                  ║
+// ╚══════════════════════════════════════════════════════════════════════════╝
+
+// ── Category config ───────────────────────────────────────────────────────
+const DECISION_CATS = [
+  { key: 'tile',      label: 'Tile',      emoji: '🪟', color: '#5aaad8', bg: '#eef5ff' },
+  { key: 'paint',     label: 'Paint',     emoji: '🎨', color: '#e05500', bg: '#fff4ee' },
+  { key: 'lighting',  label: 'Lighting',  emoji: '💡', color: '#f0c040', bg: '#fffbee' },
+  { key: 'vanity',    label: 'Vanity',    emoji: '🚿', color: '#2a7a8a', bg: '#edfafc' },
+  { key: 'appliance', label: 'Appliance', emoji: '🏠', color: '#7a4aaa', bg: '#f7f0ff' },
+  { key: 'other',     label: 'Other',     emoji: '✏️', color: '#888888', bg: '#f5f5f5' },
+];
+function decisionCatInfo(key) {
+  return DECISION_CATS.find(c => c.key === key) || DECISION_CATS[DECISION_CATS.length - 1];
+}
+
+// ── Form helpers ──────────────────────────────────────────────────────────
+let _dCat = 'tile';
+let _dStatus = 'pending';
+
+function setDecisionCat(cat) {
+  _dCat = cat;
+  document.getElementById('d-category').value = cat;
+  DECISION_CATS.forEach(c => {
+    const btn = document.getElementById('dcat-' + c.key);
+    if(btn) btn.classList.toggle('on', c.key === cat);
+  });
+}
+
+function setDecisionStatus(status) {
+  _dStatus = status;
+  document.getElementById('d-status').value = status;
+  document.getElementById('dst-pending').classList.toggle('on', status === 'pending');
+  document.getElementById('dst-decided').classList.toggle('on', status === 'decided');
+  const wrap = document.getElementById('d-decision-wrap');
+  if(wrap) wrap.style.display = status === 'decided' ? 'block' : 'none';
+}
+
+function openDecisionForm(jobId, decisionId) {
+  if(!requirePermission('post_updates', 'Post Decisions')) return;
+  document.getElementById('decision-job-id').value = jobId || '';
+  document.getElementById('edit-decision-id').value = decisionId || '';
+  document.getElementById('decision-form-title').textContent = decisionId ? 'Edit Decision Item' : 'New Decision Item';
+  document.getElementById('d-item').value    = '';
+  document.getElementById('d-details').value = '';
+  document.getElementById('d-due').value     = '';
+  document.getElementById('d-decision').value = '';
+  setDecisionCat('tile');
+  setDecisionStatus('pending');
+
+  if(decisionId) {
+    const jobId2 = document.getElementById('decision-job-id').value;
+    db.collection('jobs').doc(jobId2).collection('decisions').doc(decisionId).get().then(snap => {
+      const d = snap.data() || {};
+      document.getElementById('d-item').value     = d.item     || '';
+      document.getElementById('d-details').value  = d.details  || '';
+      document.getElementById('d-due').value      = d.dueDate  || '';
+      document.getElementById('d-decision').value = d.decision || '';
+      setDecisionCat(d.category || 'tile');
+      setDecisionStatus(d.status || 'pending');
+    });
+  }
+  document.getElementById('decision-overlay').classList.add('open');
+}
+
+function closeDecisionForm() {
+  document.getElementById('decision-overlay').classList.remove('open');
+}
+
+async function saveDecision() {
+  if(!requirePermission('post_updates', 'Post Decisions')) return;
+  const jobId      = document.getElementById('decision-job-id').value;
+  const editId     = document.getElementById('edit-decision-id').value;
+  const item       = document.getElementById('d-item').value.trim();
+  const details    = document.getElementById('d-details').value.trim();
+  const dueDate    = document.getElementById('d-due').value;
+  const category   = document.getElementById('d-category').value;
+  const status     = document.getElementById('d-status').value;
+  const decision   = document.getElementById('d-decision').value.trim();
+
+  if(!item) return;
+  const sp = document.getElementById('save-decision-spin');
+  sp.style.display = 'inline-block';
+
+  const data = { item, details, dueDate, category, status, decision };
+  const ref  = db.collection('jobs').doc(jobId).collection('decisions');
+
+  try {
+    if(editId) await ref.doc(editId).update({ ...data, ...auditUpdate() });
+    else       await ref.add({ ...data, ...auditCreate() });
+    closeDecisionForm();
+  } catch(e) {
+    alert('Error saving: ' + (e.message || e.code));
+  }
+  sp.style.display = 'none';
+}
+
+async function deleteDecision(jobId, decisionId) {
+  if(!requirePermission('delete_content', 'Delete Decisions')) return;
+  if(!confirm('Delete this decision item?')) return;
+  await db.collection('jobs').doc(jobId).collection('decisions').doc(decisionId).delete();
+}
+
+async function markDecided(jobId, decisionId, currentDecision) {
+  const val = prompt('Enter the client\'s selection or decision:', currentDecision || '');
+  if(val === null) return; // cancelled
+  await db.collection('jobs').doc(jobId).collection('decisions').doc(decisionId)
+    .update({ status: 'decided', decision: val.trim(), ...auditUpdate() });
+}
+
+// ── Subscriptions ─────────────────────────────────────────────────────────
+function subscribeClientDecisions() {
+  if(unsubClientDecisions) { unsubClientDecisions(); unsubClientDecisions = null; }
+  unsubClientDecisions = db.collection('jobs').doc(currentJob.id)
+    .collection('decisions').orderBy('createdAt', 'desc')
+    .onSnapshot(snap => {
+      renderClientDecisions(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+}
+
+// ── Render helpers ────────────────────────────────────────────────────────
+function _isOverdue(dueDate) {
+  if(!dueDate) return false;
+  return new Date(dueDate) < new Date(new Date().toDateString());
+}
+
+function _decisionCardClass(d) {
+  if(d.status === 'decided') return 'decided';
+  if(_isOverdue(d.dueDate)) return 'overdue';
+  return 'pending';
+}
+
+function decisionCard(d, jobId, adminView) {
+  const cat     = decisionCatInfo(d.category);
+  const cls     = _decisionCardClass(d);
+  const overdue = cls === 'overdue';
+
+  const dueColor  = d.status === 'decided' ? '#6adf40' : overdue ? '#e05050' : '#e05500';
+  const dueLabel  = d.dueDate
+    ? (d.status === 'decided' ? `✓ Decided` : overdue ? `⚠️ Due ${esc(d.dueDate)} — Overdue` : `Due: ${esc(d.dueDate)}`)
+    : (d.status === 'decided' ? '✓ Decided' : 'No due date set');
+
+  const decidedBlock = d.status === 'decided' && d.decision
+    ? `<div class="decision-made">
+        <div class="decision-made-label">Selection Made</div>
+        <div class="decision-made-val">${esc(d.decision)}</div>
+       </div>` : '';
+
+  const adminActions = adminView ? `
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0f0">
+      ${d.status !== 'decided'
+        ? `<button class="obtn" style="font-size:10px;padding:4px 12px;border-color:#6adf40;color:#2a7a20"
+             onclick="markDecided('${jobId}','${d.id}','${(d.decision||'').replace(/'/g,"\\'")}')">✓ Mark Decided</button>`
+        : ''}
+      <button class="obtn obtn-blue" style="font-size:10px;padding:4px 10px"
+        onclick="openDecisionForm('${jobId}','${d.id}')">Edit</button>
+      <button class="obtn obtn-red" style="font-size:10px;padding:4px 10px"
+        onclick="deleteDecision('${jobId}','${d.id}')">Delete</button>
+    </div>` : '';
+
+  return `<div class="decision-card ${cls}">
+    <div class="decision-header">
+      <span class="decision-cat-pill" style="background:${cat.bg};color:${cat.color};border:1px solid ${cat.color}44">
+        ${cat.emoji} ${esc(cat.label)}
+      </span>
+      <span class="decision-due" style="color:${dueColor}">${dueLabel}</span>
+    </div>
+    <div class="decision-body">
+      <div class="decision-item">${esc(d.item)}</div>
+      ${d.details ? `<div class="decision-details">${esc(d.details).replace(/\n/g,'<br>')}</div>` : ''}
+      ${decidedBlock}
+      ${adminActions}
+    </div>
+  </div>`;
+}
+
+function renderAdminDecisions(jobId, decisions) {
+  const el = document.getElementById('admin-decisions-content');
+  if(!el) return;
+
+  if(!decisions.length) {
+    el.innerHTML = '<div class="empty">No decision items yet. Tap + New Decision Item to add one.</div>';
+    return;
+  }
+
+  const pending  = decisions.filter(d => d.status !== 'decided');
+  const decided  = decisions.filter(d => d.status === 'decided');
+
+  let html = '';
+
+  // Summary bar
+  const total    = decisions.length;
+  const doneCount = decided.length;
+  const overdueCount = pending.filter(d => _isOverdue(d.dueDate)).length;
+  html += `<div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+    <div class="stat" style="flex:1;min-width:80px">
+      <div class="stat-n">${total}</div>
+      <div class="stat-l">Total</div>
+    </div>
+    <div class="stat" style="flex:1;min-width:80px">
+      <div class="stat-n" style="color:#e05500">${pending.length}</div>
+      <div class="stat-l">Pending</div>
+    </div>
+    <div class="stat" style="flex:1;min-width:80px">
+      <div class="stat-n" style="color:#6adf40">${doneCount}</div>
+      <div class="stat-l">Decided</div>
+    </div>
+    ${overdueCount ? `<div class="stat" style="flex:1;min-width:80px">
+      <div class="stat-n" style="color:#e05050">${overdueCount}</div>
+      <div class="stat-l">Overdue</div>
+    </div>` : ''}
+  </div>`;
+
+  if(pending.length) {
+    html += `<div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#888888;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #eeeeee">⏳ Awaiting Decision</div>`;
+    html += pending.map(d => decisionCard(d, jobId, true)).join('');
+  }
+
+  if(decided.length) {
+    html += `<div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#888888;margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid #eeeeee">✅ Decided</div>`;
+    html += decided.map(d => decisionCard(d, jobId, true)).join('');
+  }
+
+  el.innerHTML = html;
+}
+
+function renderClientDecisions(decisions) {
+  const el = document.getElementById('client-decisions-content');
+  if(!el) return;
+
+  if(!decisions.length) {
+    el.innerHTML = `<div style="text-align:center;padding:40px 20px">
+      <div style="font-size:32px;margin-bottom:12px">📋</div>
+      <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:#111111;margin-bottom:8px">No Decisions Required Yet</div>
+      <div style="font-size:13px;color:#888888;line-height:1.6">Your contractor will post items here when your input is needed — such as tile, paint color, lighting, or appliance selections.</div>
+    </div>`;
+    return;
+  }
+
+  const pending = decisions.filter(d => d.status !== 'decided');
+  const decided = decisions.filter(d => d.status === 'decided');
+  const overdue = pending.filter(d => _isOverdue(d.dueDate));
+
+  let html = '';
+
+  // Client header callout
+  if(overdue.length) {
+    html += `<div style="background:#fff5f5;border:1px solid #e05050;border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:22px">⚠️</span>
+      <div>
+        <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#e05050;margin-bottom:2px">${overdue.length} Decision${overdue.length>1?'s':''} Overdue</div>
+        <div style="font-size:12px;color:#555555">Please review the items below and contact your contractor with your selection.</div>
+      </div>
+    </div>`;
+  } else if(pending.length) {
+    html += `<div style="background:#fff8f4;border:1px solid #e05500;border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:22px">📋</span>
+      <div>
+        <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:#e05500;margin-bottom:2px">${pending.length} Decision${pending.length>1?'s':''} Need Your Input</div>
+        <div style="font-size:12px;color:#555555">Review the items below and contact your contractor with your selections.</div>
+      </div>
+    </div>`;
+  }
+
+  if(pending.length) {
+    html += `<div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#888888;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #eeeeee">⏳ Needs Your Input</div>`;
+    html += pending.map(d => decisionCard(d, null, false)).join('');
+  }
+
+  if(decided.length) {
+    html += `<div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#888888;margin:${pending.length?'16px':'0px'} 0 10px;padding-bottom:6px;border-bottom:1px solid #eeeeee">✅ Already Decided</div>`;
+    html += decided.map(d => decisionCard(d, null, false)).join('');
+  }
+
+  el.innerHTML = html;
+}
+
+// ── Backdrop close ────────────────────────────────────────────────────────
+document.getElementById('decision-overlay').addEventListener('click', function(e) {
+  if(e.target === this) closeDecisionForm();
+});
+
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║  DELAY / BLOCKER TAG SYSTEM                                              ║
+// ║  Tags on progress updates: Contractor, Client, Municipality,            ║
+// ║  Supplier, Weather, Other                                                ║
+// ╚══════════════════════════════════════════════════════════════════════════╝
+
+const DELAY_TAG_DEFS = [
+  { key: 'contractor',   label: 'Contractor',   emoji: '🔨', cls: 'delay-tag-contractor'   },
+  { key: 'client',       label: 'Client',       emoji: '🏠', cls: 'delay-tag-client'       },
+  { key: 'municipality', label: 'Municipality', emoji: '🏛️', cls: 'delay-tag-municipality' },
+  { key: 'supplier',     label: 'Supplier',     emoji: '📦', cls: 'delay-tag-supplier'     },
+  { key: 'weather',      label: 'Weather',      emoji: '🌧️', cls: 'delay-tag-weather'      },
+  { key: 'other',        label: 'Other',        emoji: '⚠️', cls: 'delay-tag-other'        },
+];
+
+// Selected tags set for current form session
+let _selectedDelayTags = new Set();
+
+function toggleDelayTag(key) {
+  if(_selectedDelayTags.has(key)) {
+    _selectedDelayTags.delete(key);
+  } else {
+    _selectedDelayTags.add(key);
+  }
+  _syncDelayTagUI();
+}
+
+function _syncDelayTagUI() {
+  DELAY_TAG_DEFS.forEach(def => {
+    const btn = document.getElementById('dtag-' + def.key);
+    if(!btn) return;
+    const active = _selectedDelayTags.has(def.key);
+    btn.style.opacity    = active ? '1' : '0.4';
+    btn.style.fontWeight = active ? '900' : '700';
+    btn.style.transform  = active ? 'scale(1.05)' : 'scale(1)';
+    btn.style.boxShadow  = active ? '0 2px 6px rgba(0,0,0,.12)' : 'none';
+  });
+}
+
+function resetDelayTags() {
+  _selectedDelayTags = new Set();
+  _syncDelayTagUI();
+}
+
+function loadDelayTags(tags) {
+  _selectedDelayTags = new Set(tags || []);
+  _syncDelayTagUI();
+}
+
+function getSelectedDelayTags() {
+  return [..._selectedDelayTags];
+}
+
+// ── Render tags as read-only badges (used in updateCard) ──────────────────
+function renderDelayTags(tags) {
+  if(!tags || !tags.length) return '';
+  return `<div class="delay-tag-row">
+    ${tags.map(key => {
+      const def = DELAY_TAG_DEFS.find(d => d.key === key);
+      if(!def) return '';
+      return `<span class="delay-tag ${def.cls}">${def.emoji} ${esc(def.label)}</span>`;
+    }).filter(Boolean).join('')}
+  </div>`;
+}
 </script>
 </body>
 </html>
