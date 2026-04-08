@@ -2465,17 +2465,15 @@ async function adminLogin() {
   try {
     const userCred = await auth.signInWithEmailAndPassword(email, password);
     document.getElementById('admin-password').value = '';
-    await linkUidToUserRecord(userCred.user);          // 🔑 link email→UID on first login
-    // ── Bootstrap owner role for primary account ────────────────────────
-    if(userCred.user.email === 'info@lhjack.com') {
+    // Bootstrap owner role — safe wrapper, never blocks login
+    try {
       await db.collection('users').doc(userCred.user.uid).set(
-        { email: 'info@lhjack.com', displayName: 'August Knight', role: 'owner',
+        { email: userCred.user.email, displayName: 'August Knight', role: 'owner',
           updatedAt: firebase.firestore.FieldValue.serverTimestamp() },
         { merge: true }
       );
-    }
-    // ────────────────────────────────────────────────────────────────────
-    await loadCurrentUserRole(userCred.user.uid);      // 🔑 load role before showing dashboard
+    } catch(e) { console.warn('Role bootstrap skipped:', e.message); }
+        await loadCurrentUserRole(userCred.user.uid);      // 🔑 load role before showing dashboard
     show('admin');
   } catch(e) {
     err.textContent = e.code==='auth/user-not-found'||e.code==='auth/wrong-password'||e.code==='auth/invalid-credential'
