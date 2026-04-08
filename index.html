@@ -372,7 +372,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <div style="font-size:12px;color:#888888;margin-bottom:8px">
         <a href="#" style="color:#888888;text-decoration:none;margin:0 8px">Privacy Policy</a>
         <a href="#" style="color:#888888;text-decoration:none;margin:0 8px">Terms of Use</a>
-        <a href="mailto:info@lhjack.com" style="color:#888888;text-decoration:none;margin:0 8px">Contact</a>
+        <a href="/cdn-cgi/l/email-protection#0c65626a634c6064666d6f67226f6361" style="color:#888888;text-decoration:none;margin:0 8px">Contact</a>
       </div>
       <div style="font-size:11px;color:#aaaaaa">LHJack Contractors · Licensed General Contractor · NJ · 917-750-5180</div>
     </div>
@@ -405,7 +405,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 
 <div class="overlay" id="newjob-overlay"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── Firebase ───────────────────────────────────────────────────────────────
 firebase.initializeApp({
   apiKey: "AIzaSyD51hiCzTxbznD1S3dgYQu8oRbCxBg3giY",
@@ -2466,6 +2466,15 @@ async function adminLogin() {
     const userCred = await auth.signInWithEmailAndPassword(email, password);
     document.getElementById('admin-password').value = '';
     await linkUidToUserRecord(userCred.user);          // 🔑 link email→UID on first login
+    // ── Bootstrap owner role for primary account ────────────────────────
+    if(userCred.user.email === 'info@lhjack.com') {
+      await db.collection('users').doc(userCred.user.uid).set(
+        { email: 'info@lhjack.com', displayName: 'August Knight', role: 'owner',
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      );
+    }
+    // ────────────────────────────────────────────────────────────────────
     await loadCurrentUserRole(userCred.user.uid);      // 🔑 load role before showing dashboard
     show('admin');
   } catch(e) {
@@ -4690,10 +4699,4 @@ function mountProtectedUI() {
     ['newjob-overlay',     closeNewJobSheet],
     ['decision-overlay',   closeDecisionForm],
   ].forEach(([id, fn]) => {
-    const el = document.getElementById(id);
-    if(el) el.addEventListener('click', function(e){ if(e.target===this) fn(); });
-  });
-}
-</script>
-</body>
-</html>
+    const el =
